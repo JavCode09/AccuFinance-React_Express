@@ -105,7 +105,7 @@ const Login = () => {
                             />
                         </div>
                         <div className="btn-login">
-                            <button className='btn-aceptar'>Aceptar</button>
+                            <button type="submit" className='btn-aceptar'>Aceptar</button>
                             <button className='btn-registro' onClick={login_form}>Login</button>
                         </div>
                     </form>
