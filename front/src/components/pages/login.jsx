@@ -6,9 +6,28 @@ import "../styles/login.css";
 // Animation
 import Seccion_login from '../styles/styles-animation/login/section';
 
+// APIs
+import { add_registro } from '../api/registro_login';
+
 const Login = () => {
     // Manejar la visibilidad del formulario usando el estado
     const [showLogin, setShowLogin] = useState(true);
+
+    // Estado para maniupular los registros
+    const [addRegistro, setRegistro] = useState({
+        nombre: '',
+        apellidos: '',
+        email: '',
+        password: '',
+        verificar_password: ''
+    });
+
+    // Estado para maniupular los login
+    const [addLogin, setLogin] = useState({
+        usuario: '',
+        contrasena: ''
+
+    });
 
     const registro_form = (event) => {
         event.preventDefault();
@@ -19,6 +38,57 @@ const Login = () => {
         event.preventDefault();
         setShowLogin(true); // Mostrar login y ocultar registro
     };
+
+
+    //handleChange
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        setRegistro({
+            ...addRegistro, // Mantiene los otros valores del formulario
+            [name]: value // Actualiza el campo que está cambiando
+        })
+    }
+
+    //funcion registro_add
+    const registro_add = async(e) => {
+        e.preventDefault();
+
+        if (addRegistro.password === "" || addRegistro.verificar_password === "" || addRegistro.nombre === "" || addRegistro.apellidos === ""
+            || addRegistro.email === ""
+        ) {
+            console.log("Datos incompletos");
+            return;
+            
+        }
+
+        if (addRegistro.password !== addRegistro.verificar_password) {
+            console.log("Error, Las contraseñas no coinciden");
+            return;
+            
+        }
+
+        try {
+            const call_query = await add_registro(addRegistro);
+            console.log("Registro Exitoso: ", call_query);
+            alert("Registro Exitoso: ", call_query);
+
+            // Limpiar el formulario después del registro exitoso
+            setRegistro({
+                nombre: '',
+                apellidos: '',
+                email: '',
+                password: '',
+                verificar_password: ''
+            });
+            
+            // Pasamos a login
+            setShowLogin(true); // Mostrar login y ocultar registro
+            
+        } catch (error) {
+            console.log("Erro en la peticion API, Registro");
+            
+        }
+    }
 
     return ( 
         <div className="principal">
@@ -34,9 +104,11 @@ const Login = () => {
                         <div className="group-F">
                             <label htmlFor="Usuario">Usuario / Email</label>
                             <input className='usuario' 
-                                type="text"
+                                type="email"
                                 placeholder='Usuario / Email'
                                 name='usuario'
+                                value={addRegistro.usuario || ''}
+                                onChange={handleChange}
                             />
                         </div>
                         <div className="group-F">
@@ -45,6 +117,8 @@ const Login = () => {
                                 type="password"
                                 placeholder='Contraseña'
                                 name='contrasena'
+                                value={addRegistro.contrasena || ''}
+                                onChange={handleChange}
                             />
                         </div>
                         <div className="btn-login">
@@ -60,7 +134,7 @@ const Login = () => {
                     <div className="title">
                         <p className='title-page'>AccuFinance</p>
                     </div>
-                    <form action="" className='formulario-login-re'>
+                    <form action="" className='formulario-login-re' onSubmit={registro_add}>
                         <div className="title-login">
                             <p className='title-login'>Registrate</p>
                         </div>
@@ -69,7 +143,9 @@ const Login = () => {
                             <input className='Nombre' 
                                 type="text"
                                 placeholder='Nombre'
-                                name='Nombre'
+                                name='nombre'
+                                value={addRegistro.nombre || ''}
+                                onChange={handleChange}
                             />
                         </div>
                         <div className="group-F">
@@ -77,7 +153,9 @@ const Login = () => {
                             <input className='Apellidos' 
                                 type="text"
                                 placeholder='Apellidos'
-                                name='Apellidos'
+                                name='apellidos'
+                                value={addRegistro.apellidos || ''}
+                                onChange={handleChange}
                             />
                         </div>
                         <div className="group-F">
@@ -85,7 +163,9 @@ const Login = () => {
                             <input className='Email' 
                                 type="text"
                                 placeholder='Email'
-                                name='usuario'
+                                name='email'
+                                value={addRegistro.email || ''}
+                                onChange={handleChange}
                             />
                         </div>
                         <div className="group-F">
@@ -93,15 +173,19 @@ const Login = () => {
                             <input className='password'
                                 type="password"
                                 placeholder='Contraseña'
-                                name='contrasena'
+                                name='password'
+                                value={addRegistro.password || ''}
+                                onChange={handleChange}
                             />
                         </div>
                         <div className="group-F">
                             <label htmlFor="verifi_Password">Verifica Password</label>
                             <input className='verifi_password'
                                 type="password"
-                                placeholder='Verifia Contraseña'
-                                name='verifi_contrasena'
+                                placeholder='Verifica Contraseña'
+                                name='verificar_password'
+                                value={addRegistro.verificar_password || ''}
+                                onChange={handleChange}
                             />
                         </div>
                         <div className="btn-login">
