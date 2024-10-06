@@ -1,13 +1,23 @@
 
 .title{
   margin-bottom: -90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
 }
     .title-page{
         font-size: 50px; /* Tamaño del texto, ajusta según sea necesario */
         font-weight: bold;
         color: #E5E4E2;
-
     }
+
+    .SubTitle{
+        font-size: 15px;
+        font-weight: bold;
+        color: #E5E4E2;
+    }
+
 .Container{
     display: flex;
     justify-content: center; /* Alinea eje x*/
