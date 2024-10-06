@@ -19,6 +19,9 @@ const port = process.env.PORT;
 //middleware para requerimiento del registro
 app.use("/Registro" ,  require("./router/registro"));
 
+//middleware para requerimiento del login
+app.use("/Login" ,  require("./router/registro"));
+
 
 app.listen(port, () => {
     console.log("Servidor activo en PORT: ", port);

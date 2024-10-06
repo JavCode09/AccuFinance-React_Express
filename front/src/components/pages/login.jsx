@@ -7,7 +7,7 @@ import "../styles/login.css";
 import Seccion_login from '../styles/styles-animation/login/section';
 
 // APIs
-import { add_registro } from '../api/registro_login';
+import { add_registro, SelectLogin } from '../api/registro_login';
 
 const Login = () => {
     // Manejar la visibilidad del formulario usando el estado
@@ -48,6 +48,16 @@ const Login = () => {
             [name]: value // Actualiza el campo que está cambiando
         })
     }
+
+    // Para el login form
+    const handleLoginChange = (e) => {
+        const { name, value } = e.target;
+        setLogin({
+            ...addLogin, // Mantiene los otros valores del login
+            [name]: value // Actualiza el campo que está cambiando
+        });
+    }
+
 
     //funcion registro_add
     const registro_add = async(e) => {
@@ -90,14 +100,38 @@ const Login = () => {
         }
     }
 
+    // Llamada a la API 
+    const LoginSystem = async(e) =>{
+        e.preventDefault();
+
+        if (addLogin.usuario === "" || addLogin.contrasena === "") {
+            console.log("Campos vacíos");
+            alert("Por favor, llena ambos campos.");
+            return;
+        }
+        
+        try {
+            const loginStart = await SelectLogin(addLogin);
+            console.log("Datos correctos");
+            alert("Datos correctos")
+            
+        } catch (error) {
+            console.log("Erro en la peticion API, Login");
+        }
+    }
+    
+
     return ( 
         <div className="principal">
             {showLogin ? (
                 <div className='Container' id='login'>
                     <div className="title">
                         <p className='title-page'>AccuFinance</p>
+                        <p className='SubTitle'>
+                            Precisión y Control en la Gestión de tus Finanzas
+                        </p>
                     </div>
-                    <form action="" className='formulario-login'>
+                    <form className='formulario-login'onSubmit={LoginSystem}>
                         <div className="title-login">
                             <p className='title-login'>Login</p>
                         </div>
@@ -107,8 +141,8 @@ const Login = () => {
                                 type="email"
                                 placeholder='Usuario / Email'
                                 name='usuario'
-                                value={addRegistro.usuario || ''}
-                                onChange={handleChange}
+                                value={addLogin.usuario || ''}
+                                onChange={handleLoginChange}
                             />
                         </div>
                         <div className="group-F">
@@ -117,8 +151,8 @@ const Login = () => {
                                 type="password"
                                 placeholder='Contraseña'
                                 name='contrasena'
-                                value={addRegistro.contrasena || ''}
-                                onChange={handleChange}
+                                value={addLogin.contrasena || ''}
+                                onChange={handleLoginChange}
                             />
                         </div>
                         <div className="btn-login">
