@@ -1,13 +1,23 @@
 
 .title{
   margin-bottom: -90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
 }
     .title-page{
         font-size: 50px; /* Tamaño del texto, ajusta según sea necesario */
         font-weight: bold;
         color: #E5E4E2;
-
     }
+
+    .SubTitle{
+        font-size: 15px;
+        font-weight: bold;
+        color: #E5E4E2;
+    }
+
 .Container{
     display: flex;
     justify-content: center; /* Alinea eje x*/
@@ -79,6 +89,8 @@
         font-size: 25;
         padding: 5px;
         letter-spacing: 1px;
+        color: #75a702;
+        font-weight: bold;
     }
 
     .btn-aceptar{
@@ -103,7 +115,19 @@
             color: #fff;
         }
 
-    /* -------- Animacion */
+
+/* Registro */
+.formulario-login-re{
+    border: 4px solid rgb(245, 220, 220);
+    border-radius: 20px;
+    padding:10px;
+    height: auto;
+    width: 25%;
+    background: rgba(240, 248, 255, 0);
+    margin: auto;
+}
+
+/* -------- Animacion */
 
     section .wave{
         position: absolute;
@@ -153,3 +177,45 @@
             background-position-x: 1000px;
         }
     }
+
+
+    /* Resposivo */
+    /* Estilos para pantallas grandes (escritorio) */
+@media (min-width: 1024px) {
+    .formulario-login {
+        width: 25%; /* Ancho específico para pantallas grandes */
+        height: 45%;
+    }
+    .title-page {
+        font-size: 50px; /* Tamaño del texto grande */
+    }
+}
+
+/* Estilos para pantallas medianas (tabletas) */
+@media (max-width: 1024px) {
+    .formulario-login {
+        width: 50%; /* Ajuste del ancho para tabletas */
+        height: auto;
+    }
+    .title-page {
+        font-size: 40px; /* Reduce el tamaño del texto */
+    }
+}
+
+/* Estilos para pantallas pequeñas (móviles) */
+@media (max-width: 768px) {
+    .formulario-login {
+        width: 90%; /* Cubre más espacio horizontal en móviles */
+        height: auto;
+    }
+    .title-page {
+        font-size: 30px; /* Tamaño más pequeño en móviles */
+    }
+    .btn-aceptar, .btn-registro {
+        font-size: 20px; /* Botones más pequeños para pantallas pequeñas */
+        padding: 10px; /* Más espacio en los botones */
+    }
+    .title-login {
+        font-size: 25px; /* Reduce el tamaño del texto del título en móvil */
+    }
+}
