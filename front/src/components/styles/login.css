@@ -69,14 +69,12 @@
         border: 1px solid #ccc; /* Borde inicial suave */
         letter-spacing: 1px;
     }
-        input.usuario:hover {
+        input.usuario:hover, input.password:hover, input.Nombre:hover, input.Apellidos:hover,
+        input.Email:hover, input.verifi_password:hover{
             border-color: rgb(0, 112, 255); /* Cambia el borde al pasar el mouse */
             box-shadow: 0 0 8px rgba(0, 112, 255, 0.5); /* Añade una sombra sutil al hover */
         }
-        input.password:hover {
-            border-color: rgb(0, 112, 255); /* Cambia el borde al pasar el mouse */
-            box-shadow: 0 0 8px rgba(0, 112, 255, 0.5); /* Añade una sombra sutil al hover */
-        }
+        
     
 .btn-login{
     display: flex;
