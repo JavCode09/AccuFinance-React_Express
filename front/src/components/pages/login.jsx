@@ -32,11 +32,24 @@ const Login = () => {
     const registro_form = (event) => {
         event.preventDefault();
         setShowLogin(false); // Ocultar login y mostrar registro
+
+        setRegistro({
+            nombre: '',
+            apellidos: '',
+            email: '',
+            password: '',
+            verificar_password: ''
+        })
     };
 
     const login_form = (event) => {
         event.preventDefault();
         setShowLogin(true); // Mostrar login y ocultar registro
+
+        setLogin({
+            usuario: '',
+            contrasena: ''
+        });
     };
 
 
@@ -111,12 +124,22 @@ const Login = () => {
         }
         
         try {
+            // Llamada a la función SelectLogin
             const loginStart = await SelectLogin(addLogin);
-            console.log("Datos correctos");
-            alert("Datos correctos")
+    
+            // Verificación si el login fue exitoso o no
+            if (loginStart.success) {
+                console.log("Login exitoso:", loginStart.usuario);
+                alert("Login exitoso");
+            } else {
+                // Manejo de error en login (por ejemplo, usuario o contraseña incorrecta)
+                console.log("Error en el login:", loginStart.message);
+                alert(loginStart.message);  // Mostrar el mensaje de error del servidor
+            }
             
         } catch (error) {
-            console.log("Erro en la peticion API, Login");
+            console.log("Error en la petición API, Login");
+            alert("Ocurrió un error en la conexión con el servidor. Inténtalo más tarde.");
         }
     }
     
@@ -167,6 +190,9 @@ const Login = () => {
                 <div className='Container' id='registro'>
                     <div className="title">
                         <p className='title-page'>AccuFinance</p>
+                        <p className='SubTitle'>
+                            Precisión y Control en la Gestión de tus Finanzas
+                        </p>
                     </div>
                     <form action="" className='formulario-login-re' onSubmit={registro_add}>
                         <div className="title-login">

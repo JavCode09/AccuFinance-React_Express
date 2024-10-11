@@ -36,13 +36,13 @@ Router.post("/add", async (req, res) => {
     }
 });
 
-Router.post("/" , async (req, res) => {
-    const {usuario , contrasena } = req.body;
+Router.post("/", async (req, res) => {
+    const { usuario, contrasena } = req.body;
     try {
-        const result = await new Promise((resolve,reject) => {
-            //Consultamos si existe el registro
+        const result = await new Promise((resolve, reject) => {
+            // Consultamos si existe el registro
             const consulta = "SELECT * FROM users WHERE email = ?";
-            conexion.query(consulta,[usuario], async(err, success) => {
+            conexion.query(consulta, [usuario], async (err, success) => {
                 if (err) {
                     console.error(`Error en la query, Tabla: ${tabla}, Login`);
                     reject(err);
@@ -52,28 +52,33 @@ Router.post("/" , async (req, res) => {
                 if (success.length > 0) {
                     // Obtenemos la contraseña hasheada almacenada
                     const password_bd = success[0];
-                    const password_hash =  password_bd.password;
+                    const password_hash = password_bd.password;
 
-                    //Comparamos la ocnstraseña ingresada con el hash
+                    // Comparamos la contraseña ingresada con el hash
                     const password_verify = await bcrypt.compare(contrasena, password_hash);
                     if (password_verify) {
-                        resolve(success[0]);
-                    }else{
-                        reject("Contraseña Incorrecta");
+                        resolve({ status: 'success', usuario: success[0] });
+                    } else {
+                        resolve({ status: 'error', message: 'Contraseña incorrecta' });
                     }
-                }else{
-                    reject("Usuario no encontrado")
+                } else {
+                    resolve({ status: 'error', message: 'Usuario no encontrado' });
                 }
             });
         });
 
-        //Si todo va bien, enviamos la respuesta
-        res.status(200).json({message: "Login exitoso", usuario: result})
-     
+        // Si el resultado es de error, enviamos el mensaje correspondiente
+        if (result.status === 'error') {
+            res.status(200).json({ success:false, message: result.message });
+        } else {
+            // Si todo va bien, enviamos la respuesta
+            res.status(200).json({ success:true,  message: "Login exitoso", usuario: result.usuario });
+        }
     } catch (error) {
         console.error(`Error en la operación, Tabla: ${tabla}, Post:`, error);
         res.status(500).json({ message: `Ocurrió un error al realizar la operación. Tabla: ${tabla}, Error: ${error}` });
     }
-})
+});
+
 
 module.exports = Router;
