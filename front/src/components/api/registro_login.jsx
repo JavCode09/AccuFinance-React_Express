@@ -36,9 +36,44 @@ export const SelectLogin = async(formData) => {
         if (!response.ok) {
             throw new Error(`Error en la peticion al serevidor, ${tabla}`)
         }
-        return await response.json();
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Guardar token en localStorage
+            localStorage.setItem('token', data.token);
+        }
+        return data;
     } catch (error) {
         console.error(`Error en la funcion API, ${tabla}`);
         throw error;
     }
+    
 }
+
+
+// api/registro_login.js
+export const ApiMain = async (token) => {
+    try {
+        // Llamada a la API del backend para verificar el token
+        const response = await fetch(`${config.API_URL}protected_main`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // Se pasa el token en el header Authorization
+            }
+        });
+
+        // Verificar si la respuesta es correcta
+        if (!response.ok) {
+            throw new Error('Token inválido o expirado.');
+        }
+
+        // Si la respuesta es válida, retornar los datos
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error en la API:', error);
+        throw error;
+    }
+};

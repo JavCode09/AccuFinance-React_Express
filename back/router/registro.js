@@ -1,9 +1,13 @@
+const jwt = require('jsonwebtoken');
 const express = require("express");
 const bcrypt = require("bcrypt")
 const Router = express.Router();
 const conexion = require("../conexion");
 const { reject } = require("bcrypt/promises");
 let tabla = 'users';
+
+//clave de JWT
+const SECRET_KEY = 'accufinance'; // Cambiar por una clave segura
 
 // Define la ruta POST para registro
 Router.post("/add", async (req, res) => {
@@ -36,6 +40,7 @@ Router.post("/add", async (req, res) => {
     }
 });
 
+//Login 
 Router.post("/", async (req, res) => {
     const { usuario, contrasena } = req.body;
     try {
@@ -51,17 +56,19 @@ Router.post("/", async (req, res) => {
                 
                 if (success.length > 0) {
                     // Obtenemos la contraseña hasheada almacenada
-                    const password_bd = success[0];
+                    const password_bd = success[0];//como la respuesta bierne en array se ocupa la pocion 0
                     const password_hash = password_bd.password;
 
                     // Comparamos la contraseña ingresada con el hash
                     const password_verify = await bcrypt.compare(contrasena, password_hash);
                     if (password_verify) {
+                        
                         resolve({ status: 'success', usuario: success[0] });
                     } else {
                         resolve({ status: 'error', message: 'Contraseña incorrecta' });
                     }
                 } else {
+                   
                     resolve({ status: 'error', message: 'Usuario no encontrado' });
                 }
             });
@@ -71,8 +78,19 @@ Router.post("/", async (req, res) => {
         if (result.status === 'error') {
             res.status(200).json({ success:false, message: result.message });
         } else {
-            // Si todo va bien, enviamos la respuesta
-            res.status(200).json({ success:true,  message: "Login exitoso", usuario: result.usuario });
+             //Generamos JWT
+             const token = jwt.sign({ id: result.usuario.id_user, 
+                                      email: result.usuario.email,
+                                      grupo: result.usuario.grupo
+                                    }, SECRET_KEY, { expiresIn: '1h' });
+
+
+             res.status(200).json({ 
+                success: true,  
+                message: "Login exitoso", 
+                usuario: result.usuario, 
+                token 
+            });
         }
     } catch (error) {
         console.error(`Error en la operación, Tabla: ${tabla}, Post:`, error);
