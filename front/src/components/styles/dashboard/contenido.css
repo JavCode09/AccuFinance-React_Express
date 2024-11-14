@@ -1,0 +1,81 @@
+@font-face {
+    font-family: 'Montserrat-Medium';
+    src: url('../../../assets/fonts/Montserrat-Medium.ttf') format('truetype');
+    font-weight: 200; /* Peso extra ligero */
+    font-style: normal;
+  }
+
+
+.main-container{
+    font-family: 'Montserrat-Medium', sans-serif;
+    background:  #cdb4db;
+    min-height: 100vh;
+    display: flex;
+    padding: 5px;
+}
+
+.sidebar {
+    width: 250px; /* Ajusta el tamaño del sidebar como desees */
+    background-color: #4c4c6c; /* Puedes ajustar el color de fondo del sidebar */
+    color: white;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    
+    /* Otros estilos que desees para el sidebar */
+}
+
+.content {
+    flex-grow: 1; /* Hace que el contenido ocupe el espacio restante */
+    padding: 5px;
+    background-color: #f8f8f8; /* Puedes cambiar el color de fondo del contenido */
+    /* Otros estilos que desees para el contenido */
+}
+
+/* Estilos para el navbar */
+.navbar {
+    width: 100%; /* Asegura que el navbar ocupe todo el ancho disponible */
+    background-color: #669bbc; /* Color de fondo del navbar */
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px; /* Espacio entre el navbar y el content_Modules */
+}
+
+/* Estilos para el content_Modules */
+.content_Modules {
+    flex-grow: 1; /* Hace que el content_Modules ocupe el espacio restante */
+    background-color: #669bbc; /* Cambia el fondo de los módulos si es necesario */
+    padding: 5px;
+    height: 95%;
+    /* Otros estilos que desees para el content_Modules */
+}
+
+/* /////////////////////////////////////////////////// */
+
+/* Titulo */
+
+.title-sidebar{
+    background: rgb(100, 37, 37);
+    width: 100%;
+    height: 15%;
+    font-size: 2rem;
+    text-align: center;
+    display: flex;
+    justify-content: center; /* Alinea el contenido horizontalmente */
+    align-items: center; /* Alinea el contenido verticalmente */
+}
+
+.title-sidebar img {
+    max-width: 100%;    /* La imagen no será más grande que el ancho del contenedor */
+    max-height: 100%;   
+    object-fit: contain; /* La imagen mantendrá su proporción sin deformarse */
+}
+
+.modules-list{
+    background: rgb(124, 52, 52);
+    margin-top: 5px;
+    padding: 5px;
+}
