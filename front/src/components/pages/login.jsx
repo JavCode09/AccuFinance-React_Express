@@ -129,7 +129,11 @@ const Login = () => {
     
             // Verificación si el login fue exitoso o no
             if (loginStart.success) {
-                console.log("Login exitoso:", loginStart.usuario);
+                // console.log("Login exitoso:", loginStart.usuario);
+                // console.log("Login token JWT:", loginStart.token);
+
+                // Redirigir a la ruta protegida
+                window.location.href = '/main'; // Cambia '/ruta-protegida' a la ruta que desees
                 alert("Login exitoso");
             } else {
                 // Manejo de error en login (por ejemplo, usuario o contraseña incorrecta)
