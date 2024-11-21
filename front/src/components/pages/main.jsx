@@ -100,7 +100,7 @@ const Main = () => {
                 <div className="content_Modules">
                     <Routes>
                         <Route path="/" element={<Dashboard />} />
-                        <Route path="/new_Services" element={<NuevoServicio />} />
+                        <Route path="/new_Services" element={<NuevoServicio titleModule ={'Nuevos Servicios'} />} />
                         {/* Agrega más rutas aquí para otros submódulos */}
                     </Routes>
                 </div>
