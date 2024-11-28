@@ -9,7 +9,10 @@ const Modal_newServices = ({showModal,closeModal}) => {
             </Modal.Header>
             <Modal.Body>
                 <form action="">
-
+                    <div className="container_input">
+                        <label htmlFor="Nombre">Nombre</label>
+                        <input type="text" placeholder='Nombre' />
+                    </div>
                 </form>
             </Modal.Body>
             <Modal.Footer>

@@ -53,13 +53,13 @@
     flex-direction: column; /* Organiza los elementos verticalmente */
     margin-bottom: 15px; /* Espacio entre los grupos de formularios */
 }
-    label{
+    .label_log_register{
         color:rgb(255, 255, 255);
         margin-bottom: 5px;
         font-weight: bold;
     }
 
-    input{
+    .login_y_register{
         border-radius: 10px;
         padding: 5px;
         width: 100%;

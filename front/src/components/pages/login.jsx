@@ -163,8 +163,8 @@ const Login = () => {
                             <p className='title-login'>Login</p>
                         </div>
                         <div className="group-F">
-                            <label htmlFor="Usuario">Usuario / Email</label>
-                            <input className='usuario' 
+                            <label htmlFor="Usuario" className="label_log_register">Usuario / Email</label>
+                            <input className='usuario login_y_register' 
                                 type="email"
                                 placeholder='Usuario / Email'
                                 name='usuario'
@@ -173,8 +173,8 @@ const Login = () => {
                             />
                         </div>
                         <div className="group-F">
-                            <label htmlFor="Password">Password</label>
-                            <input className='password'
+                            <label htmlFor="Password" className="label_log_register">Password</label>
+                            <input className='password login_y_register'
                                 type="password"
                                 placeholder='Contraseña'
                                 name='contrasena'
@@ -203,8 +203,8 @@ const Login = () => {
                             <p className='title-login'>Registrate</p>
                         </div>
                         <div className="group-F">
-                            <label htmlFor="Nombre">Nombre</label>
-                            <input className='Nombre' 
+                            <label htmlFor="Nombre" className="label_log_register">Nombre</label>
+                            <input className='Nombre login_y_register' 
                                 type="text"
                                 placeholder='Nombre'
                                 name='nombre'
@@ -213,8 +213,8 @@ const Login = () => {
                             />
                         </div>
                         <div className="group-F">
-                            <label htmlFor="Apellidos">Apellidos</label>
-                            <input className='Apellidos' 
+                            <label htmlFor="Apellidos" className="label_log_register">Apellidos</label>
+                            <input className='Apellidos login_y_register' 
                                 type="text"
                                 placeholder='Apellidos'
                                 name='apellidos'
@@ -223,8 +223,8 @@ const Login = () => {
                             />
                         </div>
                         <div className="group-F">
-                            <label htmlFor="Email">Email</label>
-                            <input className='Email' 
+                            <label htmlFor="Email" className="label_log_register">Email</label>
+                            <input className='Email login_y_register' 
                                 type="text"
                                 placeholder='Email'
                                 name='email'
@@ -233,8 +233,8 @@ const Login = () => {
                             />
                         </div>
                         <div className="group-F">
-                            <label htmlFor="Password">Password</label>
-                            <input className='password'
+                            <label htmlFor="Password" className="label_log_register">Password</label>
+                            <input className='password login_y_register'
                                 type="password"
                                 placeholder='Contraseña'
                                 name='password'
@@ -243,8 +243,8 @@ const Login = () => {
                             />
                         </div>
                         <div className="group-F">
-                            <label htmlFor="verifi_Password">Verifica Password</label>
-                            <input className='verifi_password'
+                            <label htmlFor="verifi_Password" className="label_log_register">Verifica Password</label>
+                            <input className='verifi_password login_y_register'
                                 type="password"
                                 placeholder='Verifica Contraseña'
                                 name='verificar_password'
