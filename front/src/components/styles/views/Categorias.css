@@ -1,0 +1,50 @@
+.Categorias-container{
+    background: rgb(143, 201, 224);
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+    .Categorias-title{
+        margin-bottom: 5px;
+    }
+
+    .Categorias-option{
+        display: flex;
+        justify-content: space-between;
+        background-color: antiquewhite;
+        padding: 5px;
+        margin-bottom: 5px;
+    }
+
+        .Categorias-search{
+            padding: 5px;
+            background: rgb(179, 107, 13);
+        }
+
+        .Categorias-btns{
+            display: block;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+            background: rgb(179, 107, 13);
+        }
+
+    .Categorias-content{
+        padding: 5px;
+        background: antiquewhite;
+    }
+
+
+/* CSS de los modales*/
+.label{
+    font-weight: bold;
+}
+
+.input{
+    letter-spacing: 0.3px;
+}
+
+/* Modal ADD */
+/* Modal EDIT */
+/* Modal DELETE */

@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link, Routes, Route } from 'react-router-dom';
 import Dashboard from './Dashboard'; // Importa el componente Dashboard
 
+// btns ADD
 import NuevoServicio from './modules/subModules/NuevoServicios'; // Importa NuevoServicio
+import Categories from './modules/subModules/Categories';
+
+// Api al server
 import { ApiMain } from '../api/registro_login';
 
 // css estructura 
@@ -45,6 +49,7 @@ const Main = () => {
         {
             name: 'Servicios',
             submodules: [
+                { name: 'Categorias', path: '/main/categories'},
                 { name: 'Nuevo Servicio', path: '/main/new_Services' },
                 { name: 'Mis Servicios', path: '/main/my_Services' },
             ],
@@ -60,6 +65,7 @@ const Main = () => {
                 <div className="title-sidebar">
                     {/* Si la imagen esta en Carpeta Public es ruta relativa */}
                     <img src="/logo_AccuFinace.png" alt="" />
+                    <h3 className='title-sistem'>AccusFinance</h3>
                 </div>
                 <div className="modules-list">
                     <ul className="module-list">
@@ -99,9 +105,10 @@ const Main = () => {
                 </div>
                 <div className="content_Modules">
                     <Routes>
+                        {/* Agrega más rutas aquí para otros submódulos */}
                         <Route path="/" element={<Dashboard />} />
                         <Route path="/new_Services" element={<NuevoServicio titleModule ={'Nuevos Servicios'} />} />
-                        {/* Agrega más rutas aquí para otros submódulos */}
+                        <Route path="/categories" element={<Categories titleModule = {'Categorias'}/>} />
                     </Routes>
                 </div>
             </div>
