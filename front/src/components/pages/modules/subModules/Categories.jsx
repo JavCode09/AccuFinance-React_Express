@@ -1,34 +1,32 @@
 import React from 'react';
 
-//componentes
-import Button_add from '../../../common/buttons/btn-add';
-import Modal_newServices from '../../modals/NewServices/Modal_add';
-
 //css
-import '../../../styles/views/NuevoServicios.css';
+import '../../../styles/views/Categorias.css';
+
+//importamos bootn modal add
+import Button_add from '../../../common/buttons/btn-add';
+import Modal_Categories from '../../modals/Categories/Modal_add';
 
 
-const NuevoServicio = ({titleModule}) => {
 
-
-
-    return (
-        <div className="NewServices-container">
-            <div className="NewServices-title">
+const Categories = ({titleModule}) => {
+    return ( 
+        <div className="Categorias-container">
+            <div className="Categorias-title">
                 <h2>{titleModule}</h2>
             </div>
-           <div className="NewServices-option">
+           <div className="Categorias-option">
 
-                <div className="NewServices-search">
+                <div className="Categorias-search">
                   <input type="search" name="" id="" />  
                 </div>
-                <div className="NewServices-btns">
+                <div className="Categorias-btns">
                     {/* componente */}
-                    <Button_add ModalComponent = {Modal_newServices}/>
+                    <Button_add ModalComponent = {Modal_Categories}/>
                 </div>
            
            </div>
-           <div className="NewServices-content">
+           <div className="Categorias-content">
                 <table>
                     <thead>
                         <tr>
@@ -47,7 +45,7 @@ const NuevoServicio = ({titleModule}) => {
                 </table>
            </div>
         </div>
-    );
-};
-
-export default NuevoServicio;
+     );
+}
+ 
+export default Categories;
