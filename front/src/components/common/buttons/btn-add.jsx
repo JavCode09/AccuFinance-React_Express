@@ -17,7 +17,7 @@ const Button_add = ({ModalComponent}) => {
     }
 
     return ( 
-       <Fragment>
+       <>
             <div className="btn_add">
                 <Button className='btn_add' onClick={showModal}>Agregar</Button>
             </div>
@@ -25,7 +25,7 @@ const Button_add = ({ModalComponent}) => {
             {ModalComponent && (
                 <ModalComponent showModal={ModalAdd} closeModal={closeModal}/>
             )}
-       </Fragment>
+       </>
      );
 }
  

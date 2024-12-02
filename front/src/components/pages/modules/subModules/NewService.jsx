@@ -1,11 +1,12 @@
 import React from 'react';
 
 //componentes
-import Button_add from '../../../common/buttons/btn-add';
-import Modal_newServices from '../../modals/NewServices/Modal_add';
+import Search_bar from '../../../common/search_engines/Search_bar';
+import Button_add from '../../../common/buttons/btn-add'; //bootn add
+import Modal_newServices from '../../modals/NewServices/Modal_add'; //modal add
 
 //css
-import '../../../styles/views/NuevoServicios.css';
+import '../../../styles/views/NewService.css';
 
 
 const NuevoServicio = ({titleModule}) => {
@@ -20,7 +21,7 @@ const NuevoServicio = ({titleModule}) => {
            <div className="NewServices-option">
 
                 <div className="NewServices-search">
-                  <input type="search" name="" id="" />  
+                  <Search_bar />
                 </div>
                 <div className="NewServices-btns">
                     {/* componente */}
