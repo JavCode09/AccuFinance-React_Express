@@ -3,7 +3,7 @@ import { useNavigate, Link, Routes, Route } from 'react-router-dom';
 import Dashboard from './Dashboard'; // Importa el componente Dashboard
 
 // btns ADD
-import NuevoServicio from './modules/subModules/NuevoServicios'; // Importa NuevoServicio
+import NewService  from './modules/subModules/NewService'; // Importa NuevoServicio
 import Categories from './modules/subModules/Categories';
 
 // Api al server
@@ -101,13 +101,13 @@ const Main = () => {
             <div className="content">
                  {/* Navbar */}
                 <div className="navbar">
-                    <span>Navbar - Título</span>
+                    <span className='span_navbar'>Navbar - Título</span>
                 </div>
                 <div className="content_Modules">
                     <Routes>
                         {/* Agrega más rutas aquí para otros submódulos */}
                         <Route path="/" element={<Dashboard />} />
-                        <Route path="/new_Services" element={<NuevoServicio titleModule ={'Nuevos Servicios'} />} />
+                        <Route path="/new_Services" element={<NewService titleModule ={'Nuevos Servicios'} />} />
                         <Route path="/categories" element={<Categories titleModule = {'Categorias'}/>} />
                     </Routes>
                 </div>
