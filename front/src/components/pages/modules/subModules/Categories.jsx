@@ -1,12 +1,12 @@
 import React from 'react';
 
 //css
-import '../../../styles/views/Categorias.css';
+import '../../../styles/views/Categories.css';
 
-//importamos bootn modal add
-import Button_add from '../../../common/buttons/btn-add';
-import Modal_Categories from '../../modals/Categories/Modal_add';
-
+//components
+import Search_bar from '../../../common/search_engines/Search_bar'; //buscador
+import Button_add from '../../../common/buttons/btn-add'; //bootn add
+import Modal_Categories from '../../modals/Categories/Modal_add'; //modal add
 
 
 const Categories = ({titleModule}) => {
@@ -18,7 +18,7 @@ const Categories = ({titleModule}) => {
            <div className="Categorias-option">
 
                 <div className="Categorias-search">
-                  <input type="search" name="" id="" />  
+                  <Search_bar /> 
                 </div>
                 <div className="Categorias-btns">
                     {/* componente */}
@@ -27,7 +27,7 @@ const Categories = ({titleModule}) => {
            
            </div>
            <div className="Categorias-content">
-                <table>
+                <table className='Categorias-tabla'>
                     <thead>
                         <tr>
                             <th>Titulo1</th>
