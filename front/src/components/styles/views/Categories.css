@@ -15,6 +15,7 @@
         background-color: antiquewhite;
         padding: 5px;
         margin-bottom: 5px;
+        /* align-items: center; */
     }
 
         .Categorias-search{
@@ -25,18 +26,18 @@
         .Categorias-btns{
             display: block;
             justify-content: center;
-            align-items: center;
+            /* align-items: center; */
             padding: 5px;
             background: rgb(179, 107, 13);
         }
 
     .Categorias-content{
-        padding: 5px;
+        padding: 10px;
         background: antiquewhite;
     }
 
 
-/* CSS de los modales*/
+/* CSS de los modales (labes e inputs)*/
 .label{
     font-weight: bold;
 }
@@ -48,3 +49,26 @@
 /* Modal ADD */
 /* Modal EDIT */
 /* Modal DELETE */
+
+/* css tabla categorias (vista)*/
+.Categorias-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+    .Categorias-tabla th, .Categorias-tabla td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    .Categorias-tabla tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .Categorias-tabla th {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+
