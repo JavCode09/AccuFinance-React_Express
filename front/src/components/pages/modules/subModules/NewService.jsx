@@ -1,9 +1,9 @@
 import React from 'react';
 
 //componentes
-import Search_bar from '../../../common/search_engines/Search_bar';
+import Search_bar from '../../../common/search_engines/search_bar';
 import Button_add from '../../../common/buttons/btn-add'; //bootn add
-import Modal_newServices from '../../modals/NewServices/Modal_add'; //modal add
+import Modal_newServices from '../../modals/newServices/modal_add'; //modal add
 
 //css
 import '../../../styles/views/NewService.css';
