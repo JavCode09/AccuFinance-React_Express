@@ -23,7 +23,11 @@ app.use("/Registro" ,  require("./router/registro"));
 app.use("/Login" ,  require("./router/registro"));
 
 // Rutas protegidas (aplicar verifyToken)
-app.use("/Protected_main",require("./router/main") ); // Rutas protegidas
+app.use("/Protected_main",require("./router/main")); // Rutas protegidas
+
+app.use("/categories", require("./router/categories"));
+
+// app.use("/categories", require("./router/categories"));
 
 app.listen(port, () => {
     console.log("Servidor activo en PORT: ", port);

@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { Button,Modal } from 'react-bootstrap';
 
-const Modal_Categories = ({showModal,closeModal}) => {
+//Api a servidor
+import { add_categories } from '../../../api/categories';
+
+const Modal_Categories_add = ({showModal,closeModal, getDataCategories}) => {
 
     //Creamos hook de estado para el formulario
     const [dataCategoria, setDataCategoria] = useState({
@@ -19,14 +22,31 @@ const Modal_Categories = ({showModal,closeModal}) => {
     }
 
     //LLamada a la pai y conexion al servidor back
-    const API_Categorias = async(e) => {
+    const API_Categorias = async (e) => {
         e.preventDefault();
-        console.log("Entro a funcoin");
-        
+    
         if (dataCategoria.name_Categoria === '' || dataCategoria.descripcion_Categoria === '') {
-            alert('Los campos no estan completos.')
+            alert('Los campos no están completos.');
+            return;
+        }
+    
+        try {
+            const API_categoriesAdd = await add_categories(dataCategoria);
+            console.log("API_categoriesAdd: ", API_categoriesAdd);
+    
+             // Suposición: API_categoriesAdd.message contiene los datos correctos
+            if (API_categoriesAdd && API_categoriesAdd.message) {
+                getDataCategories(API_categoriesAdd.message);
+            }
+
+    
+            // Cerrar el modal después de agregar
+            closeModal();
+        } catch (error) {
+            console.log(error);
         }
     }
+    
 
     return ( 
         <Modal show={showModal} onHide={closeModal}>
@@ -36,7 +56,7 @@ const Modal_Categories = ({showModal,closeModal}) => {
                 <form className='form_Categoria' onSubmit={API_Categorias}>
                 <Modal.Body>
                     <div className="mb-3">
-                        <label htmlFor="nombre1" className="form-label label">Nombre</label>
+                        <label htmlFor="nombre1" className="form-label label">Servicio</label>
                         <input
                             type="text"
                             id="nombre"
@@ -48,12 +68,12 @@ const Modal_Categories = ({showModal,closeModal}) => {
                             />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="nombre2" className="form-label label">Descripcion</label>
+                        <label htmlFor="descripcion" className="form-label label">Descripcion</label>
                         <input
                             type="text"
                             id="descripcion"
                             className="form-control input"
-                            placeholder="Descripcion"
+                            placeholder="Descripcion del servicio"
                             name='descripcion_Categoria'
                             value={dataCategoria.descripcion_Categoria || ''} //LLamamaos el campo del hook
                             onChange={handlechange_categorias}
@@ -70,4 +90,4 @@ const Modal_Categories = ({showModal,closeModal}) => {
      );
 }
  
-export default Modal_Categories;
+export default Modal_Categories_add;

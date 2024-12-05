@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link, Routes, Route } from 'react-router-dom';
-import Dashboard from './Dashboard'; // Importa el componente Dashboard
+import Dashboard from './dashboard'; // Importa el componente Dashboard
 
 // btns ADD
-import NewService  from './modules/subModules/NewService'; // Importa NuevoServicio
-import Categories from './modules/subModules/Categories';
+import NewService  from './modules/subModules/newService'; // Importa NuevoServicio
+import Categories from './modules/subModules/categories';
 
 // Api al server
 import { ApiMain } from '../api/registro_login';

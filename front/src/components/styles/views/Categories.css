@@ -34,10 +34,16 @@
     .Categorias-content{
         padding: 10px;
         background: antiquewhite;
+        /* display: flex;
+        justify-content: center; */
     }
 
 
 /* CSS de los modales (labes e inputs)*/
+.form_Categoria{
+    background-color: #4CAF50;
+}
+
 .label{
     font-weight: bold;
 }
