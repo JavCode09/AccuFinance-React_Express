@@ -3,7 +3,7 @@ const express = require("express");
 const bcrypt = require("bcrypt")
 const Router = express.Router();
 const conexion = require("../conexion");
-const { reject } = require("bcrypt/promises");
+
 let tabla = 'users';
 
 //clave de JWT
