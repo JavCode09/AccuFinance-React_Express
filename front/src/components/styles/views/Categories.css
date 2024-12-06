@@ -77,4 +77,12 @@
         color: white;
     }
 
+    .btns_option_categories{
+        display: flex;
+        flex-flow:wrap;
+        justify-content: space-around;
+        gap: 10px; /* Espacio entre los botones */
+    }
+        /* Color de bootnes Agregar, Actualizar y Eliminar son desde bootstrap
+        Directos en los bootnes como atrobutos */
 
