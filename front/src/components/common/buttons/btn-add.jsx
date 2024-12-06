@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Fragment } from 'react';
 import {Button} from 'react-bootstrap';
 
 // getDataCategories es el dato que regresa el modal (nueva informacion)
@@ -19,7 +18,7 @@ const Button_add = ({ModalComponent, getDataCategories}) => {
     return ( 
        <>
             <div className="btn_add">
-                <Button className='btn_add' onClick={showModal}>Agregar</Button>
+                <Button className='btn_add btn btn-primary' onClick={showModal}>Agregar</Button>
             </div>
             {/* Aqui va el modal para agregar */}
             {ModalComponent && (
