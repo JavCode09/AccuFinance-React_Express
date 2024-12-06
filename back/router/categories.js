@@ -4,7 +4,7 @@ const tabla = 'categories';
 //Conexion a BD
 const connection = require("../conexion");
 
-
+//Selct
 Router.get("/", async(req,res) => {
     try {
         const result = await new Promise((resolve,reject) => {
@@ -24,6 +24,7 @@ Router.get("/", async(req,res) => {
     }
 })
 
+//Add
 Router.post("/add", async (req, res) => {
     const { name_Categoria, descripcion_Categoria } = req.body;
     try {
@@ -50,5 +51,34 @@ Router.post("/add", async (req, res) => {
     }
 });
 
+Router.put("/update", async (req,res) => {
+    const {idCategoria,nameCategoria,descripcionCategoria} = req.body;
+    try {
+        const result = await new Promise((resolve, reject) => {
+            const consulta = `UPDATE ${tabla} SET nombre = ?, descripcion = ? WHERE id = ?`;
+            connection.query(consulta, [nameCategoria,descripcionCategoria,idCategoria], (err,success) => {
+                if (err) {
+                    console.error(`Error en la consulta, Tabla: ${tabla}: `, err);
+                    reject(err);
+                    return
+                }
+                if (success.affectedRows === 0) {
+                    reject(new Error("Categoría no encontrada"));
+                    return;
+                }
+                resolve({
+                    id: idCategoria,
+                    nombre: nameCategoria,
+                    descripcion: descripcionCategoria,
+                    status: "success",
+                });
+                console.log(`Registro Actualizado con éxito, Tabla: ${tabla}, server`);
+            })
+        })
+        res.status(200).json({ message: result});
+    } catch (error) {
+        res.status(500).json({ message: `Error en la operacion, Tabla: ${tabla}` + error });
+    }
+})
 
 module.exports = Router;

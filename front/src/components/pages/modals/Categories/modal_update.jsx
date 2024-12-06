@@ -2,7 +2,10 @@ import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 
-const Modal_Categories_update = ({showModal_Update,claseModal_update,category}) => {
+// API
+import { updateCategories } from '../../../api/categories';
+
+const Modal_Categories_update = ({showModal_Update,claseModal_update,category, getDataCategoriesUpdate}) => {
     // (1) :Estado para manejar los valores del formulario
     const [CategoriaUpdate,setCategoriaUpdate] = useState({
         idCategoria: '',
@@ -34,16 +37,41 @@ const Modal_Categories_update = ({showModal_Update,claseModal_update,category}) 
         })
     }
 
+    //  Proceso de actualizacion 
+    const AP_categorias_update = async (e) => {
+        e.preventDefault();
+        console.log("Api categorias");
+
+        if (CategoriaUpdate.nameCategoria === '' || CategoriaUpdate.descripcionCategoria === '') {
+            alert("Campos incompletos");
+            return
+        }
+
+        // Llamada a la 
+        try {
+            const API_categoriesUpdate = await updateCategories(CategoriaUpdate);
+            const updatedCategory = API_categoriesUpdate.message; // Asegúrate de extraer `message`
+            // console.log('API_categoriesUpdate' , API_categoriesUpdate); //mensaje dentro de objeto
+            // console.log('updatedCategory' , updatedCategory); //Mensaje fuera de objeto
+            getDataCategoriesUpdate(updatedCategory);
+
+            claseModal_update();
+        } catch (error) {
+            console.log(error);
+            
+        }
+    }
+
     return ( 
         <Modal show={showModal_Update} onHide={claseModal_update}>
             <Modal.Header closeButton>
                 <Modal.Title>Actualizar Servicio</Modal.Title>
             </Modal.Header>
-            <form className='form_Categoria'>
+            <form className='form_Categoria' onSubmit={AP_categorias_update}>
                 <Modal.Body>
                     <div className="mb-3">
                         <input className='form-control input'
-                            type="hidden"
+                            type="text"
                             id='idCategoria'
                             value={CategoriaUpdate.idCategoria}
                             onChange={handlechange}
@@ -72,7 +100,7 @@ const Modal_Categories_update = ({showModal_Update,claseModal_update,category}) 
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant='secondary' onClick={claseModal_update}>Cancelar</Button>
-                    <Button variant='primary'>Actualizar</Button>
+                    <Button variant='primary' type='submit'>Actualizar</Button>
                 </Modal.Footer>
             </form>
         </Modal>

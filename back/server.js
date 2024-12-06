@@ -8,6 +8,9 @@ const corsOption = {
     optionsSuccessStatus: 200
 }
 
+// LLamos la verificacion el JSW para mas proteccion y seguridad
+const verifyToken = require("./middlewares/verifyToken");
+
 app.use(cors(corsOption));
 
 //middleware para parsear json
@@ -23,9 +26,9 @@ app.use("/Registro" ,  require("./router/registro"));
 app.use("/Login" ,  require("./router/registro"));
 
 // Rutas protegidas (aplicar verifyToken)
-app.use("/Protected_main",require("./router/main")); // Rutas protegidas
+app.use("/Protected_main", verifyToken,require("./router/main")); // Rutas protegidas
 
-app.use("/categories", require("./router/categories"));
+app.use("/categories",verifyToken, require("./router/categories"));
 
 // app.use("/categories", require("./router/categories"));
 

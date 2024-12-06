@@ -22,7 +22,7 @@ const Modal_Categories_add = ({showModal,closeModal, getDataCategories}) => {
     }
 
     //LLamada a la pai y conexion al servidor back
-    const API_Categorias = async (e) => {
+    const API_Categorias_add = async (e) => {
         e.preventDefault();
     
         if (dataCategoria.name_Categoria === '' || dataCategoria.descripcion_Categoria === '') {
@@ -53,7 +53,7 @@ const Modal_Categories_add = ({showModal,closeModal, getDataCategories}) => {
             <Modal.Header closeButton>
                 <Modal.Title>Nueva categoria</Modal.Title>
             </Modal.Header>
-                <form className='form_Categoria' onSubmit={API_Categorias}>
+                <form className='form_Categoria' onSubmit={API_Categorias_add}>
                 <Modal.Body>
                     <div className="mb-3">
                         <label htmlFor="nombre1" className="form-label label">Servicio</label>
