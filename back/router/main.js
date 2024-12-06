@@ -1,9 +1,9 @@
 // routes/protectedRoute.js
 const express = require('express');
-const verifyToken = require('../middlewares/verifyToken');
+// const verifyToken = require('../middlewares/verifyToken');
 const router = express.Router();
 
-router.get('/', verifyToken, (req, res) => {
+router.get('/', (req, res) => {
     // Si el token es válido, el flujo llega aquí
     res.json({
         message: 'Datos protegidos',

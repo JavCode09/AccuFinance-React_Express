@@ -7,13 +7,16 @@ import '../../../styles/views/Categories.css';
 import Search_bar from '../../../common/search_engines/search_bar'; //buscador
 import Button_add from '../../../common/buttons/btn-add'; //bootn add
 import Button_update from '../../../common/buttons/btn-update'; //boton update
+import Button_delete from '../../../common/buttons/btn-delete';//boton eliminar
 
 // Modales
 import Modal_Categories_add from '../../modals/categories/modal_add'; //modal add
 import Modal_Categories_update from '../../modals/categories/modal_update'; //modal_update
+import Modal_categories_delete from '../../modals/categories/modal_delete'; //modal delete
 
 // API
 import { selectCategories } from '../../../api/categories';
+
 
 const Categories = ({titleModule}) => {
 
@@ -35,11 +38,23 @@ const Categories = ({titleModule}) => {
         effectCategories();
     }, []);
 
-    //Renderizamos con la nueva informacion
+    //Renderizamos con la nueva informacion select
     const getDataCategories = (nuevaInfo) => {
         setDataCategories([...DataCategories, nuevaInfo]);
         // setDataCategories((DataCategories) => [...DataCategories, nuevaInfo]);
     }
+
+    //Renderizamos la actualizacion update
+    const getDataCategoriesUpdate = (updatedCategory) => { //Funcion con informacion actualizada
+        setDataCategories((prevCategories) => //llammamos el estado de cambio y le asignamos un renombre de callback para el estado previo del mismo
+            prevCategories.map((category) => //usamos map par aiterar todos los estados previos
+                category.id === updatedCategory.id ? updatedCategory : category //igualamos con el id de estado previo y el actual y colocamos la nueva informacion
+            )
+        );
+    };
+    
+    
+    
     
 
     return ( 
@@ -54,7 +69,8 @@ const Categories = ({titleModule}) => {
                 </div>
                 <div className="Categorias-btns">
                     {/* componente */}
-                    <Button_add ModalComponent = {Modal_Categories_add} getDataCategories={getDataCategories} />
+                    <Button_add ModalComponent = {Modal_Categories_add}
+                                getDataCategories={getDataCategories} />
                 </div>
            
            </div>
@@ -75,10 +91,16 @@ const Categories = ({titleModule}) => {
                                 <td>{dataCate.nombre}</td>
                                 <td>{dataCate.descripcion}</td>
                                 <td>
-                                    <Button_update
-                                        Modal_Categories_update = {Modal_Categories_update}
-                                        category={dataCate}
-                                        />
+                                    <div className="btns_option_categories">
+                                        <Button_update
+                                            Modal_Categories_update = {Modal_Categories_update}
+                                            category={dataCate}
+                                            getDataCategoriesUpdate={getDataCategoriesUpdate}
+                                            />
+
+                                        <Button_delete 
+                                            Modal_categories_delete={Modal_categories_delete} />
+                                    </div>
                                 </td>
                             </tr>
                         ))}

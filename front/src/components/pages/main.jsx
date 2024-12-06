@@ -27,7 +27,7 @@ const Main = () => {
             console.log('Datos protegidos:', data);
         } catch (error) {
             console.error('Error verificando el token:', error);
-            navigate('/');
+            navigate('/'); //Si el token esta expirado o no hay direcciona al inicio / -> es el login y registro
         }
     };
 
