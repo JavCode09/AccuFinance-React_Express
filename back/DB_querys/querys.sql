@@ -17,7 +17,7 @@ CREATE TABLE users (
 
 CREATE TABLE categories (
     id int PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(100) not null,
+    nombre VARCHAR(100) not null UNIQUE,
     descripcion TEXT,
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
