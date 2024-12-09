@@ -53,9 +53,12 @@ const Categories = ({titleModule}) => {
         );
     };
     
-    
-    
-    
+    // Eliminar categoría del estado
+    const getDataCategoriesDelete = (deleteIDcategory) => {
+        setDataCategories((prevCategories) =>
+            prevCategories.filter((category) => category.id !== deleteIDcategory.id)
+        );
+    };
 
     return ( 
         <div className="Categorias-container">
@@ -99,7 +102,9 @@ const Categories = ({titleModule}) => {
                                             />
 
                                         <Button_delete 
-                                            Modal_categories_delete={Modal_categories_delete} />
+                                            Modal_categories_delete={Modal_categories_delete} 
+                                            category={dataCate}
+                                            getDataCategoriesDelete={getDataCategoriesDelete} />
                                     </div>
                                 </td>
                             </tr>

@@ -1,21 +1,59 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
-const Modal_categories_delete = ({showModalDelete,clseModalDelete}) => {
+// Api servidor
+import { deleteCategories } from '../../../api/categories';
+
+const Modal_categories_delete = ({showModalDelete,clseModalDelete,category,getDataCategoriesDelete}) => {
+    //1): creamos stado para losd atos traidos de cargoria 
+    const [deleteCategoria, setDeleteCategoria] = useState({
+        idCategoria: '',
+        nameCategoria: ''
+    })
+
+    // 2) hook para el campo del modal
+    useEffect(() => {
+        if (category) {
+            setDeleteCategoria({
+                idCategoria: category.id,
+                nameCategoria: category.nombre
+            })
+        }
+    }, [category])
+
+    
+    // api para eliminacion
+    const API_categorias_delete = async(e) => {
+        e.preventDefault();
+        // console.log("Funcion eliminar");
+        try {
+            const API_categoriesDelete = await deleteCategories({id: deleteCategoria.idCategoria});
+            const deleteCategory = API_categoriesDelete.message; // Asegúrate de extraer `message`
+            console.log(deleteCategory);
+
+            getDataCategoriesDelete(deleteCategory)
+            
+        } catch (error) {
+            console.log(error);
+            
+        }
+    }
+
     return ( 
-        <Modal show={showModalDelete} onHide={clseModalDelete}>
+        <Modal show={showModalDelete} onHide={clseModalDelete} centered>
            <Modal.Header closeButton>
                 <Modal.Title>
                     Eliminar servicio
                 </Modal.Title>
             </Modal.Header>
-            <form className='form_Categoria'>
+            <form className='form_Categoria' onSubmit={API_categorias_delete}>
                 <Modal.Body>
-                    Formulareio de eliminacion
+                <p><strong>ID:</strong> {deleteCategoria.idCategoria}</p>
+                <p>¿Seguro que deseas eliminar el servicio: <strong>{deleteCategoria.nameCategoria}</strong>?</p>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant='secondary' onClick={clseModalDelete}>Cerrar</Button>
-                    <Button variant='primary'>Eliminar</Button>
+                    <Button variant='primary' type='submit'>Eliminar</Button>
                 </Modal.Footer>
             </form>
         </Modal>
