@@ -15,6 +15,7 @@
         background-color: antiquewhite;
         padding: 5px;
         margin-bottom: 5px;
+        /* align-items: center; */
     }
 
         .NewServices-search{
@@ -25,12 +26,63 @@
         .NewServices-btns{
             display: block;
             justify-content: center;
-            align-items: center;
+            /* align-items: center; */
             padding: 5px;
             background: rgb(179, 107, 13);
         }
 
     .NewServices-content{
-        padding: 5px;
+        padding: 10px;
         background: antiquewhite;
+        /* display: flex;
+        justify-content: center; */
     }
+
+
+/* CSS de los modales (labes e inputs)*/
+.form_NewServices{
+    background-color: #4CAF50;
+}
+
+.label{
+    font-weight: bold;
+}
+
+.input{
+    letter-spacing: 0.3px;
+}
+
+/* Modal ADD */
+/* Modal EDIT */
+/* Modal DELETE */
+
+/* css tabla categorias (vista)*/
+.NewServices-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+    .NewServices-tabla th, .NewServices-tabla td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    .NewServices-tabla tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .NewServices-tabla th {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .btns_option_NewServices{
+        display: flex;
+        flex-flow:wrap;
+        justify-content: space-around;
+        gap: 10px; /* Espacio entre los botones */
+    }
+        /* Color de bootnes Agregar, Actualizar y Eliminar son desde bootstrap
+        Directos en los bootnes como atrobutos */
+
