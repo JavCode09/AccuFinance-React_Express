@@ -7,18 +7,20 @@ const Modal_newServices = ({showModal,closeModal}) => {
             <Modal.Header closeButton>
                 <Modal.Title>Nuevo Servicio</Modal.Title>
             </Modal.Header>
-            <Modal.Body>
-                <form action="">
-                    <div className="container_input">
-                        <label htmlFor="Nombre">Nombre</label>
-                        <input type="text" placeholder='Nombre' />
+                <form className='form_NewServices' action="">
+                <Modal.Body>
+                    <div className="mb-3">
+                        <label htmlFor="Servicio" className='form-label label'>Servicio</label>
+                        <input
+                            className='form-control input' 
+                            type="text" />
                     </div>
-                </form>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant='secondary' onClick={closeModal}>Cancelar</Button>
-                <Button variant='primary'>Agregar</Button>
-            </Modal.Footer>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant='secondary' onClick={closeModal}>Cancelar</Button>
+                    <Button variant='primary'>Agregar</Button>
+                </Modal.Footer>
+            </form>
         </Modal>
      );
 }

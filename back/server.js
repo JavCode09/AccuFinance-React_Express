@@ -30,6 +30,7 @@ app.use("/Protected_main", verifyToken,require("./router/main")); // Rutas prote
 
 app.use("/categories",verifyToken, require("./router/categories"));
 
+app.use("/services",verifyToken, require("./router/services"));
 // app.use("/categories", require("./router/categories"));
 
 app.listen(port, () => {
