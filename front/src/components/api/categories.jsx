@@ -70,3 +70,24 @@ export const updateCategories = async(formData) => {
         throw error;
     }
 }
+
+
+export const deleteCategories = async(formData) => {
+    try {
+        const response = await fetch(`${config.API_URL}categories/delete`, {
+            method: 'DELETE',
+            headers: {
+                "Content-Type" : "application/json",
+                "Authorization" : `Bearer ${token}`
+            },
+            body:JSON.stringify(formData)
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Error en la peticion, API: ${tabla}`);
+        }
+        return  await response.json();
+    } catch (error) {
+        throw error;
+    }
+}

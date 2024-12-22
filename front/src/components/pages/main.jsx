@@ -3,14 +3,16 @@ import { useNavigate, Link, Routes, Route } from 'react-router-dom';
 import Dashboard from './dashboard'; // Importa el componente Dashboard
 
 // btns ADD
-import NewService  from './modules/subModules/newService'; // Importa NuevoServicio
 import Categories from './modules/subModules/categories';
+import NewService  from './modules/subModules/newService';
 
 // Api al server
 import { ApiMain } from '../api/registro_login';
 
 // css estructura 
 import '../styles/dashboard/contenido.css';
+//Paginate style- Se colocan aqui por que al importaar los modulos se importan sus CSS por lo que afecta de forma global
+import '../styles/common_style/paginate.css';
 
 const Main = () => {
     const navigate = useNavigate();
@@ -106,7 +108,7 @@ const Main = () => {
                 <div className="content_Modules">
                     <Routes>
                         {/* Agrega más rutas aquí para otros submódulos */}
-                        <Route path="/" element={<Dashboard />} />
+                        <Route path="/main" element={<Dashboard />} />
                         <Route path="/new_Services" element={<NewService titleModule ={'Nuevos Servicios'} />} />
                         <Route path="/categories" element={<Categories titleModule = {'Categorias'}/>} />
                     </Routes>

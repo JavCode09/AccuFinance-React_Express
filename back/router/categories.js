@@ -51,6 +51,7 @@ Router.post("/add", async (req, res) => {
     }
 });
 
+// Update (actualizacion de datos)
 Router.put("/update", async (req,res) => {
     const {idCategoria,nameCategoria,descripcionCategoria} = req.body;
     try {
@@ -80,5 +81,40 @@ Router.put("/update", async (req,res) => {
         res.status(500).json({ message: `Error en la operacion, Tabla: ${tabla}` + error });
     }
 })
+
+// Delete (Eliminacion de datos)
+Router.delete("/delete", async (req, res) => {
+    const { id } = req.body;
+
+    if (!id) {
+        return res.status(400).json({ message: "ID es obligatorio para eliminar la categoría" });
+    }
+
+    try {
+        const result = await new Promise((resolve, reject) => {
+            const consulta = `DELETE FROM ${tabla} WHERE id = ?`;
+            connection.query(consulta, [id], (err, success) => {
+                if (err) {
+                    console.error(`Error en la consulta, tabla ${tabla}: `, err);
+                    reject(err);
+                    return;
+                }
+                if (success.affectedRows === 0) {
+                    reject(new Error("Categoría no encontrada"));
+                    return;
+                }
+                resolve({
+                    id: id,
+                    status:'success',  
+                });
+            });
+        });
+
+        res.status(200).json({ message: result });
+    } catch (error) {
+        console.error("Error en la operación:", error);
+        res.status(500).json({ message: `Error en la operación, Tabla: ${tabla}`, error: error.message });
+    }
+});
 
 module.exports = Router;

@@ -25,12 +25,16 @@ app.use("/Registro" ,  require("./router/registro"));
 //middleware para requerimiento del login
 app.use("/Login" ,  require("./router/registro"));
 
-// Rutas protegidas (aplicar verifyToken)
+// Rutas protegidas (aplicar verifyToken) Registro y Login
 app.use("/Protected_main", verifyToken,require("./router/main")); // Rutas protegidas
 
+// Modulos ------> 
 app.use("/categories",verifyToken, require("./router/categories"));
 
-// app.use("/categories", require("./router/categories"));
+app.use("/services",verifyToken, require("./router/services"));
+
+//Buscador de modulos simple
+app.use("/search",verifyToken, require("./router/search"));
 
 app.listen(port, () => {
     console.log("Servidor activo en PORT: ", port);
