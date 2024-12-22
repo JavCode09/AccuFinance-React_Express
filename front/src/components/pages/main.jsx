@@ -11,6 +11,8 @@ import { ApiMain } from '../api/registro_login';
 
 // css estructura 
 import '../styles/dashboard/contenido.css';
+//Paginate style- Se colocan aqui por que al importaar los modulos se importan sus CSS por lo que afecta de forma global
+import '../styles/common_style/paginate.css';
 
 const Main = () => {
     const navigate = useNavigate();

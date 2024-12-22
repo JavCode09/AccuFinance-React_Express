@@ -51,6 +51,7 @@ Router.post("/add", async (req, res) => {
     }
 });
 
+// Update (actualizacion de datos)
 Router.put("/update", async (req,res) => {
     const {idCategoria,nameCategoria,descripcionCategoria} = req.body;
     try {
@@ -81,6 +82,7 @@ Router.put("/update", async (req,res) => {
     }
 })
 
+// Delete (Eliminacion de datos)
 Router.delete("/delete", async (req, res) => {
     const { id } = req.body;
 

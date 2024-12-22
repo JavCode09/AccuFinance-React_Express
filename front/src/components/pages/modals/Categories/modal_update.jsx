@@ -71,7 +71,7 @@ const Modal_Categories_update = ({showModal_Update,claseModal_update,category, g
                 <Modal.Body>
                     <div className="mb-3">
                         <input className='form-control input'
-                            type="text"
+                            type="hidden"
                             id='idCategoria'
                             value={CategoriaUpdate.idCategoria}
                             onChange={handlechange}

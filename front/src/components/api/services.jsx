@@ -23,3 +23,22 @@ export const select_services = async() => {
         
     }
 }
+
+export const AddCategorySelectorModal = async() => {
+    try {
+        const response = await fetch(`${config.API_URL}services/select`, {
+            method: "POST",
+            headers: {
+                "Content-Type":"application/json",
+                "Authorization" : `Bearer ${token}`,
+            }
+        })
+        if (!response.ok) {
+            throw new Error(`Error en la peticion, API: ${tabla}`)
+        }
+        return await response.json();
+    } catch (error) {
+        console.log(error);
+        
+    }
+}
