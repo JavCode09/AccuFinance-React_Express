@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {Button} from 'react-bootstrap';
 
 // getDataCategories es el dato que regresa el modal (nueva informacion)
-const Button_add = ({ModalComponent, getDataCategories}) => {
+const Button_add = ({ModalComponent, getData}) => {
     //creamos hook de estado
     const [ModalAdd,setModalAdd] = useState(false);
 
@@ -22,7 +22,7 @@ const Button_add = ({ModalComponent, getDataCategories}) => {
             </div>
             {/* Aqui va el modal para agregar */}
             {ModalComponent && (
-                <ModalComponent showModal={ModalAdd} closeModal={closeModal} getDataCategories={getDataCategories}/>
+                <ModalComponent showModal={ModalAdd} closeModal={closeModal} getData={getData}/>
             )}
        </>
      );
