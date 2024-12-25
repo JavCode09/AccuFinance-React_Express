@@ -5,7 +5,7 @@ import { Button, Modal } from 'react-bootstrap';
 // API
 import { updateCategories } from '../../../api/categories';
 
-const Modal_Categories_update = ({showModal_Update,claseModal_update,category, getDataCategoriesUpdate}) => {
+const Modal_Categories_update = ({showModal_Update,claseModal_update,category, getDataUpdate}) => {
     // (1) :Estado para manejar los valores del formulario
     const [CategoriaUpdate,setCategoriaUpdate] = useState({
         idCategoria: '',
@@ -53,7 +53,7 @@ const Modal_Categories_update = ({showModal_Update,claseModal_update,category, g
             const updatedCategory = API_categoriesUpdate.message; // Asegúrate de extraer `message`
             // console.log('API_categoriesUpdate' , API_categoriesUpdate); //mensaje dentro de objeto
             // console.log('updatedCategory' , updatedCategory); //Mensaje fuera de objeto
-            getDataCategoriesUpdate(updatedCategory);
+            getDataUpdate(updatedCategory);
 
             claseModal_update();
         } catch (error) {

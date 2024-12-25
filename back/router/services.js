@@ -52,4 +52,60 @@ Router.post("/select", async(req,res) => {
     }
 })
 
+//Insert
+Router.post("/add", async(req,res)=>{
+      const { nameNew_servicio, categorieNewService, descripcionNewService } = req.body;
+    try {
+        const result = await new Promise((resolve,reject)=> {
+             //Si no y error buscamos en la tabla categorias el nombre del id seleccionado
+                // y lo mandamos a la vista para mostrarlo
+                const consultaSelect='SELECT nombre  FROM categories WHERE id = ?';
+                connection.query(consultaSelect,categorieNewService ,(err,rows) => {
+                    if (err) {
+                        console.error("Error al buscar la categoría:", err);
+                        reject(err);
+                        return;
+                    }
+
+                    if (rows.length === 0) {
+                        reject(new Error("Categoría no encontrada"));
+                        return;
+                    }
+
+                    const nombreCategoria = rows[0].nombre;
+
+                    const consulta = "INSERT INTO services (categoria,nombre,descripcion) VALUES (?,?,?)"; 
+                    connection.query(consulta,[categorieNewService,nameNew_servicio,descripcionNewService], (err,success) => {
+                        if (err) {
+                            console.error(`Error en la consulta, Tabla ${tabla}: `, err);
+                            reject(err);
+                            return;
+                        }
+                        resolve({
+                            id: success.insertId,
+                            nombre_categoria: nombreCategoria,
+                            nombre: nameNew_servicio,
+                            descripcion: descripcionNewService,
+                            status: 'success'
+                        })
+                
+                        console.log(`Registro insertado con éxito, Tabla: ${tabla}, server`);
+                    });
+                })
+            });
+        res.status(200).json({message: result})
+    } catch (error) {
+        if (error.code === "ER_DUP_ENTRY") { //Si es duplicacion, que ya existe ese nombre (la tabla tiene unique en nombre)
+            res.status(409).json({ 
+                message: "El nombre del servicio ya existe. Por favor, usa un nombre diferente." 
+            });
+        } else {
+            res.status(500).json({ 
+                message: "Ocurrió un error al insertar el servicio." 
+            });
+        }
+        
+    }
+})
+
 module.exports = Router;

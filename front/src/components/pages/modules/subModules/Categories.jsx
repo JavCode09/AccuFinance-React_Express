@@ -83,13 +83,13 @@ const Categories = ({titleModule}) => {
     //-------------------- Fin Paginacion --------------------
 
     //Renderizamos con la nueva informacion select
-    const getDataCategories = (nuevaInfo) => {
+    const getData = (nuevaInfo) => {
         // setDataCategories([...DataCategories, nuevaInfo]);
         setDataCategories((prevCategories) => [...prevCategories, nuevaInfo]);
     }
 
     //Renderizamos la actualizacion update
-    const getDataCategoriesUpdate = (updatedCategory) => { //Funcion con informacion actualizada
+    const getDataUpdate = (updatedCategory) => { //Funcion con informacion actualizada
         setDataCategories((prevCategories) => //llammamos el estado de cambio y le asignamos un renombre de callback para el estado previo del mismo
             prevCategories.map((category) => //usamos map par aiterar todos los estados previos
                 category.id === updatedCategory.id ? updatedCategory : category //igualamos con el id de estado previo y el actual y colocamos la nueva informacion
@@ -99,7 +99,7 @@ const Categories = ({titleModule}) => {
     
     
     // Eliminar categoría del estado
-    const getDataCategoriesDelete = (deleteIDcategory) => {
+    const getDataDelete = (deleteIDcategory) => {
         setDataCategories((prevCategories) =>
             prevCategories.filter((category) => category.id !== deleteIDcategory.id)
         );
@@ -118,7 +118,7 @@ const Categories = ({titleModule}) => {
                 <div className="Categorias-btns">
                     {/* componente */}
                     <Button_add ModalComponent = {Modal_Categories_add}
-                                getDataCategories={getDataCategories} />
+                                getData={getData} />
                 </div>
            
            </div>
@@ -143,13 +143,13 @@ const Categories = ({titleModule}) => {
                                         <Button_update
                                             Modal_Categories_update = {Modal_Categories_update}
                                             category={dataCate}
-                                            getDataCategoriesUpdate={getDataCategoriesUpdate}
+                                            getDataUpdate={getDataUpdate}
                                             />
 
                                         <Button_delete 
                                             Modal_categories_delete={Modal_categories_delete} 
                                             category={dataCate}
-                                            getDataCategoriesDelete={getDataCategoriesDelete} />
+                                            getDataDelete={getDataDelete} />
                                     </div>
                                 </td>
                             </tr>

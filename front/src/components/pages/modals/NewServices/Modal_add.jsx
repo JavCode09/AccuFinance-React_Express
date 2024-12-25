@@ -4,9 +4,10 @@ import { Button,Modal } from 'react-bootstrap';
 
 // API selector de categorias
 import { AddCategorySelectorModal } from '../../../api/services';
+//API para add
+import { add_newSevice } from '../../../api/services';
 
-
-const Modal_newServices = ({showModal,closeModal}) => {
+const Modal_newServices_add = ({showModal,closeModal,getData}) => {
 
     //Estado del selector categorias
     const [categoriesData,setCategoriesData] = useState([]);
@@ -14,7 +15,8 @@ const Modal_newServices = ({showModal,closeModal}) => {
     //Estado del formulario
     const [dataNewService, setDataNewService] = useState({
         nameNew_servicio: '',
-        categorieNewService:''
+        categorieNewService:'',
+        descripcionNewService:'',
     })
 
     useEffect(() => {
@@ -47,19 +49,46 @@ const Modal_newServices = ({showModal,closeModal}) => {
         })
     }
 
+    //Api para insertar datos 
+    const API_NewService_add = async(e) => {
+        e.preventDefault();
+
+        try {
+            const API_NewServiceAdd = await add_newSevice(dataNewService);
+            // console.log(API_NewServiceAdd);
+            
+            if (API_NewServiceAdd && API_NewServiceAdd.message) {
+                console.log(API_NewServiceAdd.message);
+                //mandamos a la vista de la tabla para renderizar los datos
+                getData(API_NewServiceAdd.message)
+
+                closeModal();
+            }
+            
+        } catch (error) {
+             // Manejo de errores específicos del backend
+            if (error.message.includes("ya existe")) {
+                alert('Error de duplicación:' +  error.message);
+            } else {
+                console.log('Otro error:', error.message);
+            }
+            
+        }
+    }
 
     return ( 
         <Modal show={showModal} onHide={closeModal}>
             <Modal.Header closeButton>
                 <Modal.Title>Nuevo Servicio</Modal.Title>
             </Modal.Header>
-                <form className='form_NewServices' action="">
+                <form className='form_NewServices' onSubmit={API_NewService_add}>
                 <Modal.Body>
                     <div className="mb-3">
                         <label htmlFor="Servicio" className='form-label label'>Nombre del nuevo servicio</label>
                         <input
                             className='form-control input' 
                             type="text"
+                            required
                             name='nameNew_servicio'
                             id='nameNew_servicio'
                             value={dataNewService.nameNew_servicio || ''}
@@ -69,8 +98,9 @@ const Modal_newServices = ({showModal,closeModal}) => {
                     <div className="mb-3">
                         <label htmlFor="Categories" className='form-label label'>Selecciona una categoria</label>
                         <select name="categorieNewService" 
-                                id="categorieNewService" 
                                 className='form-control input'
+                                required
+                                id="categorieNewService" 
                                 value={dataNewService.categorieNewService}
                                 onChange={handleChange}
                                 >
@@ -84,14 +114,25 @@ const Modal_newServices = ({showModal,closeModal}) => {
                                 ))}
                         </select>
                     </div>
+                    <div className="mb-3">
+                        <label htmlFor="descripcion" className='form-label label'>Descripcion</label>
+                        <input
+                            className='form-control input' 
+                            type="text"
+                            name='descripcionNewService'
+                            id='descripcionNewService'
+                            value={dataNewService.descripcionNewService || ''}
+                            onChange={handleChange}
+                            />
+                    </div>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant='secondary' onClick={closeModal}>Cancelar</Button>
-                    <Button variant='primary'>Agregar</Button>
+                    <Button variant='primary' type='submit'>Agregar</Button>
                 </Modal.Footer>
             </form>
         </Modal>
      );
 }
  
-export default Modal_newServices;
+export default Modal_newServices_add;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 
 //css
@@ -9,15 +9,19 @@ import Search_bar from '../../../common/search_engines/search_bar';
 import Button_add from '../../../common/buttons/btn-add'; //bootn add
 import Button_update from '../../../common/buttons/btn-update';
 import Button_delete from '../../../common/buttons/btn-delete';
+
 // Modals
-import Modal_newServices from '../../modals/newServices/modal_add'; //modal add
+import Modal_newServices_add from '../../modals/newServices/modal_add'; //modal add
 
 // API
 import { select_services } from '../../../api/services';
+import { search_barModule } from '../../../api/search_bar';
 
 const NuevoServicio = ({titleModule}) => { 
 
+    //Estado de la informacion
     const [DataServicios, setDataServicios] = useState([]);
+    const [filteredData, setFilteredData] = useState([]); // Estado para datos filtrados (buscador)
 
     //Paginacion
     const [currentPage, setCurrentPage] = useState(0); // Página actual
@@ -28,7 +32,7 @@ const NuevoServicio = ({titleModule}) => {
             try {
                 const getDataServicios = await select_services();
                 setDataServicios(getDataServicios);
-                console.log("Success");
+                // console.log("Success");
             } catch (error) {
                 console.log(error);
             }
@@ -36,15 +40,46 @@ const NuevoServicio = ({titleModule}) => {
         effectServicios();
     },[]);
 
-    // Datos paginados
+       // Manejar búsqueda llamada a la api (deaceurdo a la consulta llam al aapi select todo o lo filtrado por buscador)
+        const handleSearch = async(query) => {
+            // console.log(query);
+            
+            try {
+                if (query.trim() === "") {
+                    setFilteredData(DataServicios); // Si no hay query, mostrar todo
+                } else {
+                    const response = await search_barModule({searchQuery: query });
+                    setFilteredData(response);
+                }
+                setCurrentPage(0); // Asegúrate de resetear la página a la primera cuando se realice una búsqueda
+            } catch (error) {
+                console.log(error);
+                console.error("Error al buscar categorías:", error);
+                setFilteredData([]);
+            }
+            setCurrentPage(0);
+        };
+    
+
+    //-------------------- Paginacion --------------------
+    
+    const dataToDisplay = filteredData.length > 0 ? filteredData : DataServicios;
     const offset = currentPage * itemsPerPage;
-    const currentData = DataServicios.slice(offset, offset + itemsPerPage);
 
-    // Manejador de cambio de página
-    const handlePageClick = ({ selected }) => {
-        setCurrentPage(selected);
-    };
+     const currentData = useMemo(() => {
+        return dataToDisplay.slice(offset, offset + itemsPerPage);
+    }, [dataToDisplay, currentPage, itemsPerPage]);
+ 
+     // Manejador de cambio de página
+     const handlePageClick = ({ selected }) => {
+         setCurrentPage(selected);
+     };
 
+    // --------------- Renderizacion --------------
+    // Add
+    const getData = (nuevaInfo) => {
+        setDataServicios((prevNewService) => [...prevNewService, nuevaInfo]);
+    }
 
     return (
         <div className="NewServices-container">
@@ -53,10 +88,10 @@ const NuevoServicio = ({titleModule}) => {
             </div>
             <div className="NewServices-option">
                 <div className="NewServices-search">
-                    <Search_bar /> 
+                    <Search_bar plaholderName="Categorias" onSearch={handleSearch} /> 
                 </div>
                 <div className="NewServices-btns">
-                    <Button_add ModalComponent={Modal_newServices} />
+                    <Button_add ModalComponent={Modal_newServices_add} getData={getData}/>
                 </div>
             </div>
             <div className="NewServices-content">
@@ -66,6 +101,7 @@ const NuevoServicio = ({titleModule}) => {
                             <th>ID</th>
                             <th>Categoria</th>
                             <th>Servicio</th>
+                            <th>Descripcion</th>
                             <th>Opciones</th>
                         </tr>
                     </thead>
@@ -75,6 +111,7 @@ const NuevoServicio = ({titleModule}) => {
                                 <td>{dataServ.id}</td>
                                 <td>{dataServ.nombre_categoria}</td>
                                 <td>{dataServ.nombre}</td>
+                                <td>{dataServ.descripcion}</td>
                                 <td>
                                     <div className="btns_option_NewServices">
                                         <Button_update />

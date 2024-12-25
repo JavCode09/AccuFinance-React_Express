@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 
 
-const Button_delete = ({Modal_categories_delete,category, getDataCategoriesDelete}) => {
+const Button_delete = ({Modal_categories_delete,category, getDataDelete}) => {
 
     //Nuevo estado para abrir y cerrar modales
     const [ModalDelete, setModalDelete] = useState(false);
@@ -26,7 +26,7 @@ const Button_delete = ({Modal_categories_delete,category, getDataCategoriesDelet
                 showModalDelete={ModalDelete} 
                 clseModalDelete={closeModal_Delete}
                 category={category}
-                getDataCategoriesDelete={getDataCategoriesDelete} />
+                getDataDelete={getDataDelete} />
             )}
         </>
      );
