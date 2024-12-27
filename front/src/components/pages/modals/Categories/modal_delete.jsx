@@ -43,13 +43,13 @@ const Modal_categories_delete = ({showModalDelete,clseModalDelete,category,getDa
         <Modal show={showModalDelete} onHide={clseModalDelete} centered>
            <Modal.Header closeButton>
                 <Modal.Title>
-                    Eliminar servicio
+                    Eliminar Categoria
                 </Modal.Title>
             </Modal.Header>
             <form className='form_Categoria' onSubmit={API_categorias_delete}>
                 <Modal.Body>
                 <p><strong>ID:</strong> {deleteCategoria.idCategoria}</p>
-                <p>¿Seguro que deseas eliminar el servicio: <strong>{deleteCategoria.nameCategoria}</strong>?</p>
+                <p>¿Seguro que deseas eliminar la categoria: <strong>{deleteCategoria.nameCategoria}</strong>?</p>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant='secondary' onClick={clseModalDelete}>Cerrar</Button>

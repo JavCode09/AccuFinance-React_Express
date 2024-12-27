@@ -24,7 +24,7 @@ const Button_update = ({Modal_Categories_update,category,getDataUpdate}) => {
             {Modal_Categories_update && (
                 <Modal_Categories_update 
                     showModal_Update={ModalUpdate} 
-                    claseModal_update={closeModal_Update} 
+                    closeModal_update={closeModal_Update} 
                     category={category}
                     getDataUpdate ={getDataUpdate}/>
             )}
