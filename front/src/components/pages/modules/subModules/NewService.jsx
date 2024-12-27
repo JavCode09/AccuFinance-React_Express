@@ -12,6 +12,7 @@ import Button_delete from '../../../common/buttons/btn-delete';
 
 // Modals
 import Modal_newServices_add from '../../modals/newServices/modal_add'; //modal add
+import ModalNewService_update from '../../modals/newServices/modal_update';
 
 // API
 import { select_services } from '../../../api/services';
@@ -40,7 +41,7 @@ const NuevoServicio = ({titleModule}) => {
         effectServicios();
     },[]);
 
-       // Manejar búsqueda llamada a la api (deaceurdo a la consulta llam al aapi select todo o lo filtrado por buscador)
+       // Manejar búsqueda llamada a la api (de aceurdo a la consulta llam al aapi select todo o lo filtrado por buscador)
         const handleSearch = async(query) => {
             // console.log(query);
             
@@ -114,7 +115,11 @@ const NuevoServicio = ({titleModule}) => {
                                 <td>{dataServ.descripcion}</td>
                                 <td>
                                     <div className="btns_option_NewServices">
-                                        <Button_update />
+                                        <Button_update 
+                                            Modal_Categories_update={ModalNewService_update}
+                                            category={dataServ}
+                                            
+                                        />
                                         <Button_delete />
                                     </div>
                                 </td>

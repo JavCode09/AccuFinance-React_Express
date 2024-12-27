@@ -56,7 +56,7 @@ const Modal_Categories_add = ({showModal,closeModal, getData}) => {
                 <form className='form_Categoria' onSubmit={API_Categorias_add}>
                 <Modal.Body>
                     <div className="mb-3">
-                        <label htmlFor="nombre1" className="form-label label">Servicio</label>
+                        <label htmlFor="nombre1" className="form-label label">Categoria</label>
                         <input
                             type="text"
                             id="nombre"
