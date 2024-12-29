@@ -58,7 +58,7 @@ const Modal_newServices_add = ({showModal,closeModal,getData}) => {
             // console.log(API_NewServiceAdd);
             
             if (API_NewServiceAdd && API_NewServiceAdd.message) {
-                console.log(API_NewServiceAdd.message);
+                // console.log(API_NewServiceAdd.message);
                 //mandamos a la vista de la tabla para renderizar los datos
                 getData(API_NewServiceAdd.message)
 
