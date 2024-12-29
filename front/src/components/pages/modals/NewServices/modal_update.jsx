@@ -4,8 +4,10 @@ import { Modal,Button } from 'react-bootstrap';
 
 //consulta para categorias
 import { AddCategorySelectorModal } from '../../../api/services';
+//Api para actualizar datos
+import { update_newService } from '../../../api/services';
 
-const ModalNewService_update = ({showModal_Update,closeModal_update,category}) => {
+const ModalNewService_update = ({showModal_Update,closeModal_update,category,getDataUpdate}) => {
 
     // 1: creamos el estado del formulario
     const [NewServiceUpdate,setNewServiceUpdate] = useState({
@@ -70,13 +72,33 @@ const ModalNewService_update = ({showModal_Update,closeModal_update,category}) =
 
 
     //LLamada a la API para actualizar
+    const API_updateNewService = async(e) => {
+        e.preventDefault();
+
+        console.log("Entro a la APi ");
+
+        //Llamada a la api
+        try {
+            const API_newServicesUpdate = await update_newService(NewServiceUpdate);
+            const update_newServiceStatus = API_newServicesUpdate.message;
+            // console.log("Resultado: " + update_newServiceStatus);
+            
+            getDataUpdate(update_newServiceStatus);
+
+            closeModal_update();
+        } catch (error) {
+            console.log(error);
+        }
+        
+    }
+
 
     return ( 
         <Modal show={showModal_Update} onHide={closeModal_update}>
             <Modal.Header closeButton>
                 <Modal.Title>Actualizar Servicio</Modal.Title>
             </Modal.Header>
-            <form className='form_NewServices'>
+            <form className='form_NewServices' onSubmit={API_updateNewService}>
                 <Modal.Body>
                     <div className="mb-3">
                         <input type="hidden" 
@@ -86,6 +108,16 @@ const ModalNewService_update = ({showModal_Update,closeModal_update,category}) =
                             value={NewServiceUpdate.newService_id}
                             onChange={handlechange}
                             />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="servicio" className='form-label label'>Servicio</label>
+                        <input type="text" 
+                                className='form-control input'
+                                id='newService_servico'
+                                name='newService_servico'
+                                value={NewServiceUpdate.newService_servico}
+                                onChange={handlechange}
+                                />
                     </div>
                     <div className="mb-3">
                         <label htmlFor="categoria" className='form-label label'>Categoria</label>
@@ -108,16 +140,6 @@ const ModalNewService_update = ({showModal_Update,closeModal_update,category}) =
 
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="servicio" className='form-label label'>Servicio</label>
-                        <input type="text" 
-                                className='form-control input'
-                                id='newService_servico'
-                                name='newService_servico'
-                                value={NewServiceUpdate.newService_servico}
-                                onChange={handlechange}
-                                />
-                    </div>
-                    <div className="mb-3">
                         <label htmlFor="descripcion" className='form-label label'>Descripcion</label>
                         <input type="text"
                                 className='form-control input'
@@ -130,11 +152,11 @@ const ModalNewService_update = ({showModal_Update,closeModal_update,category}) =
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant='secondary' onClick={closeModal_update}>Cancelar</Button>
-                    <Button variant='primary'>Actualizar</Button>
+                    <Button variant='primary' type='submit'>Actualizar</Button>
                 </Modal.Footer>
             </form>
         </Modal>
-     );
+    );
 }
  
 export default ModalNewService_update;

@@ -66,3 +66,25 @@ export const add_newSevice = async(formData) => {
         throw error; // Re-lanzar el error para manejarlo en el frontend
     }
 }
+
+//Update newServices
+export const update_newService = async(formData) => {
+    try {
+        const response = await fetch(`${config.API_URL}services/update`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${token}`,
+            },
+            body: JSON.stringify(formData)
+        })
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Error desconocido" );
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error en la petición: ", error.message );
+        throw error;
+    }   
+}

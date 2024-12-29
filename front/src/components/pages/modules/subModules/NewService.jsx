@@ -82,6 +82,14 @@ const NuevoServicio = ({titleModule}) => {
         setDataServicios((prevNewService) => [...prevNewService, nuevaInfo]);
     }
 
+    //update
+    const getDataUpdate = (updateNewServices) => {
+        setDataServicios((prevNewService) => 
+            prevNewService.map((newService) => 
+                newService.id === updateNewServices.id ? updateNewServices : newService
+            )
+        )
+    };
     return (
         <div className="NewServices-container">
             <div className="NewServices-title">
@@ -100,8 +108,8 @@ const NuevoServicio = ({titleModule}) => {
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Categoria</th>
                             <th>Servicio</th>
+                            <th>Categoria</th>
                             <th>Descripcion</th>
                             <th>Opciones</th>
                         </tr>
@@ -110,15 +118,15 @@ const NuevoServicio = ({titleModule}) => {
                         {currentData.map((dataServ) => (
                             <tr key={dataServ.id}>
                                 <td>{dataServ.id}</td>
-                                <td>{dataServ.nombre_categoria}</td>
                                 <td>{dataServ.nombre}</td>
+                                <td>{dataServ.nombre_categoria}</td>
                                 <td>{dataServ.descripcion}</td>
                                 <td>
                                     <div className="btns_option_NewServices">
                                         <Button_update 
                                             Modal_Categories_update={ModalNewService_update}
                                             category={dataServ}
-                                            
+                                            getDataUpdate={getDataUpdate}
                                         />
                                         <Button_delete />
                                     </div>
