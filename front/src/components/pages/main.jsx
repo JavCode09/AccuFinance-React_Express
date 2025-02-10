@@ -5,6 +5,7 @@ import Dashboard from './dashboard'; // Importa el componente Dashboard
 // btns ADD
 import Categories from './modules/subModules/categories';
 import NewService  from './modules/subModules/newService';
+import MyServices from './modules/subModules/myservices';
 
 // Api al server
 import { ApiMain } from '../api/registro_login';
@@ -29,7 +30,8 @@ const Main = () => {
             console.log('Datos protegidos:', data);
         } catch (error) {
             console.error('Error verificando el token:', error);
-            navigate('/'); //Si el token esta expirado o no hay direcciona al inicio / -> es el login y registro
+            alert("Sesión finalizada por inactividad"); // Mensaje antes de redirigir
+            navigate('/'); // Si el token está expirado o no existe, redirige al login
         }
     };
 
@@ -109,8 +111,9 @@ const Main = () => {
                     <Routes>
                         {/* Agrega más rutas aquí para otros submódulos */}
                         <Route path="/main" element={<Dashboard />} />
-                        <Route path="/new_Services" element={<NewService titleModule ={'Nuevos Servicios'} />} />
                         <Route path="/categories" element={<Categories titleModule = {'Categorias'}/>} />
+                        <Route path="/new_Services" element={<NewService titleModule ={'Nuevos Servicios'} />} />
+                        <Route path="/my_Services" element={<MyServices titleModule ={'Mis Servicios'} />} />
                     </Routes>
                 </div>
             </div>

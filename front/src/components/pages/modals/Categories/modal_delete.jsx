@@ -4,7 +4,7 @@ import { Modal, Button } from 'react-bootstrap';
 // Api servidor
 import { deleteCategories } from '../../../api/categories';
 
-const Modal_categories_delete = ({showModalDelete,clseModalDelete,category,getDataDelete}) => {
+const ModalCategoriesDelete = ({showModalDelete,clseModalDelete,category,getDataDelete}) => {
     //1): creamos stado para losd atos traidos de cargoria 
     const [deleteCategoria, setDeleteCategoria] = useState({
         idCategoria: '',
@@ -60,4 +60,4 @@ const Modal_categories_delete = ({showModalDelete,clseModalDelete,category,getDa
      );
 }
  
-export default Modal_categories_delete;
+export default ModalCategoriesDelete;
