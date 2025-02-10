@@ -4,7 +4,7 @@ import { Modal, Button } from 'react-bootstrap';
 // Api servidor
 import { deleteCategories } from '../../../api/categories';
 
-const Modal_categories_delete = ({showModalDelete,clseModalDelete,category,getDataCategoriesDelete}) => {
+const Modal_categories_delete = ({showModalDelete,clseModalDelete,category,getDataDelete}) => {
     //1): creamos stado para losd atos traidos de cargoria 
     const [deleteCategoria, setDeleteCategoria] = useState({
         idCategoria: '',
@@ -31,7 +31,7 @@ const Modal_categories_delete = ({showModalDelete,clseModalDelete,category,getDa
             const deleteCategory = API_categoriesDelete.message; // Asegúrate de extraer `message`
             console.log(deleteCategory);
 
-            getDataCategoriesDelete(deleteCategory)
+            getDataDelete(deleteCategory)
             
         } catch (error) {
             console.log(error);
@@ -43,13 +43,13 @@ const Modal_categories_delete = ({showModalDelete,clseModalDelete,category,getDa
         <Modal show={showModalDelete} onHide={clseModalDelete} centered>
            <Modal.Header closeButton>
                 <Modal.Title>
-                    Eliminar servicio
+                    Eliminar Categoria
                 </Modal.Title>
             </Modal.Header>
             <form className='form_Categoria' onSubmit={API_categorias_delete}>
                 <Modal.Body>
                 <p><strong>ID:</strong> {deleteCategoria.idCategoria}</p>
-                <p>¿Seguro que deseas eliminar el servicio: <strong>{deleteCategoria.nameCategoria}</strong>?</p>
+                <p>¿Seguro que deseas eliminar la categoria: <strong>{deleteCategoria.nameCategoria}</strong>?</p>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant='secondary' onClick={clseModalDelete}>Cerrar</Button>
