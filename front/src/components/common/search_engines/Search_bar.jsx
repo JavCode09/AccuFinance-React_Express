@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 import debounce from 'lodash.debounce'; // Para evitar llamadas excesivas
 
-const Search_bar = ({ plaholderName, onSearch }) => {
+const SearchBar = ({ plaholderName, onSearch }) => {
     const [query, setQuery] = useState('');
 
     // Función con debounce para optimizar las búsquedas
@@ -28,4 +28,4 @@ const Search_bar = ({ plaholderName, onSearch }) => {
     );
 };
 
-export default Search_bar;
+export default SearchBar;

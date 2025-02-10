@@ -5,15 +5,15 @@ import ReactPaginate from 'react-paginate';
 import '../../../styles/views/Categories.css';
 
 //components
-import Search_bar from '../../../common/search_engines/search_bar'; //buscador
-import Button_add from '../../../common/buttons/btn-add'; //bootn add
-import Button_update from '../../../common/buttons/btn-update'; //boton update
-import Button_delete from '../../../common/buttons/btn-delete';//boton eliminar
+import SearchBar from '../../../common/search_engines/search_bar'; //buscador
+import ButtonAdd from '../../../common/buttons/btn-add'; //bootn add
+import ButtonUpdate from '../../../common/buttons/btn-update'; //boton update
+import ButtonDelete from '../../../common/buttons/btn-delete';//boton eliminar
 
 // Modales
-import Modal_Categories_add from '../../modals/categories/modal_add'; //modal add
-import Modal_Categories_update from '../../modals/categories/modal_update'; //modal_update
-import Modal_categories_delete from '../../modals/categories/modal_delete'; //modal delete
+import ModalCategoriesAdd from '../../modals/categories/modal_add'; //modal add
+import ModalCategoriesUpdate from '../../modals/categories/modal_update'; //modal_update
+import ModalCategoriesDelete from '../../modals/categories/modal_delete'; //modal delete
 
 // API
 import { selectCategories } from '../../../api/categories';
@@ -31,20 +31,20 @@ const Categories = ({titleModule}) => {
     const itemsPerPage = 10; // Elementos por página
 
     useEffect(() => {
-        //llamamos la api para la consulta SELECT al servidor
-        const effectCategories = async() => {
-            try {
-                const getDataCategories = await selectCategories();
-                setDataCategories(getDataCategories);
-                // setFilteredData(getDataCategories); // Inicializa el estado filtrado (buscador)
-                // console.log("Success");
-                
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        effectCategories();
+        reloadCategories();
     }, []);
+
+    // 🔄 Función para recargar categorías
+    const reloadCategories = async () => {
+        try {
+            const getDataCategories = await selectCategories();
+            setDataCategories(getDataCategories);
+            setFilteredData(getDataCategories);
+            setCurrentPage(0); // Reiniciar la paginación
+        } catch (error) {
+            console.error("Error al recargar categorías:", error);
+        }
+    };
 
     // Manejar búsqueda llamada a la api (deaceurdo a la consulta llam al aapi select todo o lo filtrado por buscador)
     const handleSearch = async(query) => {
@@ -60,11 +60,9 @@ const Categories = ({titleModule}) => {
             }
             setCurrentPage(0); // Asegúrate de resetear la página a la primera cuando se realice una búsqueda
         } catch (error) {
-            console.log(error);
             console.error("Error al buscar categorías:", error);
             setFilteredData([]);
         }
-        setCurrentPage(0);
     };
 
     //-------------------- Paginacion --------------------
@@ -72,9 +70,10 @@ const Categories = ({titleModule}) => {
     const dataToDisplay = filteredData.length > 0 ? filteredData : DataCategories;
     const offset = currentPage * itemsPerPage;
 
-     const currentData = useMemo(() => {
+    const currentData = useMemo(() => {
         return dataToDisplay.slice(offset, offset + itemsPerPage);
-    }, [dataToDisplay, currentPage, itemsPerPage]);
+    }, [dataToDisplay, currentPage, itemsPerPage, offset]); // Agrega 'offset'
+    
  
      // Manejador de cambio de página
      const handlePageClick = ({ selected }) => {
@@ -83,29 +82,20 @@ const Categories = ({titleModule}) => {
 
     //-------------------- Fin Paginacion --------------------
 
-    //Renderizamos con la nueva informacion select
-    const getData = (nuevaInfo) => {
-        // setDataCategories([...DataCategories, nuevaInfo]);
-        setDataCategories((prevCategories) => [...prevCategories, nuevaInfo]);
-    }
-
-    //Renderizamos la actualizacion update
-    const getDataUpdate = (updatedCategory) => { //Funcion con informacion actualizada
-        setDataCategories((prevCategories) => //llammamos el estado de cambio y le asignamos un renombre de callback para el estado previo del mismo
-            prevCategories.map((category) => //usamos map par aiterar todos los estados previos
-                category.id === updatedCategory.id ? updatedCategory : category //igualamos con el id de estado previo y el actual y colocamos la nueva informacion
-            )
-        );
-    };
-    
-    
-    // Eliminar categoría del estado
-    const getDataDelete = (deleteIDcategory) => {
-        setDataCategories((prevCategories) =>
-            prevCategories.filter((category) => category.id !== deleteIDcategory.id)
-        );
+    const getData = async () => {
+        await reloadCategories();
     };
 
+    // 🔄 Actualizar categoría
+    const getDataUpdate = async () => {
+        await reloadCategories();
+    };
+    
+    // 🔄 Eliminar categoría
+    const getDataDelete = async () => {
+       await reloadCategories();
+    };
+        
     return ( 
         <div className="Categorias-container">
             <div className="Categorias-title">
@@ -114,11 +104,11 @@ const Categories = ({titleModule}) => {
            <div className="Categorias-option">
 
                 <div className="Categorias-search">
-                  <Search_bar plaholderName="Categorias" onSearch={handleSearch} /> 
+                  <SearchBar plaholderName="Categorias" onSearch={handleSearch} /> 
                 </div>
                 <div className="Categorias-btns">
                     {/* componente */}
-                    <Button_add ModalComponent = {Modal_Categories_add}
+                    <ButtonAdd ModalComponent = {ModalCategoriesAdd}
                                 getData={getData} />
                 </div>
            
@@ -141,14 +131,14 @@ const Categories = ({titleModule}) => {
                                 <td>{dataCate.descripcion}</td>
                                 <td>
                                     <div className="btns_option_categories">
-                                        <Button_update
-                                            Modal_Categories_update = {Modal_Categories_update}
+                                        <ButtonUpdate
+                                            ModalCategoriesUpdate = {ModalCategoriesUpdate}
                                             category={dataCate}
                                             getDataUpdate={getDataUpdate}
                                             />
 
-                                        <Button_delete 
-                                            Modal_categories_delete={Modal_categories_delete} 
+                                        <ButtonDelete 
+                                            ModalCategoriesDelete={ModalCategoriesDelete} 
                                             category={dataCate}
                                             getDataDelete={getDataDelete} />
                                     </div>
