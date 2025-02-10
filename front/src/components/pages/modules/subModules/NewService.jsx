@@ -13,6 +13,7 @@ import Button_delete from '../../../common/buttons/btn-delete';
 // Modals
 import Modal_newServices_add from '../../modals/newServices/modal_add'; //modal add
 import ModalNewService_update from '../../modals/newServices/modal_update';
+import Modal_newservice_delete from '../../modals/newServices/modal_delete';
 
 // API
 import { select_services } from '../../../api/services';
@@ -33,7 +34,7 @@ const NuevoServicio = ({titleModule}) => {
             try {
                 const getDataServicios = await select_services();
                 setDataServicios(getDataServicios);
-                // console.log("Success");
+                // console.log("Success" + getDataServicios);
             } catch (error) {
                 console.log(error);
             }
@@ -49,7 +50,8 @@ const NuevoServicio = ({titleModule}) => {
                 if (query.trim() === "") {
                     setFilteredData(DataServicios); // Si no hay query, mostrar todo
                 } else {
-                    const response = await search_barModule({searchQuery: query });
+                    const routeName = 'NewService'; // Ruta para Router.
+                    const response = await search_barModule({searchQuery: query},routeName);
                     setFilteredData(response);
                 }
                 setCurrentPage(0); // Asegúrate de resetear la página a la primera cuando se realice una búsqueda
@@ -90,6 +92,14 @@ const NuevoServicio = ({titleModule}) => {
             )
         )
     };
+
+    //delete
+    const getDataDelete = (deleteNewService) => {
+        setDataServicios((prevNewService) =>
+            prevNewService.filter((category) => category.id !== deleteNewService.id)
+        )
+    }
+
     return (
         <div className="NewServices-container">
             <div className="NewServices-title">
@@ -97,7 +107,7 @@ const NuevoServicio = ({titleModule}) => {
             </div>
             <div className="NewServices-option">
                 <div className="NewServices-search">
-                    <Search_bar plaholderName="Categorias" onSearch={handleSearch} /> 
+                    <Search_bar plaholderName="Servicio" onSearch={handleSearch} /> 
                 </div>
                 <div className="NewServices-btns">
                     <Button_add ModalComponent={Modal_newServices_add} getData={getData}/>
@@ -128,7 +138,11 @@ const NuevoServicio = ({titleModule}) => {
                                             category={dataServ}
                                             getDataUpdate={getDataUpdate}
                                         />
-                                        <Button_delete />
+                                        <Button_delete 
+                                            Modal_categories_delete={Modal_newservice_delete} 
+                                            category={dataServ}
+                                            getDataDelete={getDataDelete}
+                                        />
                                     </div>
                                 </td>
                             </tr>
