@@ -11,77 +11,87 @@ const ModalNewService_update = ({showModal_Update,closeModal_update,category,get
 
     // 1: creamos el estado del formulario
     const [NewServiceUpdate,setNewServiceUpdate] = useState({
-        newService_id: '',
-        newService_categoriaid: '',
-        newService_categoria: '',
-        newService_servico: '',
-        newService_descripcion: '',
-
+        id: '',
+        nombre: '',
+        id_categoria: '',
+        nombre_categoria: '',
+        descripcion: '',
     })
+ 
+    const [categories, setCategories] = useState([]); // Estado para las categorías
 
-    //estadio para regresar a su estado actual (Si el modal se cancela regrese a los datos actuales)
-    const [initialState, setInitialState] = useState({});
-    
-     //estado para select
-     const [categoriesDataUpdate,setCategoriesDataUpdate] = useState([]);
 
     //2: Creamos el hook 
     useEffect(() => {
         const fetchData = async () => {
             try {
+                const response = await AddCategorySelectorModal();
+                setCategories(response);
+
                 if (category) {
-                    // Actualizar el estado del formulario con los datos de la categoría seleccionada
-                    const dataFormUpdate = {
-                        newService_id: category.id,
-                        newService_categoriaid: category.categoria,
-                        newService_categoria: category.nombre_categoria,
-                        newService_servico: category.nombre,
-                        newService_descripcion: category.descripcion,
-                    }
-
-                    setNewServiceUpdate(dataFormUpdate)
-                    setInitialState(dataFormUpdate); // Guarda el estado inicial
-
-                    // Ejecutar la consulta para obtener datos del selector
-                    const APIselect_categoriesNewServer = await AddCategorySelectorModal();
-                    setCategoriesDataUpdate(APIselect_categoriesNewServer);
+                    setNewServiceUpdate({
+                        id: category.id,
+                        nombre: category.nombre,
+                        id_categoria: category.id_categoria || response[0]?.id || "", // Usa la primera categoría si no hay valor
+                        nombre_categoria: category.nombre_categoria || response[0]?.nombre || "",
+                        descripcion: category.descripcion || "",
+                    });
                 }
             } catch (error) {
-                console.error("Error al cargar los datos:", error);
+                console.error("Error al cargar los datos o categorías:", error);
             }
         };
 
-        fetchData();
-    },[category])
-
-    // Restablecer estado al abrir el modal
-    useEffect(() => {
         if (showModal_Update) {
-            setNewServiceUpdate(initialState); // Restablece el formulario al estado inicial
+            fetchData();
         }
-    }, [showModal_Update, initialState]);
-
+    }, [showModal_Update, category]); // Se ejecuta cada vez que el modal se abre
+    
+    
     
     //3 creamos el onchage para el manejo de cambioso en los inputs
+    // const handlechange = (e) => {
+    //     const { id, value } = e.target;
+    
+    //     setNewServiceUpdate((prevState) => ({
+    //         ...prevState,
+    //         [id]: value,
+    //     }));
+    // };
     const handlechange = (e) => {
-        const {id,value} = e.target;
-        setNewServiceUpdate({
-            ...NewServiceUpdate, [id]:value
-        })
-    }
+        const { name, value } = e.target;
+        
+        if (name === "id_categoria") {
+            // Obtener el nombre de la categoría seleccionada
+            const selectedCategory = categories.find(cat => cat.id === value);
+            setNewServiceUpdate({
+                ...NewServiceUpdate,
+                id_categoria: value,
+                nombre_categoria: selectedCategory ? selectedCategory.nombre : ""
+            });
+        } else {
+            setNewServiceUpdate({
+                ...NewServiceUpdate,
+                [name]: value
+            });
+        }
+    };
 
 
     //LLamada a la API para actualizar
     const API_updateNewService = async(e) => {
         e.preventDefault();
 
-        console.log("Entro a la APi ");
+        if (!NewServiceUpdate.id_categoria) {
+            console.error("Error: id_categoria está vacío");
+            return;
+        }
 
         //Llamada a la api
         try {
             const API_newServicesUpdate = await update_newService(NewServiceUpdate);
             const update_newServiceStatus = API_newServicesUpdate.message;
-            // console.log("Resultado: " + update_newServiceStatus);
+            console.log("Resultado: " + update_newServiceStatus);
             
             getDataUpdate(update_newServiceStatus);
 
@@ -103,9 +113,9 @@ const ModalNewService_update = ({showModal_Update,closeModal_update,category,get
                     <div className="mb-3">
                         <input type="hidden" 
                             className='form-control input'
-                            id='newService_id'
-                            name='newService_id' 
-                            value={NewServiceUpdate.newService_id}
+                            id='id'
+                            name='id' 
+                            value={NewServiceUpdate.id}
                             onChange={handlechange}
                             />
                     </div>
@@ -113,39 +123,38 @@ const ModalNewService_update = ({showModal_Update,closeModal_update,category,get
                         <label htmlFor="servicio" className='form-label label'>Servicio</label>
                         <input type="text" 
                                 className='form-control input'
-                                id='newService_servico'
-                                name='newService_servico'
-                                value={NewServiceUpdate.newService_servico}
+                                id='nombre'
+                                name='nombre'
+                                value={NewServiceUpdate.nombre}
                                 onChange={handlechange}
                                 />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="categoria" className='form-label label'>Categoria</label>
-                        <select 
-                            className='form-control input' 
-                            id='newService_categoriaid'
-                            name='newService_categoriaid' // Este 'name' coincide con la clave del estado
-                            value={NewServiceUpdate.newService_categoriaid} // Está vinculado al estado
-                            onChange={handlechange} // Llama a la función para actualizar el estado
+                        <label htmlFor="categoria" className="form-label label">Categoria</label>
+                        <select
+                            className="form-control input"
+                            id="id_categoria"
+                            name="id_categoria"
+                            value={NewServiceUpdate.id_categoria} 
+                            onChange={handlechange}
                         >
-                            {categoriesDataUpdate.map((dataupdatecate) => (
-                                <option 
-                                    key={dataupdatecate.id} 
-                                    value={dataupdatecate.id} // Cambia el estado con este ID
-                                >
-                                    {dataupdatecate.nombre}
+                            {/* Opción por defecto */}
+                            {categories.map((category) => (
+                                <option key={category.id} value={category.id}>
+                                    {category.nombre}
                                 </option>
                             ))}
                         </select>
 
                     </div>
+
                     <div className="mb-3">
                         <label htmlFor="descripcion" className='form-label label'>Descripcion</label>
                         <input type="text"
                                 className='form-control input'
-                                id='newService_descripcion'
-                                name='newService_descripcion'
-                                value={NewServiceUpdate.newService_descripcion || ''}
+                                id='descripcion'
+                                name='descripcion'
+                                value={NewServiceUpdate.descripcion || ''}
                                 onChange={handlechange}
                                 />
                     </div>

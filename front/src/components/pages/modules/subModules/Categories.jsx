@@ -54,7 +54,8 @@ const Categories = ({titleModule}) => {
             if (query.trim() === "") {
                 setFilteredData(DataCategories); // Si no hay query, mostrar todo
             } else {
-                const response = await search_barModule({searchQuery: query });
+                const routeName = 'categories'; // Ruta para Router.
+                const response = await search_barModule({searchQuery: query}, routeName);
                 setFilteredData(response);
             }
             setCurrentPage(0); // Asegúrate de resetear la página a la primera cuando se realice una búsqueda

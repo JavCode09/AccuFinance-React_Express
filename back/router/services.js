@@ -3,6 +3,7 @@ const Router = express.Router();
 const tabla = 'services';
 
 const connection = require("../conexion");
+const conexion = require('../conexion');
 
 //Select
 Router.get("/all", async(req,res) => {
@@ -30,11 +31,11 @@ Router.get("/all", async(req,res) => {
     }
 });
 
-// Campo select de la opcion agregar
+// capo select
 Router.post("/select", async(req,res) => {
     try {
         const result = await new Promise((resolve, reject)=> {
-            const consulta =  "SELECT * FROM categories";
+            const consulta =  "SELECT id,nombre FROM categories";
             connection.query(consulta, (err, success) =>{
                 if (err) {
                     console.error(`Error en la consulta, Tabla: ${tabla}` . err);
@@ -74,7 +75,7 @@ Router.post("/add", async(req,res)=>{
 
                     const nombreCategoria = rows[0].nombre;
 
-                    const consulta = "INSERT INTO services (categoria,nombre,descripcion) VALUES (?,?,?)"; 
+                    const consulta = `INSERT INTO ${tabla} (categoria,nombre,descripcion) VALUES (?,?,?)`; 
                     connection.query(consulta,[categorieNewService,nameNew_servicio,descripcionNewService], (err,success) => {
                         if (err) {
                             console.error(`Error en la consulta, Tabla ${tabla}: `, err);
@@ -109,62 +110,92 @@ Router.post("/add", async(req,res)=>{
 })
 
 //Update
-Router.put("/update", async(req,res)=>{
-    const {newService_id, 
-            newService_categoriaid, 
-            newService_categoria, 
-            newService_servico, 
-            newService_descripcion} = req.body;
-    
+Router.put("/update", async (req, res) => {
+    const { id, id_categoria, nombre, descripcion } = req.body;
     try {
+        let consulta; // Declaración de la variable `consulta` fuera del bloque if-else
     
-        const result = await new Promise((resolve,reject) => {
-            const consulta = "UPDATE services SET categoria = ?, nombre = ?, descripcion = ? WHERE id = ?";
-            connection.query(consulta,[newService_categoriaid,newService_servico,newService_descripcion,newService_id],(err,success) => {
+        const result = await new Promise((resolve, reject) => {
+            // Asignación directa sin `const`
+            consulta = `UPDATE ${tabla} SET categoria = ?, nombre = ?, descripcion = ? WHERE id = ?`;
+            connection.query(consulta, [id_categoria, nombre, descripcion, id], (err, success) => {
                 if (err) {
-                    console.error(`Error en la consulta UPDATE, Tabla: ${tabla}: ` , err);
+                    console.error(`Error en la consulta UPDATE, Tabla: ${tabla}:`, err);
                     reject(err);
-                    return
+                    return;
                 }
-
-                const consulta2= "SELECT nombre FROM categories WHERE id = ?";
-                connection.query(consulta2,[newService_categoriaid],(err,rows) => {
-                    if (err) {
-                        console.error(`Error en la consulta SELECT, Tabla: ${tabla}: ` , err);
-                        reject(err);
-                       
-                    }else if (rows.length === 0) {
-                        reject(new Error("Categoría no encontrada"));
-                    }else{
-
-                        const nombreCategoria = rows[0].nombre;
     
+                // Si no se actualizó ninguna fila, significa que el ID no existe
+                if (success.affectedRows === 0) {
+                    return reject(new Error("No se encontró el registro a actualizar."));
+                }
+    
+                // Segunda consulta para obtener el nombre de la categoría
+                const consulta2 = "SELECT id, nombre FROM categories WHERE id = ?";
+                    connection.query(consulta2, [id_categoria], (err, rows) => {
+                    if (err) {
+                        console.error(`Error en la consulta SELECT, Tabla: categories:`, err);
+                        reject(err);
+                    } else {
                         resolve({
-                            id:newService_id,
-                            nombre:newService_servico,
-                            nombre_categoria:nombreCategoria,
-                            descripcion:newService_descripcion,
+                            id: id,
+                            nombre: nombre,
+                            id_categoria: rows[0].id,  // Corregido: `rows[0]`
+                            nombre_categoria: rows[0].nombre, // Corregido: `rows[0]`
+                            descripcion: descripcion,
                             status: "success",
-                        })
-                        console.log(`Registro Actualizado con éxito, Tabla: ${tabla}, server`);
+                        });
+                        console.log(`Registro Actualizado con éxito, Tabla: ${tabla}`);
                     }
-
-                })
-
-            })
-
+                });
+            });
         });
-        res.status(200).json({message: result});
+    
+        res.status(200).json({ message: result });
+    
     } catch (error) {
-        if (error.code === "ER_DUP_ENTRY") { //Si es duplicacion, que ya existe ese nombre (la tabla tiene unique en nombre)
+        if (error.code === "ER_DUP_ENTRY") { 
             res.status(409).json({ 
                 message: "El nombre del servicio ya existe. Por favor, usa un nombre diferente." 
             });
         } else {
             res.status(500).json({ 
-                message: "Ocurrió un error al actualizar el servicio." 
+                message: error.message || "Ocurrió un error al actualizar el servicio." 
             });
         }
+    }
+});
+
+Router.delete("/delete", async(req,res) => {
+    const {id} = req.body;
+
+    if (!id) {
+       return res.status(400).json({message: "El ID del servicio es obligatorio para eliminar"})
+    }
+
+    try {
+        const result = await new Promise((resolve,reject) => {
+            const consulta = `DELETE FROM ${tabla} WHERE id = ?`;
+            connection.query(consulta,[id],(err,success) => {
+                if (err) {
+                    console.error(`Error en la consulta, tabla ${tabla}: `, err);
+                    reject(err);
+                    return
+                }
+                if (success.affectedRows === 0) {
+                    reject(new Error("NewService no encontrado"));
+                    return
+                }
+                resolve({
+                    id: id,
+                    status:'success',
+                })
+            })
+        })
+        res.status(200).json({message:result})
+    } catch (error) {
+        console.error("Error en la operación:", error);
+        res.status(500 ).json({message:`Error en la operacion, Tabla:  ${tabla}: `,  error: error.message })
     }
 })
 
