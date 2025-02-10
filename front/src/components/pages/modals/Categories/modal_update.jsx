@@ -5,7 +5,7 @@ import { Button, Modal } from 'react-bootstrap';
 // API
 import { updateCategories } from '../../../api/categories';
 
-const Modal_Categories_update = ({showModal_Update,claseModal_update,category, getDataCategoriesUpdate}) => {
+const Modal_Categories_update = ({showModal_Update,closeModal_update,category, getDataUpdate}) => {
     // (1) :Estado para manejar los valores del formulario
     const [CategoriaUpdate,setCategoriaUpdate] = useState({
         idCategoria: '',
@@ -53,9 +53,9 @@ const Modal_Categories_update = ({showModal_Update,claseModal_update,category, g
             const updatedCategory = API_categoriesUpdate.message; // Asegúrate de extraer `message`
             // console.log('API_categoriesUpdate' , API_categoriesUpdate); //mensaje dentro de objeto
             // console.log('updatedCategory' , updatedCategory); //Mensaje fuera de objeto
-            getDataCategoriesUpdate(updatedCategory);
+            getDataUpdate(updatedCategory);
 
-            claseModal_update();
+            closeModal_update();
         } catch (error) {
             console.log(error);
             
@@ -63,9 +63,9 @@ const Modal_Categories_update = ({showModal_Update,claseModal_update,category, g
     }
 
     return ( 
-        <Modal show={showModal_Update} onHide={claseModal_update}>
+        <Modal show={showModal_Update} onHide={closeModal_update}>
             <Modal.Header closeButton>
-                <Modal.Title>Actualizar Servicio</Modal.Title>
+                <Modal.Title>Actualizar Categoria</Modal.Title>
             </Modal.Header>
             <form className='form_Categoria' onSubmit={AP_categorias_update}>
                 <Modal.Body>
@@ -78,7 +78,7 @@ const Modal_Categories_update = ({showModal_Update,claseModal_update,category, g
                             />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="nombre" className='form-label label'>Servicio</label>
+                        <label htmlFor="nombre" className='form-label label'>Categoria</label>
                         <input className='form-control input'
                             type="text"
                             placeholder='Nombre del servicio'
@@ -99,7 +99,7 @@ const Modal_Categories_update = ({showModal_Update,claseModal_update,category, g
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant='secondary' onClick={claseModal_update}>Cancelar</Button>
+                    <Button variant='secondary' onClick={closeModal_update}>Cancelar</Button>
                     <Button variant='primary' type='submit'>Actualizar</Button>
                 </Modal.Footer>
             </form>

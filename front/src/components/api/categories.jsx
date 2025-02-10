@@ -5,7 +5,7 @@ const tabla = 'categories';
 // consultas invalidas y no mostrara nada nidejara hacer add y update (esto es solo si la ruta esta protegida)
 const token = localStorage.getItem("token"); // Asumiendo que guardas el token en localStorage
 
-
+//Funcion para agregar categoria
 export const add_categories = async(formData) => {
     try {
         const response = await fetch(`${config.API_URL}categories/add` , {
@@ -71,7 +71,7 @@ export const updateCategories = async(formData) => {
     }
 }
 
-
+// Funcion para eliminar categoria
 export const deleteCategories = async(formData) => {
     try {
         const response = await fetch(`${config.API_URL}categories/delete`, {

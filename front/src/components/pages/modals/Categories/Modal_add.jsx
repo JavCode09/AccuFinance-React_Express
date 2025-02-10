@@ -4,7 +4,7 @@ import { Button,Modal } from 'react-bootstrap';
 //Api a servidor
 import { add_categories } from '../../../api/categories';
 
-const Modal_Categories_add = ({showModal,closeModal, getDataCategories}) => {
+const Modal_Categories_add = ({showModal,closeModal, getData}) => {
 
     //Creamos hook de estado para el formulario
     const [dataCategoria, setDataCategoria] = useState({
@@ -36,7 +36,7 @@ const Modal_Categories_add = ({showModal,closeModal, getDataCategories}) => {
     
              // Suposición: API_categoriesAdd.message contiene los datos correctos
             if (API_categoriesAdd && API_categoriesAdd.message) {
-                getDataCategories(API_categoriesAdd.message);
+                getData(API_categoriesAdd.message);
             }
 
     
@@ -56,7 +56,7 @@ const Modal_Categories_add = ({showModal,closeModal, getDataCategories}) => {
                 <form className='form_Categoria' onSubmit={API_Categorias_add}>
                 <Modal.Body>
                     <div className="mb-3">
-                        <label htmlFor="nombre1" className="form-label label">Servicio</label>
+                        <label htmlFor="nombre1" className="form-label label">Categoria</label>
                         <input
                             type="text"
                             id="nombre"
