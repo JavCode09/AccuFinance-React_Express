@@ -32,7 +32,7 @@ const ModalNewService_update = ({showModal_Update,closeModal_update,category,get
                     setNewServiceUpdate({
                         id: category.id,
                         nombre: category.nombre,
-                        id_categoria: category.id_categoria || response[0]?.id || "", // Usa la primera categoría si no hay valor
+                        id_categoria: category.categoria || response[0]?.id || "", // Usa la primera categoría si no hay valor
                         nombre_categoria: category.nombre_categoria || response[0]?.nombre || "",
                         descripcion: category.descripcion || "",
                     });
@@ -50,14 +50,6 @@ const ModalNewService_update = ({showModal_Update,closeModal_update,category,get
     
     
     //3 creamos el onchage para el manejo de cambioso en los inputs
-    // const handlechange = (e) => {
-    //     const { id, value } = e.target;
-    
-    //     setNewServiceUpdate((prevState) => ({
-    //         ...prevState,
-    //         [id]: value,
-    //     }));
-    // };
     const handlechange = (e) => {
         const { name, value } = e.target;
         
