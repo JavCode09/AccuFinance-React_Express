@@ -5,7 +5,7 @@ import { Button, Modal } from 'react-bootstrap';
 // API
 import { updateCategories } from '../../../api/categories';
 
-const Modal_Categories_update = ({showModal_Update,closeModal_update,category, getDataUpdate}) => {
+const ModalCategoriesUpdate = ({showModal_Update,closeModal_update,category, getDataUpdate}) => {
     // (1) :Estado para manejar los valores del formulario
     const [CategoriaUpdate,setCategoriaUpdate] = useState({
         idCategoria: '',
@@ -15,14 +15,24 @@ const Modal_Categories_update = ({showModal_Update,closeModal_update,category, g
 
     // (2): UseEffect para el campo de contenido del modal (hook)
     useEffect(() => {
-        if (category) {
-            setCategoriaUpdate({
-                idCategoria: category.id,
-                nameCategoria:category.nombre,
-                descripcionCategoria: category.descripcion
-            })
+        const fetchData = async  () => {
+            try {
+                if (category) {
+                    setCategoriaUpdate({
+                        idCategoria: category.id,
+                        nameCategoria:category.nombre,
+                        descripcionCategoria: category.descripcion
+                    })
+                }
+            } catch (error) {
+                console.error("Error al cargar los datos:", error);
+            }
+        };
+        
+        if (showModal_Update) {
+            fetchData();
         }
-    }, [category]);
+    }, [showModal_Update]);
 
     // (3): Mnejos de cambios en el input (handlechange)
     const handlechange = (e) =>{
@@ -107,4 +117,4 @@ const Modal_Categories_update = ({showModal_Update,closeModal_update,category, g
      );
 }
  
-export default Modal_Categories_update;
+export default ModalCategoriesUpdate;

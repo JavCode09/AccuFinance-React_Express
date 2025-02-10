@@ -4,7 +4,7 @@ import { Button,Modal } from 'react-bootstrap';
 //Api a servidor
 import { add_categories } from '../../../api/categories';
 
-const Modal_Categories_add = ({showModal,closeModal, getData}) => {
+const ModalCategoriesAdd = ({showModal,closeModal, getData}) => {
 
     //Creamos hook de estado para el formulario
     const [dataCategoria, setDataCategoria] = useState({
@@ -90,4 +90,4 @@ const Modal_Categories_add = ({showModal,closeModal, getData}) => {
      );
 }
  
-export default Modal_Categories_add;
+export default ModalCategoriesAdd;

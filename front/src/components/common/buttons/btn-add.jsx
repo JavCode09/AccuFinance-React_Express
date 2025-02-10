@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {Button} from 'react-bootstrap';
 
 // getDataCategories es el dato que regresa el modal (nueva informacion)
-const Button_add = ({ModalComponent, getData}) => {
+const ButtonAdd = ({ModalComponent, getData}) => {
     //creamos hook de estado
     const [ModalAdd,setModalAdd] = useState(false);
 
@@ -28,4 +28,4 @@ const Button_add = ({ModalComponent, getData}) => {
      );
 }
  
-export default Button_add;
+export default ButtonAdd;

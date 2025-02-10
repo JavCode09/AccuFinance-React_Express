@@ -5,18 +5,20 @@ import ReactPaginate from 'react-paginate';
 import '../../../styles/views/NewService.css';
 
 //componentes
-import Search_bar from '../../../common/search_engines/search_bar';
-import Button_add from '../../../common/buttons/btn-add'; //bootn add
-import Button_update from '../../../common/buttons/btn-update';
-import Button_delete from '../../../common/buttons/btn-delete';
+import SearchBar from '../../../common/search_engines/search_bar';
+import ButtonAdd from '../../../common/buttons/btn-add'; //bootn add
+import ButtonUpdate from '../../../common/buttons/btn-update';
+import ButtonDelete from '../../../common/buttons/btn-delete';
 
 // Modals
 import Modal_newServices_add from '../../modals/newServices/modal_add'; //modal add
 import ModalNewService_update from '../../modals/newServices/modal_update';
-import Modal_newservice_delete from '../../modals/newServices/modal_delete';
+import ModalCategoriesDelete from '../../modals/newServices/modal_delete';
 
 // API
 import { select_services } from '../../../api/services';
+
+//search
 import { search_barModule } from '../../../api/search_bar';
 
 const NuevoServicio = ({titleModule}) => { 
@@ -30,38 +32,39 @@ const NuevoServicio = ({titleModule}) => {
     const itemsPerPage = 10; // Elementos por página
 
     useEffect(() => {
-        const effectServicios = async() => {
-            try {
-                const getDataServicios = await select_services();
-                setDataServicios(getDataServicios);
-                // console.log("Success" + getDataServicios);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        effectServicios();
-    },[]);
+            reloadNewServices();
+    }, []);
 
-       // Manejar búsqueda llamada a la api (de aceurdo a la consulta llam al aapi select todo o lo filtrado por buscador)
-        const handleSearch = async(query) => {
-            // console.log(query);
-            
-            try {
-                if (query.trim() === "") {
-                    setFilteredData(DataServicios); // Si no hay query, mostrar todo
-                } else {
-                    const routeName = 'NewService'; // Ruta para Router.
-                    const response = await search_barModule({searchQuery: query},routeName);
-                    setFilteredData(response);
-                }
-                setCurrentPage(0); // Asegúrate de resetear la página a la primera cuando se realice una búsqueda
-            } catch (error) {
-                console.log(error);
-                console.error("Error al buscar categorías:", error);
-                setFilteredData([]);
+// 🔄 Función para recargar categorías
+    const reloadNewServices = async () => {
+        try {
+            const getDataServicios = await select_services();
+            setDataServicios(getDataServicios);
+            setFilteredData(getDataServicios);
+            setCurrentPage(0); // Reiniciar la paginación
+        } catch (error) {
+            console.error("Error al recargar categorías:", error);
+        }
+    };
+
+    // Manejar búsqueda llamada a la api (de aceurdo a la consulta llam al aapi select todo o lo filtrado por buscador)
+    const handleSearch = async(query) => {
+        // console.log(query);
+        try {
+            if (query.trim() === "") {
+                setFilteredData(DataServicios); // Si no hay query, mostrar todo
+            } else {
+                const routeName = 'NewService'; // Ruta para Router.
+                const response = await search_barModule({searchQuery: query},routeName);
+                setFilteredData(response);
             }
-            setCurrentPage(0);
-        };
+            setCurrentPage(0); // Asegúrate de resetear la página a la primera cuando se realice una búsqueda
+        } catch (error) {
+            console.log(error);
+            console.error("Error al buscar categorías:", error);
+            setFilteredData([]);
+        }
+    };
     
 
     //-------------------- Paginacion --------------------
@@ -69,36 +72,31 @@ const NuevoServicio = ({titleModule}) => {
     const dataToDisplay = filteredData.length > 0 ? filteredData : DataServicios;
     const offset = currentPage * itemsPerPage;
 
-     const currentData = useMemo(() => {
+    const currentData = useMemo(() => {
         return dataToDisplay.slice(offset, offset + itemsPerPage);
-    }, [dataToDisplay, currentPage, itemsPerPage]);
- 
-     // Manejador de cambio de página
-     const handlePageClick = ({ selected }) => {
-         setCurrentPage(selected);
+    }, [dataToDisplay, currentPage, itemsPerPage, offset]); // Agrega 'offset'
+    
+    
+    // Manejador de cambio de página
+    const handlePageClick = ({ selected }) => {
+        setCurrentPage(selected);
      };
 
     // --------------- Renderizacion --------------
     // Add
-    const getData = (nuevaInfo) => {
-        setDataServicios((prevNewService) => [...prevNewService, nuevaInfo]);
-    }
-
-    //update
-    const getDataUpdate = (updateNewServices) => {
-        setDataServicios((prevNewService) => 
-            prevNewService.map((newService) => 
-                newService.id === updateNewServices.id ? updateNewServices : newService
-            )
-        )
+    const getData = async () => {
+        await reloadNewServices();
     };
 
-    //delete
-    const getDataDelete = (deleteNewService) => {
-        setDataServicios((prevNewService) =>
-            prevNewService.filter((category) => category.id !== deleteNewService.id)
-        )
-    }
+    // 🔄 Actualizar categoría
+    const getDataUpdate = async () => {
+        await reloadNewServices();
+    };
+
+    // 🔄 Eliminar categoría
+    const getDataDelete = async () => {
+        await reloadNewServices();
+     };
 
     return (
         <div className="NewServices-container">
@@ -107,10 +105,10 @@ const NuevoServicio = ({titleModule}) => {
             </div>
             <div className="NewServices-option">
                 <div className="NewServices-search">
-                    <Search_bar plaholderName="Servicio" onSearch={handleSearch} /> 
+                    <SearchBar plaholderName="Servicio" onSearch={handleSearch} /> 
                 </div>
                 <div className="NewServices-btns">
-                    <Button_add ModalComponent={Modal_newServices_add} getData={getData}/>
+                    <ButtonAdd ModalComponent={Modal_newServices_add} getData={getData}/>
                 </div>
             </div>
             <div className="NewServices-content">
@@ -131,15 +129,16 @@ const NuevoServicio = ({titleModule}) => {
                                 <td>{dataServ.nombre}</td>
                                 <td>{dataServ.nombre_categoria}</td>
                                 <td>{dataServ.descripcion}</td>
+                                {/* <td>{dataServ.categoria}</td> */}
                                 <td>
                                     <div className="btns_option_NewServices">
-                                        <Button_update 
-                                            Modal_Categories_update={ModalNewService_update}
+                                        <ButtonUpdate 
+                                            ModalCategoriesUpdate={ModalNewService_update}
                                             category={dataServ}
                                             getDataUpdate={getDataUpdate}
                                         />
-                                        <Button_delete 
-                                            Modal_categories_delete={Modal_newservice_delete} 
+                                        <ButtonDelete 
+                                            ModalCategoriesDelete={ModalCategoriesDelete} 
                                             category={dataServ}
                                             getDataDelete={getDataDelete}
                                         />
