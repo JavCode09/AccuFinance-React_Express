@@ -33,6 +33,7 @@ INSERT INTO categories (nombre, descripcion) VALUES
 ('Transporte y Movilidad', 'Servicios de transporte de personas y pagos asociados.');
 
 
+-- Tabla servicios
 CREATE TABLE services (
     id int PRIMARY KEY AUTO_INCREMENT,
     categoria int not null,
@@ -68,3 +69,21 @@ INSERT INTO services (categoria, nombre, descripcion) VALUES
 (5, 'Adobe Creative Cloud', 'Suite de software de diseño y edición.'),
 (5, 'LinkedIn Premium', 'Acceso a funciones exclusivas para profesionales.'),
 (5, 'Canva Pro', 'Herramientas avanzadas para diseño gráfico.');
+
+
+-- Tabla mis servicios
+CREATE TABLE my_services (
+  `id_myservices` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `id_services` INT NOT NULL,
+  `id_user` INT NOT NULL,
+  `descripcion` VARCHAR(45) NULL,
+  `monto` VARCHAR(45) NOT NULL,
+  `fecha_pago` DATE NOT NULL,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (`id_services`) REFERENCES services(`id`) ON DELETE RESTRICT 
+);
+
+
+
+
