@@ -1,0 +1,85 @@
+.Myservices-container{
+    background: rgb(143, 201, 224);
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+    .Myservices-title{
+        margin-bottom: 5px;
+    }
+
+    .Myservices-option{
+        display: flex;
+        justify-content: space-between;
+        background-color: antiquewhite;
+        padding: 5px;
+        margin-bottom: 5px;
+        /* align-items: center; */
+    }
+
+        .Myservices-search{
+            padding: 5px;
+            background: rgb(179, 107, 13);
+        }
+
+        .Myservices-btns{
+            display: block;
+            justify-content: center;
+            /* align-items: center; */
+            padding: 5px;
+            background: rgb(179, 107, 13);
+        }
+
+    .Myservices-content{
+        padding: 10px;
+        background: antiquewhite;
+        /* display: flex;
+        justify-content: center; */
+    }
+
+
+/* CSS de los modales (labes e inputs)*/
+.form_Myservices{
+    background-color: #4CAF50;
+}
+
+.label{
+    font-weight: bold;
+}
+
+.input{
+    letter-spacing: 0.3px;
+}
+
+/* Modal ADD */
+/* Modal EDIT */
+/* Modal DELETE */
+
+/* css tabla Myservices (vista)*/
+.Myservices-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+    .Myservices-tabla th, .Myservices-tabla td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    .Myservices-tabla tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .Myservices-tabla th {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .btns_option_Myservices{
+        display: flex;
+        flex-flow:wrap;
+        justify-content: space-around;
+        gap: 10px; /* Espacio entre los botones */
+    }
