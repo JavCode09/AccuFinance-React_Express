@@ -24,7 +24,7 @@ export const UserProvider = ({ children }) => {
       
     } catch (error) {
       console.error('Error verificando el token:', error);
-      alert("Sesión finalizada por inactividad"); // Mensaje antes de redirigir
+      // alert("Sesión finalizada por inactividad"); // Mensaje antes de redirigir
       navigate('/'); // Si el token está expirado o no existe, redirige al login
     }
   };

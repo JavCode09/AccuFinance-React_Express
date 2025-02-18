@@ -11,7 +11,7 @@ import ButtonDelete from '../../../common/buttons/btn-delete';
 import SearchBar from '../../../common/search_engines/search_bar';
 
 //Modales
-
+import modalAddMyservices from '../../modals/myservices/modal_add';
 
 //api
 
@@ -45,7 +45,7 @@ const MyServices = ({titleModule}) => {
                     <SearchBar plaholderName="Mis Servicios"  /> 
                 </div>
                 <div className="Myservices-btns">
-                    <ButtonAdd />
+                    <ButtonAdd ModalComponent={modalAddMyservices}/>
                 </div>
             </div>
             <div className="Myservices-content">
