@@ -20,7 +20,7 @@ export const UserProvider = ({ children }) => {
     try {
       const data = await ApiMain(token); // Aquí utilizas ApiMain
       setUserData(data.user);
-      // console.log(data);
+      console.log(data);
       
     } catch (error) {
       console.error('Error verificando el token:', error);
