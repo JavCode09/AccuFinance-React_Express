@@ -1,15 +1,15 @@
-.Categorias-container{
+.Myservices-container{
     background: rgb(143, 201, 224);
     padding: 5px;
     display: flex;
     flex-direction: column;
 }
 
-    .Categorias-title{
+    .Myservices-title{
         margin-bottom: 5px;
     }
 
-    .Categorias-option{
+    .Myservices-option{
         display: flex;
         justify-content: space-between;
         background-color: antiquewhite;
@@ -18,12 +18,12 @@
         /* align-items: center; */
     }
 
-        .Categorias-search{
+        .Myservices-search{
             padding: 5px;
             background: rgb(179, 107, 13);
         }
 
-        .Categorias-btns{
+        .Myservices-btns{
             display: block;
             justify-content: center;
             /* align-items: center; */
@@ -31,7 +31,7 @@
             background: rgb(179, 107, 13);
         }
 
-    .Categorias-content{
+    .Myservices-content{
         padding: 10px;
         background: antiquewhite;
         /* display: flex;
@@ -40,7 +40,7 @@
 
 
 /* CSS de los modales (labes e inputs)*/
-.form_Categoria{
+.form_Myservices{
     background-color: #4CAF50;
 }
 
@@ -50,28 +50,28 @@
 /* Modal EDIT */
 /* Modal DELETE */
 
-/* css tabla categorias (vista)*/
-.Categorias-tabla {
+/* css tabla Myservices (vista)*/
+.Myservices-tabla {
     width: 100%;
     border-collapse: collapse;
     text-align: center;
 }
 
-    .Categorias-tabla th, .Categorias-tabla td {
+    .Myservices-tabla th, .Myservices-tabla td {
         border: 1px solid #ddd;
         padding: 8px;
     }
 
-    .Categorias-tabla tr:nth-child(even) {
+    .Myservices-tabla tr:nth-child(even) {
         background-color: #f2f2f2;
     }
 
-    .Categorias-tabla th {
+    .Myservices-tabla th {
         background-color: #4CAF50;
         color: white;
     }
 
-    .btns_option_categories{
+    .btns_option_Myservices{
         display: flex;
         flex-flow:wrap;
         justify-content: space-around;

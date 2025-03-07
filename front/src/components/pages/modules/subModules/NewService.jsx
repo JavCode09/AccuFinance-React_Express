@@ -156,6 +156,7 @@ const NuevoServicio = ({titleModule}) => {
                    marginPagesDisplayed={2}
                    pageRangeDisplayed={3}
                    onPageChange={handlePageClick}
+                   
                    containerClassName={"pagination justify-content-center"} // Clase para el contenedor
                    activeClassName={"active"} // Clase para la página activa
                    previousClassName={"page-item previous"} // Clase para el contenedor de "Anterior"

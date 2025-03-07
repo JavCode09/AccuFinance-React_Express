@@ -33,6 +33,8 @@ app.use("/categories",verifyToken, require("./router/categories"));
 
 app.use("/services",verifyToken, require("./router/services"));
 
+app.use("/myServices",verifyToken , require("./router/myServices"));
+
 //Buscador de modulos simple
 app.use("/search",verifyToken, require("./router/search"));
 
