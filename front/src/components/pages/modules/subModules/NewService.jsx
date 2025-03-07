@@ -156,7 +156,7 @@ const NuevoServicio = ({titleModule}) => {
                    marginPagesDisplayed={2}
                    pageRangeDisplayed={3}
                    onPageChange={handlePageClick}
-                   forcePage={currentPage} // <-- Agregar esto para que se actualice correctamente
+                   
                    containerClassName={"pagination justify-content-center"} // Clase para el contenedor
                    activeClassName={"active"} // Clase para la página activa
                    previousClassName={"page-item previous"} // Clase para el contenedor de "Anterior"

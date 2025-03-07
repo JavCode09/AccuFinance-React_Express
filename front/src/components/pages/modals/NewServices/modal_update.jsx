@@ -89,7 +89,7 @@ const ModalNewService_update = ({showModal_Update,closeModal_update,category,get
 
             closeModal_update();
         } catch (error) {
-            console.log(error);
+            console.log("error inesperado: ", error);
         }
         
     }
