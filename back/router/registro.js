@@ -79,9 +79,10 @@ Router.post("/", async (req, res) => {
             res.status(200).json({ success:false, message: result.message });
         } else {
              //Generamos JWT
-             const token = jwt.sign({ id: result.usuario.id_user, 
-                                      email: result.usuario.email,
-                                      grupo: result.usuario.grupo
+             const token = jwt.sign({ id: result.usuario.id_user,
+                                    nombre_completo: `${result.usuario.nombre} ${result.usuario.apellidos}`,
+                                    email: result.usuario.email,
+                                    grupo: result.usuario.grupo
                                     }, SECRET_KEY, { expiresIn: '1h' });
 
 

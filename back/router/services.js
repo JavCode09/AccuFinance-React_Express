@@ -3,7 +3,7 @@ const Router = express.Router();
 const tabla = 'services';
 
 const connection = require("../conexion");
-const conexion = require('../conexion');
+
 
 //Select
 Router.get("/all", async(req,res) => {
@@ -31,7 +31,7 @@ Router.get("/all", async(req,res) => {
     }
 });
 
-// capo select
+// campo select
 Router.post("/select", async(req,res) => {
     try {
         const result = await new Promise((resolve, reject)=> {
