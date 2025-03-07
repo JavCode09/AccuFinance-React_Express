@@ -46,7 +46,7 @@ const ModalAddMyservices = ({showModal,closeModal,getData}) => {
             }
         }
         fetchMyservices();
-    }, [showModal,userData.id]);
+    }, [showModal]);
 
 
     //Funcion para cambio input
@@ -64,10 +64,10 @@ const ModalAddMyservices = ({showModal,closeModal,getData}) => {
         try {
             const response = await AddMyServices(formDataMyservices);
             
-            if (response && response.message && response.message.mensaje) {
-                alert(`✅ Status: Éxito\n📝 Mensaje: ${response.message.mensaje}`);
+            if (response && response.message) {
+                alert(`✅ Status: Éxito\n📝 Mensaje: ${response.message}`);
 
-                getData(response.message)
+                getData()
                 closeModal();
             }
             
@@ -78,8 +78,10 @@ const ModalAddMyservices = ({showModal,closeModal,getData}) => {
                 alert(`⚠️ Error: ${error.response.data.message}`); // Mostrar el mensaje exacto del backend
             } else {
                 alert("❌ Error: No se pudo agregar el servicio. Intenta de nuevo.");
+                console.log(error);
+                
             }
-            console.error("Error en API_AddMyServices: ", error);
+            // console.error("Error en API_AddMyServices: ", error);
         }
     };
     

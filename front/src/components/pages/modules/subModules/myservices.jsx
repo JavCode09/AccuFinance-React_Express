@@ -12,6 +12,8 @@ import SearchBar from '../../../common/search_engines/search_bar';
 
 //Modales
 import ModalAddMyservices from '../../modals/myservices/modal_add';
+import ModalUpdateMyServices from '../../modals/myservices/modal_update';
+import ModalMyServicesDelete from '../../modals/myservices/modal_delete';
 
 //api
 import { selectMyServices } from '../../../api/myservices';
@@ -65,6 +67,16 @@ const MyServices = ({titleModule}) => {
         await reloadMynewServices();
     }
 
+    // update
+    const getDataUpdate = async() => {
+        await reloadMynewServices();
+    }
+
+    // delete
+    const getDataDelete = async() => {
+        await reloadMynewServices();
+    }
+
     return ( 
         <div className="Myservices-container">
             <div className="Myservices-title">
@@ -102,8 +114,16 @@ const MyServices = ({titleModule}) => {
                                     {/* <td>{mySer.fecha_inicio}</td> */}
                                     <td>
                                         <div className="btns_option_Myservices">
-                                            <ButtonUpdate />
-                                            <ButtonDelete />
+                                            <ButtonUpdate 
+                                                ModalCategoriesUpdate={ModalUpdateMyServices}
+                                                category={mySer.id_myservices}
+                                                getDataUpdate = {getDataUpdate}                                                
+                                            />
+                                            <ButtonDelete 
+                                                ModalCategoriesDelete={ModalMyServicesDelete}
+                                                category={mySer}
+                                                getDataDelete={getDataDelete}
+                                            />
                                         </div>
                                     </td>
                                 </tr>
@@ -120,7 +140,7 @@ const MyServices = ({titleModule}) => {
                    marginPagesDisplayed={2}
                    pageRangeDisplayed={3}
                    onPageChange={handlePageClick}
-                   forcePage={currentPage} // <-- Agregar esto para que se actualice correctamente
+                //    forcePage={currentPage} // <-- Agregar esto para que se actualice correctamente
                    containerClassName={"pagination justify-content-center"} // Clase para el contenedor
                    activeClassName={"active"} // Clase para la página activa
                    previousClassName={"page-item previous"} // Clase para el contenedor de "Anterior"
