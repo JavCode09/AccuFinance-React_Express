@@ -17,6 +17,8 @@ import ModalMyServicesDelete from '../../modals/myservices/modal_delete';
 
 //api
 import { selectMyServices } from '../../../api/myservices';
+import { search_barModule } from '../../../api/search_bar'; //Buscador
+
 
 const MyServices = ({titleModule}) => {
 
@@ -46,6 +48,22 @@ const MyServices = ({titleModule}) => {
         }
     }
 
+    //Buscador
+    const handleSearch = async(query) => {
+        try {
+            if (query.trim() === "") {
+                setFilteredData(DataMyservices);
+            }else{
+                const routeName = 'MyServices';
+                const response = await search_barModule({searchQuery: query}, routeName)
+                setFilteredData(response)
+            }
+        } catch (error) {
+            console.log(error);
+            console.error("Error al buscar tus servicios:", error);
+            setFilteredData([]);
+        }
+    }
    //-------------------- Paginacion --------------------
     
     const dataToDisplay = filteredData.length > 0 ? filteredData : DataMyservices;
@@ -84,7 +102,7 @@ const MyServices = ({titleModule}) => {
             </div>
             <div className="Myservices-option">
                 <div className="Myservices-search">
-                    <SearchBar plaholderName="Mis Servicios"  /> 
+                    <SearchBar plaholderName="Mis Servicios" onSearch={handleSearch} /> 
                 </div>
                 <div className="Myservices-btns">
                     <ButtonAdd ModalComponent={ModalAddMyservices} getData={getData}/>
