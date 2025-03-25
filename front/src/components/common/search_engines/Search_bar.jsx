@@ -12,7 +12,7 @@ const SearchBar = ({ plaholderName, onSearch }) => {
         
         setQuery(value);
         onSearch(value); // Llamamos a la función de búsqueda
-    }, 200); // 300 ms de retraso
+    }, 200); // 200 ms de retraso
 
     return (
         <div className="input-group">

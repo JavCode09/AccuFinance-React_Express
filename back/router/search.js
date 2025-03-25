@@ -61,4 +61,30 @@ Router.post("/NewService", async(req,res)=>{
     }
 })
 
+Router.post("/MyServices", async(req,res)=> {
+    const {searchQuery} = req.body;
+    try {
+        if (!searchQuery || searchQuery.trim() === "") {
+            return res.status(400).json({ message: "El parámetro 'searchQuery' es requerido." });
+        }
+
+        const consulta = `SELECT my_services.*, services.nombre
+        FROM my_services
+        INNER JOIN services ON services.id = my_services.id_services 
+        WHERE services.nombre LIKE ?`;
+
+        connection.query(consulta, [`%${searchQuery}%`], (err,success) => {
+
+            if (err) {
+        console.error("Error en la consulta: ", err);
+        return res.status(500).json({message:"Error al realizar la búsqueda"});
+        }
+        return res.status(200).json(success)
+        })
+    } catch (error) {
+        console.error("Error al procesar la búsqueda:", error);
+        return res.status(500).json({ message: "Error en mostrar los datos buscados, newService" });
+    }
+})
+
 module.exports = Router;
