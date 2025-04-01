@@ -25,8 +25,7 @@
         /* position: fixed; Fija el sidebar en su lugar */
         top: 0; /* Asegura que esté alineado con la parte superior */
         left: 0; /* Asegura que esté alineado con el borde izquierdo */
-        /* z-index: 1000; Asegura que esté encima de otros elementos si es necesario */
-        /* Otros estilos que desees para el sidebar */
+        border-right: 3px solid rgba(83, 137, 184, 0.9); /* Borde sutil con opacidad */
     }
 
     /* Estilos generales para los módulos */
@@ -36,6 +35,7 @@
         transition: background-color 0.3s ease, color 0.3s ease;
         display: flex;
         align-items: center; /* Asegura que el icono y el texto estén alineados verticalmente */
+        margin: 0px 0px 5px 2px;
     }
 
     /* Enlaces dentro de los módulos */
@@ -56,7 +56,7 @@
     .module.active {
         background-color: #fc284f;
         color: white;
-        border-radius: 10px;
+        border-radius: 8px;
     }
 
     /* Módulo abierto (cuando tiene submódulos desplegados) */

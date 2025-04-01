@@ -5,10 +5,11 @@ import Dashboard from './dashboard'; // Importa el componente Dashboard
 // Importa el UserProvider
 import { UserContext } from '../../contexts/UserContext';
 
-// btns ADD
+// btns ADD para abrir modulos y sub modulos
 import Categories from './modules/subModules/categories';
 import NewService from './modules/subModules/newService';
 import MyServices from './modules/subModules/myservices';
+import AdminServices from './modules/adminservices';
 
 // css estructura 
 import '../styles/dashboard/contenido.css';
@@ -39,23 +40,23 @@ const Main = () => {
     const modules = [
         { name: 'Inicio', path: '/main',  icon: 'fa-th-large'  },
         {
-            name: 'Servicios', icon: 'fa-bolt',
+            name: 'Servicios', icon: 'fa-money',
             submodules: [
-                { name: 'Categorias', path: '/main/categories',  icon: 'fa-th-large'},
-                { name: 'Nuevo Servicio', path: '/main/new_Services' },
-                { name: 'Mis Servicios', path: '/main/my_Services' },
+                { name: 'Categorias', path: '/main/categories',  icon: 'fa-list-alt'},
+                { name: 'Nuevo Servicio', path: '/main/new_Services', icon:'fa-plus-circle'},
+                { name: 'Mis Servicios', path: '/main/my_Services', icon:'fa-briefcase' },
             ],
         },
-        { name: 'Panel de Control', path: '/main/Servicios' },
+        { name: 'Panel de Control', path: '/main/AdminServices', icon: 'fa-bar-chart' },
         {
-            name: 'Inversiones',
+            name: 'Inversiones', icon:'fa-line-chart',
             submodules: [
-                { name: 'Categorias', path: '/main/Inversiones' },
-                { name: 'Nuevo Servicio', path: '/main/MyInversiones' },
-                { name: 'Mis Servicios', path: '/main/eee' },
+                { name: 'Nueva Inversión', path: '/main/Investments', icon:'fa-plus-circle' },
+                { name: 'Mis Inversiones ', path: '/main/MyInvestments', icon:'fa-pie-chart'},
+                { name: 'Administración ', path: '/main/Administration' , icon:'fa-cogs'},
             ],
         },
-        { name: 'Usuarios', path: '/main/Usuarios' },
+        { name: 'Usuarios', path: '/main/Usuarios', icon:'fa-users'},
     ];
 
     return (
@@ -123,6 +124,7 @@ const Main = () => {
                         <Route path="/categories" element={<Categories titleModule={'Categorias'} />} />
                         <Route path="/new_Services" element={<NewService titleModule={'Nuevos Servicios'} />} />
                         <Route path="/my_Services" element={<MyServices titleModule={'Mis Servicios'} />} />
+                        <Route path="/AdminServices" element={<AdminServices titleModule={'Panel de Control'} />} />
                     </Routes>
                 </div>
             </div>
