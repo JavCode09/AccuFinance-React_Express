@@ -109,7 +109,7 @@ const Categories = ({titleModule}) => {
                 <div className="Categorias-btns">
                     {/* componente */}
                     <ButtonAdd ModalComponent = {ModalCategoriesAdd}
-                                getData={getData} />
+                                getData={getData} value={'Agregar'}/>
                 </div>
            
            </div>
