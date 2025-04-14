@@ -34,10 +34,13 @@
     
 
 /* Modales */
+.form_NewPanel{
+    background-color: #4CAF50;
+}
 
 /* Modal ADD */
 .custom-modal {
-    max-width: 50% !important; /* ajusta a tu gusto */
+    max-width: 70% !important; /* ajusta a tu gusto */
     margin: auto;
-  }
+}
   
