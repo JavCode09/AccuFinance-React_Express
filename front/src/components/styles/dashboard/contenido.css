@@ -8,16 +8,16 @@
 
 .main-container{
     font-family: 'Montserrat-Medium', sans-serif;
-    background:  #cdb4db;
+    /* background:  #cdb4db; */
     min-height: 100vh;
     display: flex;
-    padding: 5px;
+    padding: 0px;
     overflow: hidden; /* Oculta cualquier contenido desbordado */
 }
 
     .sidebar {
-        width: 250px; /* Ajusta el tamaño del sidebar como desees */
-        background-color: #21217e; /* Puedes ajustar el color de fondo del sidebar */
+        width: 280px; /* Ajusta el tamaño del sidebar como desees */
+        background-color: #0A4578; /* Puedes ajustar el color de fondo del sidebar */
         color: white;
         padding: 10px;
         display: flex;
@@ -25,14 +25,78 @@
         /* position: fixed; Fija el sidebar en su lugar */
         top: 0; /* Asegura que esté alineado con la parte superior */
         left: 0; /* Asegura que esté alineado con el borde izquierdo */
-        /* z-index: 1000; Asegura que esté encima de otros elementos si es necesario */
-        /* Otros estilos que desees para el sidebar */
+        border-right: 3px solid rgba(83, 137, 184, 0.9); /* Borde sutil con opacidad */
     }
 
+    /* Estilos generales para los módulos */
+    .module {
+        padding: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        display: flex;
+        align-items: center; /* Asegura que el icono y el texto estén alineados verticalmente */
+        margin: 0px 0px 5px 2px;
+    }
+
+    /* Enlaces dentro de los módulos */
+    .module a {
+        text-decoration: none;
+        color: inherit;
+        list-style: none;
+    }
+
+    /* Efecto al pasar el mouse sobre un módulo */
+    .module:hover {
+        background-color: #1777d8;
+        color: white;
+        border-radius: 10px;
+    }
+
+    /* Módulo activo (cuando el usuario está en esa sección) */
+    .module.active {
+        background-color: #fc284f;
+        color: white;
+        border-radius: 8px;
+    }
+
+    /* Módulo abierto (cuando tiene submódulos desplegados) */
+    .module.open {
+        background-color: #0056b3;
+        color: white;
+        border-radius: 10px;
+    }
+    
+    /* Mopdulos padrees sin * del li */
+    .liModulos{
+        list-style: none;
+    }
+
+    .module i {
+        margin-right: 10px; /* Esto separa el ícono del texto */
+    }
+
+    /* --- Estilos para los submódulos con animación --- */
+    .submodule-list {
+        list-style: none;
+        padding-left: 20px;
+        max-height: 0; /* Ocultar submódulos por defecto */
+        overflow: hidden;
+        opacity: 0; /* Hacer que los submódulos sean invisibles */
+    }
+
+    /* Cuando el módulo está abierto, mostrar los submódulos con animación */
+    .module.open + .submodule-list {
+        max-height: 500px; /* Ajusta este valor según la cantidad de submódulos */
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+
+    /* Contenedor de todo el sistema*/
     .content {
         flex-grow: 1; /* Hace que el contenido ocupe el espacio restante */
         padding: 5px;
-        background-color: #f8f8f8; /* Puedes cambiar el color de fondo del contenido */
+        background-color: #e0e1dd; /* Puedes cambiar el color de fondo del contenido */
         /* Otros estilos que desees para el contenido */
         top: 0; /* Asegura que esté alineado con la parte superior */
         left: 0; /* Asegura que esté alineado con el borde izquierdo */
@@ -42,8 +106,8 @@
     /* Estilos para el navbar */
     .navbar {
         width: 100%; /* Asegura que el navbar ocupe todo el ancho disponible */
-        background-color: #2c6486; /* Color de fondo del navbar */
-        color: white;
+        background-color: #ffffff; /* Color de fondo del navbar */
+        color: rgb(39, 33, 33);
         padding: 10px;
         font-size: 18px;
         font-weight: bold;
@@ -55,10 +119,10 @@
             background: rebeccapurple;
         }
         
-    /* Estilos para el content_Modules */
+    /* Estilos para el content_Modules (Contenido de los modulos) */
     .content_Modules {
         flex-grow: 1; /* Hace que el content_Modules ocupe el espacio restante */
-        background-color: #669bbc; /* Cambia el fondo de los módulos si es necesario */
+        background-color: #e0e1dd; /* Cambia el fondo de los módulos si es necesario */
         padding: 5px;
         overflow-y: auto; /* Permite el desplazamiento interno si el contenido es largo */
         padding: 10px; /* Ajuste de padding en los módulos */
@@ -71,7 +135,7 @@
 /* Titulo */
 
 .title-sidebar{
-    background: rgb(100, 37, 37);
+    /* background: rgb(100, 37, 37); */
     font-size: 2rem;
     text-align: center;
     display: flex;
@@ -95,7 +159,7 @@
 }
 
 .modules-list{
-    background: rgb(124, 52, 52);
+    /* background: rgb(124, 52, 52); */
     margin-top: 5px;
     padding: 5px;
 }

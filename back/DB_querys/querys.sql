@@ -73,17 +73,26 @@ INSERT INTO services (categoria, nombre, descripcion) VALUES
 
 -- Tabla mis servicios
 CREATE TABLE my_services (
-  `id_myservices` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  `id_services` INT NOT NULL,
-  `id_user` INT NOT NULL,
-  `descripcion` VARCHAR(45) NULL,
-  `monto` VARCHAR(45) NOT NULL,
-  `fecha_pago` DATE NOT NULL,
-  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  id_myservices INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  id_services INT NOT NULL,
+  id_user INT NOT NULL,
+  descripcion VARCHAR(45) NULL,
+  monto VARCHAR(45) NOT NULL,
+  fecha_pago DATE NOT NULL,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (`id_services`) REFERENCES services(`id`) ON DELETE RESTRICT 
 );
 
-
-
+-- Tabla plan de pagos --
+CREATE TABLE plan_de_pagos (
+    id_plan INT PRIMARY KEY AUTO_INCREMENT,
+    nombre_plan VARCHAR(100) NOT NULL,
+    user_id INT NOT NULL,
+    año INT NOT NULL,
+    meses VARCHAR(100) NOT NULL,
+    servicios VARCHAR(100) NOT NULL,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 
