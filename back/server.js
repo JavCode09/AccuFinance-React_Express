@@ -35,7 +35,7 @@ app.use("/services",verifyToken, require("./router/services"));
 
 app.use("/myServices",verifyToken , require("./router/myServices"));
 
-app.use("/myServicesPanle",verifyToken , require("./router/myServicesPanle"));
+app.use("/myServicesPanle" , require("./router/myServicesPanle"));
 
 //Buscador de modulos simple
 app.use("/search",verifyToken, require("./router/search"));
