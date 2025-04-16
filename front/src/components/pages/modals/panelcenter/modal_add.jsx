@@ -66,20 +66,74 @@ const AddNewPlan = ({showModal, closeModal}) => {
         }
     }
 
+    //Estado de formulario
+    const  [panel, setPanel] = useState({
+        idUser:'',
+        Año:'',
+        Meses:[],
+        myServicesPanel:[]
+    })
+
+    //Funcion de cambio
+    const handleChange = (e) => {
+        const {name, value, options, multiple} = e.target;
+
+        if (multiple) {
+            const values = Array.from(options) // Array.from(options) → Convierte la lista de <option>s en un array normal.
+                                .filter(option => option.selected) // .filter(option => option.selected) → Se queda solo con los seleccionados.
+                                .map(option => option.value); // .map(option => option.value) → Extrae el valor de esos seleccionados.
+
+            setPanel(prev => ({
+                ...prev,
+                [name]: values
+            }));
+        }else{
+            setPanel(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
+    }
+
+
+    //LLamada a la API
+    const API_newSystemPanel = async(e) => {
+        e.preventDefault();
+
+        try {
+            // const responseApi = await 
+            console.log('entro a la api');
+            
+        } catch (error) {
+            
+        }
+    }
+
+
     return ( 
         <Modal show={showModal} onHide={closeModal}   dialogClassName="custom-modal" centered>
-            <Modal.Header>
+            <Modal.Header closeButton>
                 <Modal.Title>Nuevo sistema de pagos.</Modal.Title>
             </Modal.Header>
-            <form className='form_NewPanel'>
+            <form className='form_NewPanel' onSubmit={API_newSystemPanel}>
                 <Modal.Body>
                     <div className="mb-3">
-                        <input className='form-control input' type="text" value={userData?.id || '' } />
+                        <input className='form-control input' 
+                                name='idUser'
+                                id='idUser'
+                                type="text" 
+                                value={userData?.id || ''}
+                                readOnly />
                     </div>
                     <div className="mb-3 d-flex">
                         <div className="col me-3">
                             <label htmlFor="Año" className='form-label label'>Selecciona un año</label>
-                            <select name="Año" id="Año" className='form-control input'>
+                            <select className='form-control input'
+                                    name="Año" 
+                                    id="Año" 
+                                    value={panel.Año || ''}
+                                    onChange={handleChange}
+                            >
                                 {years.map((year, index) => (
                                     <option key={index} value={year}>{year}</option>
                                 ))
@@ -93,7 +147,10 @@ const AddNewPlan = ({showModal, closeModal}) => {
                                     id='Meses' 
                                     className='form-control input' 
                                     multiple 
-                                    ref={selectMesesRef}>
+                                    ref={selectMesesRef}
+                                    value={panel.Meses || ''}
+                                    onChange={handleChange}
+                            >
                                     <option value="1">Enero</option>
                                     <option value="2">Febrero</option>
                                     <option value="3">Marzo</option>
@@ -115,7 +172,10 @@ const AddNewPlan = ({showModal, closeModal}) => {
                                 id="myServicesPanel" 
                                 className='form-control input' 
                                 multiple 
-                                ref={selectServiciosRef} >
+                                ref={selectServiciosRef} 
+                                value={panel.myServicesPanel || ''}
+                                onChange={handleChange}
+                        >
                                {servicios.map((servicio) => (
                                     <option key={servicio.id_myservices} value={servicio.id_services}>{servicio.nombre}</option>
                                ))
@@ -125,8 +185,8 @@ const AddNewPlan = ({showModal, closeModal}) => {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button>Cancelar</Button>
-                    <Button>Crear</Button>
+                    <Button variant='secondary' onClick={closeModal}>Cancelar</Button>
+                    <Button variant='primary' type='submit'>Crear</Button>
                 </Modal.Footer>
             </form>
         </Modal>
