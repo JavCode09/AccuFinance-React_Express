@@ -38,13 +38,23 @@
         justify-content: center; */
     }
 
+    /* tds de Table */
+    .status-active {
+        color: green;
+        font-weight: bold;
+      }
+      
+      .status-inactive {
+        color: gray;
+        font-weight: bold;
+      }
 
 /* CSS de los modales (labes e inputs)*/
 .form_Myservices{
     background-color: #4CAF50;
 }
 
-
+/*  */
 
 /* Modal ADD */
 /* Modal EDIT */

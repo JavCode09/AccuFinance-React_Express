@@ -68,12 +68,33 @@ Router.post("/MyServices", async(req,res)=> {
             return res.status(400).json({ message: "El parámetro 'searchQuery' es requerido." });
         }
 
-        const consulta = `SELECT my_services.*, services.nombre
-        FROM my_services
-        INNER JOIN services ON services.id = my_services.id_services 
-        WHERE services.nombre LIKE ?`;
+        //pasamos lo que se escribio en el buscador a sin espacios en los lados y a minusculas
+        const dataquery = searchQuery.trim().toLowerCase();
+        const datosValidos = ['active','inactive']; //Array para comprar la busqueda en minusculas
 
-        connection.query(consulta, [`%${searchQuery}%`], (err,success) => {
+        //Creamos la consulta principal
+        let consulta = `SELECT
+                        my_services.*, services.nombre
+                        FROM my_services 
+                        INNER JOIN services ON services.id = my_services.id_services
+                        `;
+        //Creamos un array bacio para agregar la busqueda o lo que s eva a buscar
+        let parametrosAbuscar = [];
+
+        //Verificamos si lo que escribió el usuario coincide con alguno de los estados válidos que tú definiste en el array (datosValidos)
+        if(datosValidos.includes(dataquery)){
+            consulta += 'WHERE my_services.general_status = ?';
+            //Ahora tomamos de la busqueda la primera letra y la pasamos a mayusculas por que asi esta en la BD 
+            //Despues tomamos el resto de la busqueda menos la primera letra ejem: active -> ctive
+            //Por ultimo concatenamos la letra mayuscula y la palabra 👉 I + nactive → Inactive  y push lo empuja o lo guarda en el array bacio
+
+            parametrosAbuscar.push(dataquery.charAt(0).toUpperCase() + dataquery.slice(1));
+        }else{
+            consulta += "WHERE services.nombre LIKE ?";
+            parametrosAbuscar.push(`%${searchQuery}%`);
+        }
+
+        connection.query(consulta,parametrosAbuscar, (err,success) => {
 
             if (err) {
         console.error("Error en la consulta: ", err);
