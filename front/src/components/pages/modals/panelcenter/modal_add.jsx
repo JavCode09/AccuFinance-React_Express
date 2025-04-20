@@ -8,7 +8,7 @@ import {UserContext} from '../../../../contexts/UserContext';
 
 //Api
 import { selectMyServicesPanel } from '../../../api/newSystemCpanle';
-
+import { inseertNewSystemPanel } from '../../../api/newSystemCpanle';
 
 const AddNewPlan = ({showModal, closeModal}) => {
     //Data login
@@ -22,15 +22,56 @@ const AddNewPlan = ({showModal, closeModal}) => {
     const [years, setYears] = useState([]);
     const [servicios, setServicios] = useState([]);
 
+    //Estado de formulario
+    const  [panel, setPanel] = useState({
+        idUser:'',
+        Año:'',
+        Meses:[],
+        myServicesPanel:[],
+        nombre_plan:''
+    })
+
     // Inicializar Choices.js
     useChoices(selectMesesRef);
     useChoices(selectServiciosRef);
 
+
     useEffect(()=> {
         functionAños();
         myServicesPanelApi();
+
+        //Asignamso el id del logeado
+        if (userData?.id) {
+            setPanel(prev =>({
+                ...prev,
+                idUser: userData.id
+            }))
+        }
+
+        // D) Registrar listeners para sincronizar selects con estado
+        const selMeses = selectMesesRef.current;
+        const selServs = selectServiciosRef.current;
+
+        const onMesesChange = () => {
+        const vals = Array.from(selMeses.selectedOptions).map(o => o.value);
+        setPanel(prev => ({ ...prev, Meses: vals }));
+        };
+        const onServsChange = () => {
+        const vals = Array.from(selServs.selectedOptions).map(o => o.value);
+        setPanel(prev => ({ ...prev, myServicesPanel: vals }));
+        };
+
+        if (selMeses) selMeses.addEventListener('change', onMesesChange);
+        if (selServs) selServs.addEventListener('change', onServsChange);
+
+        // Cleanup al cerrar modal o desmontar
+        return () => {
+        if (selMeses) selMeses.removeEventListener('change', onMesesChange);
+        if (selServs) selServs.removeEventListener('change', onServsChange);
+        };
     }, [showModal])
 
+    
     //Funcoin para bucle de años
     const functionAños = () => {
         const currentYear = new Date().getFullYear();
@@ -66,14 +107,6 @@ const AddNewPlan = ({showModal, closeModal}) => {
         }
     }
 
-    //Estado de formulario
-    const  [panel, setPanel] = useState({
-        idUser:'',
-        Año:'',
-        Meses:[],
-        myServicesPanel:[]
-    })
-
     //Funcion de cambio
     const handleChange = (e) => {
         const {name, value, options, multiple} = e.target;
@@ -101,10 +134,12 @@ const AddNewPlan = ({showModal, closeModal}) => {
         e.preventDefault();
 
         try {
-            // const responseApi = await 
-            console.log('entro a la api');
+            const responseApi = await inseertNewSystemPanel(panel);
+            console.log(responseApi);
             
         } catch (error) {
+            console.error("Error en la solicitud: " , error);
+            throw error;
             
         }
     }
@@ -134,6 +169,7 @@ const AddNewPlan = ({showModal, closeModal}) => {
                                     value={panel.Año || ''}
                                     onChange={handleChange}
                             >
+                                <option value="0">Selecciona un año</option>
                                 {years.map((year, index) => (
                                     <option key={index} value={year}>{year}</option>
                                 ))
@@ -148,9 +184,8 @@ const AddNewPlan = ({showModal, closeModal}) => {
                                     className='form-control input' 
                                     multiple 
                                     ref={selectMesesRef}
-                                    value={panel.Meses || ''}
-                                    onChange={handleChange}
-                            >
+                                   
+                            >   
                                     <option value="1">Enero</option>
                                     <option value="2">Febrero</option>
                                     <option value="3">Marzo</option>
@@ -173,20 +208,29 @@ const AddNewPlan = ({showModal, closeModal}) => {
                                 className='form-control input' 
                                 multiple 
                                 ref={selectServiciosRef} 
-                                value={panel.myServicesPanel || ''}
-                                onChange={handleChange}
+                               
                         >
                                {servicios.map((servicio) => (
-                                    <option key={servicio.id_myservices} value={servicio.id_services}>{servicio.nombre}</option>
+                                    <option key={servicio.id_myservices} value={servicio.id_myservices}>{servicio.nombre} :: {servicio.descripcion}</option>
                                ))
 
                                }
                         </select>
                     </div>
+                    <div className="mb-3">
+                        <label htmlFor="nombre_plan" className='form-label label'>Asigna un nombre unico a tu sistema de pagos</label>
+                        <input type="text"
+                               className='form-control input'
+                               id='nombre_plan'
+                               name='nombre_plan'
+                               value={panel.nombre_plan || ''}
+                               onChange={handleChange}
+                        />
+                    </div>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant='secondary' onClick={closeModal}>Cancelar</Button>
-                    <Button variant='primary' type='submit'>Crear</Button>
+                    <Button variant='primary' type='submit'>Crear Plan</Button>
                 </Modal.Footer>
             </form>
         </Modal>

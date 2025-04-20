@@ -144,7 +144,7 @@ Router.get("/GetMyService", (req, res) => {
 
 //Update
 Router.put("/updateMyServices", (req,res)=> {
-    const {id_myservices,idServicio,id_user,descripcion,monto,diaPago,fechaInicio} = req.body;
+    const {id_myservices,idServicio,id_user,descripcion,monto,diaPago,general_status,fechaInicio} = req.body;
 
     connection.beginTransaction((err) => {
         if (err) {
@@ -157,11 +157,12 @@ Router.put("/updateMyServices", (req,res)=> {
         if (!id_user){return res.status(400).json({message:"No se encontro al usuario relacionado. "})};
         if (!monto || isNaN(parseFloat(monto))){return res.status(400).json({message:"El campo monto esta vacio o no es numero. "})};
         if (!diaPago || isNaN(Number(diaPago)) || !Number.isInteger(Number(diaPago))){return res.status(400).json({message:"El campo Dia de Pago está vacio o no es un número "})};
+        if (!general_status || general_status == 0){return res.status(400).json({message:"El campo  Status esta vacio."})};
         if (!fechaInicio){return res.status(400).json({message:"El campo fecha de inicio está vacia. "})};
 
         //Consulta Update
-        const consulta = `UPDATE ${tabla} SET id_services = ?, descripcion=?, monto=?, dia_pago=?, fecha_inicio=? WHERE  id_myservices =? AND id_user=?`;
-        connection.query(consulta, [idServicio,descripcion,monto,diaPago,fechaInicio,id_myservices,id_user], (err,result) => {
+        const consulta = `UPDATE ${tabla} SET id_services = ?, descripcion=?, monto=?, dia_pago=?, general_status=?, fecha_inicio=? WHERE  id_myservices =? AND id_user=?`;
+        connection.query(consulta, [idServicio,descripcion,monto,diaPago,general_status,fechaInicio,id_myservices,id_user], (err,result) => {
             if (err) {
                 console.error(`Error en la consulta ${tabla}:`, err);
                 return res.status(500).json({message:"Error al ejecutar la consulta."})

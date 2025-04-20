@@ -117,6 +117,7 @@ const MyServices = ({titleModule}) => {
                             <th>Descripcion</th>
                             <th>Monto $</th>
                             <th>Dias de pago</th>
+                            <th>Estado</th>
                             {/* <th>Fecha inicial del servicio</th> */}
                             <th>Opciones</th>
                         </tr>
@@ -129,6 +130,14 @@ const MyServices = ({titleModule}) => {
                                     <td>{mySer.descripcion}</td>
                                     <td>${mySer.monto}</td>
                                     <td>{mySer.dia_pago}</td>
+                                    <td
+                                        className={
+                                            mySer.general_status === 'Active' ? 'status-active' :
+                                            mySer.general_status === 'Inactive' ? 'status-inactive' : ''
+                                        }
+                                    >
+                                        {mySer.general_status}
+                                    </td>
                                     {/* <td>{mySer.fecha_inicio}</td> */}
                                     <td>
                                         <div className="btns_option_Myservices">
