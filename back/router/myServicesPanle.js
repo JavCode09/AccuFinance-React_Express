@@ -51,6 +51,7 @@ Router.post("/add", (req,res) => {
             if (!Array.isArray(myServicesPanel) || myServicesPanel.length === 0) {
                 return res.status(400).json({ message: "No hay servicios asignados." });
             }
+            console.log('servicios: ' + myServicesPanel);
             
             if(!nombre_plan){ return res.status(400).json({message: "Asigna un nombre a tu Plan."}) }
     
@@ -74,8 +75,8 @@ Router.post("/add", (req,res) => {
                     })
                 }
 
-                //Si todo sale bien has aqui ahora insertamos en planes de pago
-                // const consulta2 = "";
+                //Entramos aun bucle para capturar dia de pago
+
 
                 //Si todo sale bien, hacemos commit
                 connection.commit((commitErr)=> {
