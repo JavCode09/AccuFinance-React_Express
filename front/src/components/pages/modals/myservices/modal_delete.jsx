@@ -60,7 +60,8 @@ const ModalMyServicesDelete = ({showModalDelete,clseModalDelete,category,getData
             </Modal.Header>
                 <form className='form_Myservices' onSubmit={API_DeleteMyServices}>
                     <Modal.Body>
-                        <p>¿Seguro que deseas eliminar el siguiente servicio?</p>
+                        <p>¿Estás seguro de que deseas eliminar el siguiente servicio?</p>
+                        <p>Al eliminarlo, este servicio dejará de aparecer en tus planes de pago a partir del mes en curso.</p>
                         <p><strong>Servicio: {dataIdDelete.name}</strong></p>
                         <p><strong>Servicio: {dataIdDelete.idDelete}</strong></p>
                     </Modal.Body>
