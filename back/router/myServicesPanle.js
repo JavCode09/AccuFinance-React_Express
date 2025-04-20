@@ -7,7 +7,7 @@ const connection = require("../conexion");
 
 Router.get("/all", (req,res)=> {
     const {id} = req.query;
-
+    const active = 'Active';
     if (!id) {
         return res.status(400).json({message: "El id del Usuario no se encontro."})
     }
@@ -17,9 +17,9 @@ Router.get("/all", (req,res)=> {
                                   ser.nombre 
                                   FROM ${Tabla} mys
                                   INNER JOIN services ser ON mys.id_services = ser.id 
-                                  WHERE mys.id_user = ?`;
+                                  WHERE mys.id_user = ? AND general_status = ?`;
 
-        connection.query(consulta, [id], (err, result) => {
+        connection.query(consulta, [id,active], (err, result) => {
             if (err) {
                 console.error(`Error en la consulta  ${Tabla}: ` , err);
                 return res.status(500).json({message:"Error al ejecutar la consulta"})
@@ -32,7 +32,7 @@ Router.get("/all", (req,res)=> {
     })
 
 Router.post("/add", (req,res) => {
-    const {nombre_plan, idUser, Año, Meses, myServicesPanel} = req.body;
+    const {idUser, Año, Meses, myServicesPanel,nombre_plan} = req.body;
 
     //Creamos transacion 
     connection.beginTransaction((err) => {
@@ -43,21 +43,39 @@ Router.post("/add", (req,res) => {
         try {
             
             if(!idUser){ return res.status(400).json({message: "No hay usuario asignado."}) }
-            if(!Año){ return res.status(400).json({message: "No hay Año asignado."}) }
-            if(!Meses){ return res.status(400).json({message: "No hay Meses asignados."}) }
-            if(!myServicesPanel){ return res.status(400).json({message: "No hay servicios asignados."}) }
+            if(!Año || Año === 0){ return res.status(400).json({message: "No hay Año asignado."}) }
+            
+            if (!Array.isArray(Meses) || Meses.length === 0) {
+                return res.status(400).json({ message: "No hay Meses asignados." });
+            }
+            if (!Array.isArray(myServicesPanel) || myServicesPanel.length === 0) {
+                return res.status(400).json({ message: "No hay servicios asignados." });
+            }
+            
+            if(!nombre_plan){ return res.status(400).json({message: "Asigna un nombre a tu Plan."}) }
     
-            const consulta = "INSERT INTO plan_de_pagos (nombre_plan,user_id,año,meses,servicios) VALUES (?,?,?,?,?)";
+            const consulta = "INSERT INTO planes (nombre_plan,user_id,año,meses,servicios) VALUES (?,?,?,?,?)";
             connection.query(consulta, [nombre_plan, 
                                         idUser, 
                                         Año,  
                                         JSON.stringify(Meses),
                                         JSON.stringify(myServicesPanel)] , (err,result) => {
                 if (err) {
+
+                    //Si es duplicado el nombre
+                    if (err.code === 'ER_DUP_ENTRY') {
+                        return connection.rollback(()=>{
+                            res.status(409).json({message: "Este nombre de plan ya está asignado a tu cuenta."});
+                        })
+                    }
+                    // si es otro error
                     return connection.rollback(() => {
-                        res.status(500).json({message: "Error al crear el plan de pagos."})
+                        res.status(500).json({message: "Error al crear el plan."})
                     })
                 }
+
+                //Si todo sale bien has aqui ahora insertamos en planes de pago
+                // const consulta2 = "";
 
                 //Si todo sale bien, hacemos commit
                 connection.commit((commitErr)=> {
