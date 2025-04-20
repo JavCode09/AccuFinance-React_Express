@@ -108,7 +108,7 @@ const NuevoServicio = ({titleModule}) => {
                     <SearchBar plaholderName="Servicio" onSearch={handleSearch} /> 
                 </div>
                 <div className="NewServices-btns">
-                    <ButtonAdd ModalComponent={Modal_newServices_add} getData={getData}/>
+                    <ButtonAdd ModalComponent={Modal_newServices_add} getData={getData} value={'Agregar'}/>
                 </div>
             </div>
             <div className="NewServices-content">

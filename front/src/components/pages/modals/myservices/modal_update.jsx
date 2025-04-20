@@ -19,6 +19,7 @@ const ModalUpdateMyServices = ({showModal_Update,closeModal_update, category,get
         descripcion: "",
         monto: "",
         diaPago: "",
+        general_status: "",
         fechaInicio: "",
     });
 
@@ -41,6 +42,7 @@ const ModalUpdateMyServices = ({showModal_Update,closeModal_update, category,get
                         descripcion: DataInformation.data[0].descripcion,
                         monto: DataInformation.data[0].monto,
                         diaPago: DataInformation.data[0].dia_pago,
+                        general_status: DataInformation.data[0].general_status,
                         fechaInicio: DataInformation.data[0].fecha_inicio.split("T")[0] // Para compatibilidad con input date,
                     })
                 }
@@ -155,6 +157,19 @@ const ModalUpdateMyServices = ({showModal_Update,closeModal_update, category,get
                             value={DataUpdate.diaPago || ""}
                             onChange={handlechange}
                         />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="general_status" className='form-label label'>Status</label>
+                        <select className='form-control input'
+                            id='general_status'
+                            name='general_status'
+                            value={DataUpdate.general_status || ''}
+                            onChange={handlechange}
+                        >
+                            <option value="0">-- Select status --</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                        </select>
                     </div>
                     <div className="mb-3">
                         <label htmlFor="fechaInicio" className='form-label label'>Fecha Inicio</label>

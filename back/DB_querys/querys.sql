@@ -73,17 +73,45 @@ INSERT INTO services (categoria, nombre, descripcion) VALUES
 
 -- Tabla mis servicios
 CREATE TABLE my_services (
-  `id_myservices` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  `id_services` INT NOT NULL,
-  `id_user` INT NOT NULL,
-  `descripcion` VARCHAR(45) NULL,
-  `monto` VARCHAR(45) NOT NULL,
-  `fecha_pago` DATE NOT NULL,
-  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  id_myservices INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  id_services INT NOT NULL,
+  id_user INT NOT NULL,
+  descripcion VARCHAR(45) NULL,
+  monto VARCHAR(45) NOT NULL,
+  dia_pago int(11) NOT NULL,
+  general_status ENUM('Active', 'Inactive', 'Deleted') DEFAULT 'Active',
+  fecha_inicio date NOT NULL,
+  updated_at timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  created_at timestamp NOT NULL DEFAULT current_timestamp()
   FOREIGN KEY (`id_services`) REFERENCES services(`id`) ON DELETE RESTRICT 
+); --aqui
+
+-- Tabla plan de pagos --
+CREATE TABLE planes (
+    id_plan INT PRIMARY KEY AUTO_INCREMENT,
+    nombre_plan VARCHAR(100) NOT NULL,
+    user_id INT NOT NULL,
+    año INT NOT NULL,
+    meses VARCHAR(100) NOT NULL,
+    servicios VARCHAR(100) NOT NULL,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    -- Restricción UNIQUE para combinar nombre_plan y user_id
+    CONSTRAINT unique_nombre_plan_per_user UNIQUE (nombre_plan, user_id)
 );
 
-
-
-
+-- Tabla Planes de pago --
+CREATE TABLE planes_de_pago (
+    id_payment INT PRIMARY KEY AUTO_INCREMENT,
+    id_plan INT NOT NULL,
+    user_id INT NOT NULL,
+    año YEAR NOT NULL,
+    mes TINYINT NOT NULL,
+    monto DECIMAL(10,2) NOT NULL,
+    my_service INT NOT NULL,
+    service_status ENUM('Pending','Paid','Overdue') DEFAULT 'Pending',
+    due_date DATE NOT NULL, 
+    paid_at DATETIME NULL, -- qUEDA NULL AL SER CREADO, ES LA FECHA DE PAGO --
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

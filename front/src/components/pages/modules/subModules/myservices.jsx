@@ -17,6 +17,8 @@ import ModalMyServicesDelete from '../../modals/myservices/modal_delete';
 
 //api
 import { selectMyServices } from '../../../api/myservices';
+import { search_barModule } from '../../../api/search_bar'; //Buscador
+
 
 const MyServices = ({titleModule}) => {
 
@@ -46,6 +48,22 @@ const MyServices = ({titleModule}) => {
         }
     }
 
+    //Buscador
+    const handleSearch = async(query) => {
+        try {
+            if (query.trim() === "") {
+                setFilteredData(DataMyservices);
+            }else{
+                const routeName = 'MyServices';
+                const response = await search_barModule({searchQuery: query}, routeName)
+                setFilteredData(response)
+            }
+        } catch (error) {
+            console.log(error);
+            console.error("Error al buscar tus servicios:", error);
+            setFilteredData([]);
+        }
+    }
    //-------------------- Paginacion --------------------
     
     const dataToDisplay = filteredData.length > 0 ? filteredData : DataMyservices;
@@ -84,10 +102,10 @@ const MyServices = ({titleModule}) => {
             </div>
             <div className="Myservices-option">
                 <div className="Myservices-search">
-                    <SearchBar plaholderName="Mis Servicios"  /> 
+                    <SearchBar plaholderName="Mis Servicios" onSearch={handleSearch} /> 
                 </div>
                 <div className="Myservices-btns">
-                    <ButtonAdd ModalComponent={ModalAddMyservices} getData={getData}/>
+                    <ButtonAdd ModalComponent={ModalAddMyservices} getData={getData} value={'Agregar'}/>
                 </div>
             </div>
             <div className="Myservices-content">
@@ -99,6 +117,7 @@ const MyServices = ({titleModule}) => {
                             <th>Descripcion</th>
                             <th>Monto $</th>
                             <th>Dias de pago</th>
+                            <th>Estado</th>
                             {/* <th>Fecha inicial del servicio</th> */}
                             <th>Opciones</th>
                         </tr>
@@ -111,6 +130,14 @@ const MyServices = ({titleModule}) => {
                                     <td>{mySer.descripcion}</td>
                                     <td>${mySer.monto}</td>
                                     <td>{mySer.dia_pago}</td>
+                                    <td
+                                        className={
+                                            mySer.general_status === 'Active' ? 'status-active' :
+                                            mySer.general_status === 'Inactive' ? 'status-inactive' : ''
+                                        }
+                                    >
+                                        {mySer.general_status}
+                                    </td>
                                     {/* <td>{mySer.fecha_inicio}</td> */}
                                     <td>
                                         <div className="btns_option_Myservices">

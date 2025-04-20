@@ -1,0 +1,46 @@
+.containerPanel{
+    background-color: rgb(218, 144, 144);
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+.bodyHead{
+    /* background-color: aqua; */
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+}
+
+.bodyPanelbox1{
+    background-color: aqua;
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 5px;
+}
+    .myservicesAdmin, .bodyExtras{
+        background-color: blueviolet;
+        padding: 5px;
+        margin: 5px;
+        width: 100%;
+    }
+
+.bodyPanelbox2{
+    background-color: rgb(238, 255, 0);
+    padding: 5px;
+    margin-bottom: 5px;
+}
+    
+    
+
+/* Modales */
+.form_NewPanel{
+    background-color: #4CAF50;
+}
+
+/* Modal ADD */
+.custom-modal {
+    max-width: 70% !important; /* ajusta a tu gusto */
+    margin: auto;
+}
+  
