@@ -51,3 +51,26 @@ export const inseertNewSystemPanel = async(formData) => {
         
     }
 }
+
+//Select planes
+export const API_selectPlanes = async(idUser) => {
+    try {
+        const response = await fetch(`${config.API_URL}/myServicesPanle/allPlan?idUser=${idUser}`, {
+            method:'GET',
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        })
+        if (!response.ok) {
+            const errorData = await response.json();
+            const error = new Error("Error en la solicitud a la API");
+            error.response = {status:response.status, data:errorData}
+            throw error
+        }
+    } catch (error) {
+        console.error("Error en la peticion: ", error);
+        throw error
+        
+    }
+}

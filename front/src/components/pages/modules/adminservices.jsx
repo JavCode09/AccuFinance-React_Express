@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Modal } from 'react-bootstrap';
+
 //css
 import '../../styles/views/PanelControl.css';
 
@@ -10,6 +10,7 @@ import ButtonAdd from '../../common/buttons/btn-add';
 import AddNewPlan from '../modals/panelcenter/modal_add';
 
 //Vistas
+import Planes from './subModules/planes';
 import PanelPrincipal from './subModules/panelprincipal';
 
 const AdminServices = ({titleModule}) => {
@@ -25,7 +26,7 @@ const AdminServices = ({titleModule}) => {
             </div>
             <div className="bodyPanelbox1">
                 <div className="myservicesAdmin">
-                    Planes agregados por año
+                    <Planes />
                 </div>
                 <div className="bodyExtras">
                     Plan por mes sobre el del año seleccionado
