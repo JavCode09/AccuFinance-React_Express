@@ -22,7 +22,7 @@ const ModalAddMyservices = ({showModal,closeModal,getData}) => {
         Descripcion:'',
         Monto:'',
         Dia_pago:'',
-        Fecha_inicio: ''
+        Fecha_fin: ''
     })
 
     useEffect(() => {
@@ -147,7 +147,7 @@ const ModalAddMyservices = ({showModal,closeModal,getData}) => {
                     </div>
                     <div className="mb-3">
                         <label htmlFor="Dia_pago" className='form-label label'>Dia de Pago</label>
-                        <input className='form-control input'
+                        <input className='form-control input' placeholder='¿Que dia pagas regularmente?'
                             name='Dia_pago'
                             id='Dia_pago'
                             type="text"
@@ -158,12 +158,12 @@ const ModalAddMyservices = ({showModal,closeModal,getData}) => {
                         />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="Fecha_inicio" className='form-label label'>Fecha Inicio</label>
+                        <label htmlFor="Fecha_fin" className='form-label label'>Fecha Fin de Pago</label>
                         <input className='form-control input'
-                            name='Fecha_inicio'
-                            id='Fecha_inicio'
+                            name='Fecha_fin'
+                            id='Fecha_fin'
                             type="date" 
-                            value={formDataMyservices.Fecha_inicio || ''}
+                            value={formDataMyservices.Fecha_fin || ''}
                             onChange={handleChange}  
                         />
                     </div>

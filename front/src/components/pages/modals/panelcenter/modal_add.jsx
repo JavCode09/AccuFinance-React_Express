@@ -11,6 +11,7 @@ import {UserContext} from '../../../../contexts/UserContext';
 import { selectMyServicesPanel, inseertNewSystemPanel } from '../../../api/newSystemCpanle';
 
 
+
 const AddNewPlan = ({showModal, closeModal}) => {
     //Data login
     const {userData} = useContext(UserContext)
@@ -58,6 +59,24 @@ const AddNewPlan = ({showModal, closeModal}) => {
             Año: selectedValue
             }));
         });
+
+        // Escuchar manualmente el cambio de los meses
+        $(selectMesesRef.current).on('change', function (e) {
+            const selectedValue = $(this).val();
+            setPanel(prev => ({
+                ...prev,
+                Meses: selectedValue
+            }))
+        })
+
+        // Escuchar manualmente el cambio de los servicios
+        $(selectServicesRef.current).on('change', function (e){
+            const selectedValue = $(this).val();
+            setPanel(prev => ({
+                ...prev,
+                myServicesPanel: selectedValue
+            }))
+        })
 
         //Cuando cerramos modal destruye las referencias a los select entrando al return
         return () => {
