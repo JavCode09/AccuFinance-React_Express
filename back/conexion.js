@@ -2,6 +2,7 @@
 
 require("dotenv").config();
 const mysql = require("mysql");
+const util = require("util");
 
 const conexion = mysql.createConnection({
     host: process.env.HOST,
@@ -19,4 +20,15 @@ conexion.connect((err) => {
     console.log("Conexion exitosa a la BD!");
 });
 
-module.exports = conexion;
+// Promisificamos funciones ligadas con la conexion a la BD 
+const query = util.promisify(conexion.query).bind(conexion);
+const beginTransaction = util.promisify(conexion.beginTransaction).bind(conexion);
+const commit = util.promisify(conexion.commit).bind(conexion);
+const rollback = util.promisify(conexion.rollback).bind(conexion);
+
+module.exports = {
+    query,
+    beginTransaction,
+    commit,
+    rollback
+};

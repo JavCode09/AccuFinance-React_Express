@@ -20,7 +20,7 @@ const ModalUpdateMyServices = ({showModal_Update,closeModal_update, category,get
         monto: "",
         diaPago: "",
         general_status: "",
-        fechaInicio: "",
+        fecha_fin_pago: "",
     });
 
     //estado para traer todos los servicios
@@ -43,7 +43,7 @@ const ModalUpdateMyServices = ({showModal_Update,closeModal_update, category,get
                         monto: DataInformation.data[0].monto,
                         diaPago: DataInformation.data[0].dia_pago,
                         general_status: DataInformation.data[0].general_status,
-                        fechaInicio: DataInformation.data[0].fecha_inicio.split("T")[0] // Para compatibilidad con input date,
+                        fecha_fin_pago: DataInformation.data[0].fecha_fin_pago.split("T")[0] // Para compatibilidad con input date,
                     })
                 }
 
@@ -151,7 +151,7 @@ const ModalUpdateMyServices = ({showModal_Update,closeModal_update, category,get
                     <div className="mb-3">
                         <label htmlFor="diaPago" className='form-label label'>Dia de Pago</label>
                         <input type="text" 
-                            className='form-control input'
+                            className='form-control input' placeholder='¿Que dia pagas regularmente?'
                             id='diaPago'
                             name='diaPago' 
                             value={DataUpdate.diaPago || ""}
@@ -172,12 +172,12 @@ const ModalUpdateMyServices = ({showModal_Update,closeModal_update, category,get
                         </select>
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="fechaInicio" className='form-label label'>Fecha Inicio</label>
+                        <label htmlFor="fecha_fin_pago" className='form-label label'>Fecha Fin de Pago</label>
                         <input type="date" 
                             className='form-control input'
-                            id='fechaInicio'
-                            name='fechaInicio' 
-                            value={DataUpdate.fechaInicio || ""}
+                            id='fecha_fin_pago'
+                            name='fecha_fin_pago' 
+                            value={DataUpdate.fecha_fin_pago || ""}
                             onChange={handlechange}
                         />
                     </div>

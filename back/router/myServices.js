@@ -51,7 +51,7 @@ Router.get("/AllServices", async(req,res) => {
 
 Router.post("/AddMyService", async(req,res) => {
     //Traemos la informacion
-    const  {Servicio,Id_user,Descripcion,Monto,Dia_pago,Fecha_inicio} = req.body;
+    const  {Servicio,Id_user,Descripcion,Monto,Dia_pago,Fecha_fin} = req.body;
 
      // Validar si alguna variable está vacía o indefinida
      if (!Servicio) return res.status(400).json({message: "El campo 'Servicio' está vacío" });
@@ -59,7 +59,7 @@ Router.post("/AddMyService", async(req,res) => {
      if (!Descripcion) return res.status(400).json({ message: "El campo 'Descripcion' está vacío" });
      if (!Monto) return res.status(400).json({ message: "El campo 'Monto' está vacío" });
      if (!Dia_pago) return res.status(400).json({ message: "El campo 'Dia_pago' está vacío" });
-     if (!Fecha_inicio) return res.status(400).json({ message: "El campo 'Fecha_inicio' está vacío" });
+     if (!Fecha_fin) return res.status(400).json({ message: "El campo 'Fecha_fin' está vacío" });
     
     // Iniciar Transacción 
     connection.beginTransaction(async(err)=> {
@@ -70,8 +70,8 @@ Router.post("/AddMyService", async(req,res) => {
         try {
             //Consulta
             const result = await new Promise((resolve,reject) => {
-            const consulta = `INSERT INTO ${tabla} (id_services,id_user,descripcion,monto,dia_pago,fecha_inicio) VALUES (?,?,?,?,?,?)`;
-                connection.query(consulta, [Servicio,Id_user,Descripcion,Monto,Dia_pago,Fecha_inicio], (err, success) => {
+            const consulta = `INSERT INTO ${tabla} (id_services,id_user,descripcion,monto,dia_pago,fecha_fin_pago) VALUES (?,?,?,?,?,?)`;
+                connection.query(consulta, [Servicio,Id_user,Descripcion,Monto,Dia_pago,Fecha_fin], (err, success) => {
                     if (err) {
                         console.error(`Error en la consulta Tabla ${tabla}: `,  err);
                         reject(err);
@@ -144,7 +144,7 @@ Router.get("/GetMyService", (req, res) => {
 
 //Update
 Router.put("/updateMyServices", (req,res)=> {
-    const {id_myservices,idServicio,id_user,descripcion,monto,diaPago,general_status,fechaInicio} = req.body;
+    const {id_myservices,idServicio,id_user,descripcion,monto,diaPago,general_status,fecha_fin_pago} = req.body;
 
     connection.beginTransaction((err) => {
         if (err) {
@@ -158,11 +158,11 @@ Router.put("/updateMyServices", (req,res)=> {
         if (!monto || isNaN(parseFloat(monto))){return res.status(400).json({message:"El campo monto esta vacio o no es numero. "})};
         if (!diaPago || isNaN(Number(diaPago)) || !Number.isInteger(Number(diaPago))){return res.status(400).json({message:"El campo Dia de Pago está vacio o no es un número "})};
         if (!general_status || general_status == 0){return res.status(400).json({message:"El campo  Status esta vacio."})};
-        if (!fechaInicio){return res.status(400).json({message:"El campo fecha de inicio está vacia. "})};
+        if (!fecha_fin_pago){return res.status(400).json({message:"El campo fecha fin de pago está vacia. "})};
 
         //Consulta Update
-        const consulta = `UPDATE ${tabla} SET id_services = ?, descripcion=?, monto=?, dia_pago=?, general_status=?, fecha_inicio=? WHERE  id_myservices =? AND id_user=?`;
-        connection.query(consulta, [idServicio,descripcion,monto,diaPago,general_status,fechaInicio,id_myservices,id_user], (err,result) => {
+        const consulta = `UPDATE ${tabla} SET id_services = ?, descripcion=?, monto=?, dia_pago=?, general_status=?, fecha_fin_pago=? WHERE  id_myservices =? AND id_user=?`;
+        connection.query(consulta, [idServicio,descripcion,monto,diaPago,general_status,fecha_fin_pago,id_myservices,id_user], (err,result) => {
             if (err) {
                 console.error(`Error en la consulta ${tabla}:`, err);
                 return res.status(500).json({message:"Error al ejecutar la consulta."})
