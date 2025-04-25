@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 //css
 import '../../styles/views/PanelControl.css';
@@ -14,6 +14,9 @@ import Planes from './subModules/planes';
 import PanelPrincipal from './subModules/panelprincipal';
 
 const AdminServices = ({titleModule}) => {
+
+    const [selectedPlan, setSelectedPlan] = useState(null); // 👈 aquí guardamos el plan
+
     return ( 
         <div className='containerPanel'>
             <div className="bodyHead">
