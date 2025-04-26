@@ -109,5 +109,22 @@ Router.get("/allPlan", async(req, res) => {
 })
 
 
+// Planes de pago por sesion
+Router.post("/planesdp", async(req,res) => {
+  const  {idPlan ,id_user} = req.body;
+
+  if (!idPlan) { return res.status(400).json({message:"No se encontro el plan."})}
+  if (!id_user) { return res.status(400).json({message:"No se encontro al usuario."})}
+
+  try {
+    const consulta = `SELECT * FROM ${planes_de_pago} WHERE id_plan = ? AND user_id = ?`;
+    const result = await query(consulta, [idPlan,id_user]);
+
+    return res.status(200).json({data:result})
+  } catch (error) {
+    console.error("Error en la consulta: ", error);
+    return res.status(500).json({message:"Error al obtener los planes de pago por año."})
+  }
+})
 
 module.exports = Router
