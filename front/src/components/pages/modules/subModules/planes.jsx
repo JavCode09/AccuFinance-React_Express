@@ -9,7 +9,7 @@ import { UserContext } from '../../../../contexts/UserContext';
 //API
 import { API_selectPlanes } from '../../../api/newSystemCpanle';
 
-const Planes = () => {
+const Planes = ({getMeses}) => {
     //Informacion del logeado o sesion
     const {userData} = useContext(UserContext);
 
@@ -38,15 +38,6 @@ const Planes = () => {
             throw error;
         }
     }
-    
-    //API_obtener Planes de pago
-    const API_planesPago = (dataPlanes_id) => {
-
-        console.log('dataPlanes_id: ' + dataPlanes_id);
-        
-        // Una ves que se traigan los planes de pago pasamos info como prop
-        // Al componente padre.
-    }
 
     return ( 
        <Table responsive>
@@ -66,7 +57,7 @@ const Planes = () => {
                         <td>{dataPlanes.año}</td>
                         <td>
                            <Button onClick={
-                                            () => API_planesPago(dataPlanes.id_plan)
+                                            () => getMeses(dataPlanes.meses , dataPlanes.id_plan)
                                             }
                             >
                                 Ver Plan
