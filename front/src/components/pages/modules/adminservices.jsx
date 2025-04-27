@@ -27,6 +27,18 @@ const AdminServices = ({titleModule}) => {
         setIdplan(id_plan)
     }
    
+    //hook de estado planes de pago optenidos por el mes
+    const [planesPorMes, setplanesPorMes] = useState([])
+    const [mesNumero, setmesNumero] = useState([])
+
+    //funcion para porcesar el estado de planes de pago
+    const Getplanes_de_pago = (planesdp, mes) => {
+        // console.log('planesdp: '  , planesdp);
+        
+        //Pasamos al estado
+        setplanesPorMes(planesdp);
+        setmesNumero(mes);
+    }
 
     return ( 
         <div className='containerPanel'>
@@ -43,11 +55,11 @@ const AdminServices = ({titleModule}) => {
                     <Planes getMeses={getMesesYidplan} />
                 </div>
                 <div className="bodyExtras">
-                    <MesesDePlanes meses={mesesUnicos} id_plan={idpla} />
+                    <MesesDePlanes meses={mesesUnicos} id_plan={idpla} Getplanes_de_pago={Getplanes_de_pago}/>
                 </div>
             </div>
             <div className="bodyPanelbox2">
-                <PanelPrincipal />
+                <PanelPrincipal planesPorMes={planesPorMes} mesNumero={mesNumero}/>
             </div>
         </div>
      );
