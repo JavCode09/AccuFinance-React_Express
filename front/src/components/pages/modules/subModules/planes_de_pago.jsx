@@ -1,10 +1,13 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Table, Button } from 'react-bootstrap';
 
 //Informacion de session
 import { UserContext } from '../../../../contexts/UserContext';
 
-const MesesDePlanes = ({meses, id_plan}) => {
+//Api planes de pago
+import { API_planes_de_pago } from '../../../api/newSystemCpanle';
+
+const MesesDePlanes = ({meses, id_plan, Getplanes_de_pago}) => {
 
     //Informacion del logeado o sesion
     const {userData} = useContext(UserContext);
@@ -32,13 +35,29 @@ const MesesDePlanes = ({meses, id_plan}) => {
 
 
     //API_obtener Planes de pago
-    const API_planesPago = (idplan, id_user, mes) => {
-
-        console.log('idplan: ' + idplan);
-        console.log('id_user: ' + id_user);
-        console.log('mes: ' + mes);
+    const API_planesPago = async(idplan, id_user, mes) => {
         
+        try {
+            const responseApiplanes = await API_planes_de_pago(idplan,id_user,mes)
 
+            // console.log(responseApiplanes);
+            if (responseApiplanes) {
+                // console.log("Datos obtenidos");
+                
+                //Pasamos al hook de estados de planes
+                Getplanes_de_pago(responseApiplanes.data, mes)
+            }
+
+        } catch (error) {
+            console.error(error);
+            
+            if (error.response && error.response.status === 400) {
+                alert(`${error.response.data.message}`)
+            }else{
+                alert(`${error.response.data.message}`)
+            }
+            
+        }
         
     }
 

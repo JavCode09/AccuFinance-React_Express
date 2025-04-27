@@ -111,14 +111,19 @@ Router.get("/allPlan", async(req, res) => {
 
 // Planes de pago por sesion
 Router.post("/planesdp", async(req,res) => {
-  const  {idPlan ,id_user} = req.body;
+  const  {idPlan ,id_user, mes} = req.body;
 
   if (!idPlan) { return res.status(400).json({message:"No se encontro el plan."})}
   if (!id_user) { return res.status(400).json({message:"No se encontro al usuario."})}
+  if (!mes) { return res.status(400).json({message:"No se encontro el mes."})}
 
   try {
-    const consulta = `SELECT * FROM ${planes_de_pago} WHERE id_plan = ? AND user_id = ?`;
-    const result = await query(consulta, [idPlan,id_user]);
+    const consulta = `SELECT planes.*,
+                             serv.nombre
+                      FROM ${planes_de_pago} planes
+                      INNER JOIN services serv ON serv.id = planes.my_service
+                      WHERE id_plan = ? AND user_id = ? AND mes = ?`;
+    const result = await query(consulta, [idPlan, id_user, mes]);
 
     return res.status(200).json({data:result})
   } catch (error) {

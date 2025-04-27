@@ -77,7 +77,7 @@ export const API_selectPlanes = async(idUser) => {
     }
 }
 
-export const API_planes_de_pago = async(idPlan, id_user) => {
+export const API_planes_de_pago = async(idPlan, id_user, mes) => {
     try {
         const response = await fetch(`${config.API_URL}myServicesPanle/planesdp`, {
             method:"POST",
@@ -87,7 +87,8 @@ export const API_planes_de_pago = async(idPlan, id_user) => {
             },
             body:JSON.stringify({
                 idPlan,
-                id_user
+                id_user,
+                mes
             })
         })
         if (!response.ok) {
