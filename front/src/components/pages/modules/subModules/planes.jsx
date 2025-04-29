@@ -3,8 +3,18 @@ import {Button} from 'react-bootstrap';
 
 import { Table } from 'react-bootstrap';
 
+import '../../../styles/views/planes.css'
+
 //Informacion de session
 import { UserContext } from '../../../../contexts/UserContext';
+
+//Buttons
+import ButtonUpdate from '../../../common/buttons/btn-update';
+import ButtonDelete from '../../../common/buttons/btn-delete';
+
+//Modals
+import UpdateModalPlanes from '../../modals/panelcenter/modal_update';
+
 
 //API
 import { API_selectPlanes } from '../../../api/newSystemCpanle';
@@ -40,7 +50,7 @@ const Planes = ({getMeses}) => {
     }
 
     return ( 
-       <Table responsive>
+       <Table responsive className='tableAños'>
             <thead>
                 <tr>
                     <th>Id</th>
@@ -56,12 +66,16 @@ const Planes = ({getMeses}) => {
                         <td>{dataPlanes.nombre_plan}</td>
                         <td>{dataPlanes.año}</td>
                         <td>
-                           <Button onClick={
-                                            () => getMeses(dataPlanes.meses , dataPlanes.id_plan)
-                                            }
-                            >
-                                Ver Plan
-                            </Button>
+                            <div className="divcss">
+                                <Button size="sm" onClick={
+                                                () => getMeses(dataPlanes.meses , dataPlanes.id_plan)
+                                                }
+                                >
+                                    Ver Plan
+                                </Button>
+                                <ButtonUpdate size="sm" ModalCategoriesUpdate={UpdateModalPlanes} />
+                                <ButtonDelete size="sm" />
+                            </div>
                         </td>
                     </tr>
                  ))}
