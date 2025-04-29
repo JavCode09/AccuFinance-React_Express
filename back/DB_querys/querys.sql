@@ -80,7 +80,7 @@ CREATE TABLE my_services (
   monto VARCHAR(45) NOT NULL,
   dia_pago int(11) NOT NULL,
   general_status ENUM('Active', 'Inactive', 'Deleted') DEFAULT 'Active',
-  fecha_inicio date NOT NULL,
+  fecha_fin_pago date NOT NULL,
   updated_at timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   created_at timestamp NOT NULL DEFAULT current_timestamp()
   FOREIGN KEY (`id_services`) REFERENCES services(`id`) ON DELETE RESTRICT 
@@ -110,8 +110,8 @@ CREATE TABLE planes_de_pago (
     monto DECIMAL(10,2) NOT NULL,
     my_service INT NOT NULL,
     service_status ENUM('Pending','Paid','Overdue') DEFAULT 'Pending',
-    due_date DATE NOT NULL, 
-    paid_at DATETIME NULL, -- qUEDA NULL AL SER CREADO, ES LA FECHA DE PAGO --
+    due_date DATE NOT NULL,  -- Fecha vencimiento
+    paid_at DATETIME NULL, -- Fecha de Pago realizado --
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

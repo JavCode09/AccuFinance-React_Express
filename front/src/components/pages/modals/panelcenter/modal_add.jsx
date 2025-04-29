@@ -1,22 +1,20 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Modal,Button } from 'react-bootstrap';
-import useChoices from '../../../../utils/useChoices';
+
+//Jquery y select2
+import $, { initSelect2, destroySelect2 }  from '../../../../utils/jqueryYselect2';
 
 //Data del login
 import {UserContext} from '../../../../contexts/UserContext';
 
-
 //Api
-import { selectMyServicesPanel } from '../../../api/newSystemCpanle';
-import { inseertNewSystemPanel } from '../../../api/newSystemCpanle';
+import { selectMyServicesPanel, inseertNewSystemPanel } from '../../../api/newSystemCpanle';
+
+
 
 const AddNewPlan = ({showModal, closeModal}) => {
     //Data login
     const {userData} = useContext(UserContext)
-
-    // Refs para select múltiple
-    const selectMesesRef = useRef(null); //Mese
-    const selectServiciosRef = useRef(null); //Servicios
 
     // Estado para años y servicios
     const [years, setYears] = useState([]);
@@ -31,10 +29,10 @@ const AddNewPlan = ({showModal, closeModal}) => {
         nombre_plan:''
     })
 
-    // Inicializar Choices.js
-    useChoices(selectMesesRef);
-    useChoices(selectServiciosRef);
-
+    //Creamos variables (cajitas) para los 3 select
+    const selectMesesRef = useRef(null);
+    const selectServicesRef = useRef(null);
+    const selectAñoRef = useRef(null);
 
     useEffect(()=> {
         functionAños();
@@ -48,31 +46,50 @@ const AddNewPlan = ({showModal, closeModal}) => {
             }))
         }
 
-        // D) Registrar listeners para sincronizar selects con estado
-        const selMeses = selectMesesRef.current;
-        const selServs = selectServiciosRef.current;
+        //Mandamos cada cajita y instrucciones (detalles) como un placeholder
+        initSelect2(selectMesesRef, { placeholder: 'Selecciona meses' });
+        initSelect2(selectServicesRef, { placeholder: 'Selecciona servicios' });
+        initSelect2(selectAñoRef, { placeholder: 'Selecciona un año' });
+    
+        // Escuchar manualmente el cambio del año
+        $(selectAñoRef.current).on('change', function (e) {
+            const selectedValue = $(this).val();
+            setPanel(prev => ({
+            ...prev,
+            Año: selectedValue
+            }));
+        });
 
-        const onMesesChange = () => {
-        const vals = Array.from(selMeses.selectedOptions).map(o => o.value);
-        setPanel(prev => ({ ...prev, Meses: vals }));
-        };
-        const onServsChange = () => {
-        const vals = Array.from(selServs.selectedOptions).map(o => o.value);
-        setPanel(prev => ({ ...prev, myServicesPanel: vals }));
-        };
+        // Escuchar manualmente el cambio de los meses
+        $(selectMesesRef.current).on('change', function (e) {
+            const selectedValue = $(this).val();
+            setPanel(prev => ({
+                ...prev,
+                Meses: selectedValue
+            }))
+        })
 
-        if (selMeses) selMeses.addEventListener('change', onMesesChange);
-        if (selServs) selServs.addEventListener('change', onServsChange);
+        // Escuchar manualmente el cambio de los servicios
+        $(selectServicesRef.current).on('change', function (e){
+            const selectedValue = $(this).val();
+            setPanel(prev => ({
+                ...prev,
+                myServicesPanel: selectedValue
+            }))
+        })
 
-        // Cleanup al cerrar modal o desmontar
+        //Cuando cerramos modal destruye las referencias a los select entrando al return
         return () => {
-        if (selMeses) selMeses.removeEventListener('change', onMesesChange);
-        if (selServs) selServs.removeEventListener('change', onServsChange);
-        };
-    }, [showModal])
+            $(selectAñoRef.current).off('change');
+            destroySelect2(selectAñoRef);
+            destroySelect2(selectMesesRef);
+            destroySelect2(selectServicesRef);
+          };
+
+    }, [showModal,userData?.id])
 
     
-    //Funcoin para bucle de años
+     // Función para bucle de años
     const functionAños = () => {
         const currentYear = new Date().getFullYear();
         const yearsOpcions = [];
@@ -91,7 +108,7 @@ const AddNewPlan = ({showModal, closeModal}) => {
 
         try {
             const allServicesAPi = await selectMyServicesPanel(userData?.id)
-            console.log(allServicesAPi);
+            // console.log(allServicesAPi);
             
             //Agregamos al estado
             setServicios(allServicesAPi.data)
@@ -114,8 +131,8 @@ const AddNewPlan = ({showModal, closeModal}) => {
         if (multiple) {
             const values = Array.from(options) // Array.from(options) → Convierte la lista de <option>s en un array normal.
                                 .filter(option => option.selected) // .filter(option => option.selected) → Se queda solo con los seleccionados.
-                                .map(option => option.value); // .map(option => option.value) → Extrae el valor de esos seleccionados.
-
+                                .map(option => option.value) // .map(option => option.value) → Extrae el valor de esos seleccionados.
+                                .sort((a, b) => a - b);
             setPanel(prev => ({
                 ...prev,
                 [name]: values
@@ -163,10 +180,11 @@ const AddNewPlan = ({showModal, closeModal}) => {
                     <div className="mb-3 d-flex">
                         <div className="col me-3">
                             <label htmlFor="Año" className='form-label label'>Selecciona un año</label>
-                            <select className='form-control input'
+                            <select className='form-select mb-3'
                                     name="Año" 
                                     id="Año" 
                                     value={panel.Año || ''}
+                                    ref={selectAñoRef}
                                     onChange={handleChange}
                             >
                                 <option value="0">Selecciona un año</option>
@@ -179,11 +197,12 @@ const AddNewPlan = ({showModal, closeModal}) => {
                         </div>
                         <div className="col">
                             <label htmlFor="Meses" className='form-label label '>Meses</label>
-                            <select name='Meses' 
+                            <select  className='form-select mb-3' 
+                                    name='Meses'
                                     id='Meses' 
-                                    className='form-control input' 
                                     multiple 
                                     ref={selectMesesRef}
+                                    onChange={handleChange}
                                    
                             >   
                                     <option value="1">Enero</option>
@@ -205,10 +224,10 @@ const AddNewPlan = ({showModal, closeModal}) => {
                         <label htmlFor="myServicesPanel" className='form-label label'>Selecciona los servicios</label>
                         <select name="myServicesPanel" 
                                 id="myServicesPanel" 
-                                className='form-control input' 
+                                className='form-select mb-3' 
                                 multiple 
-                                ref={selectServiciosRef} 
-                               
+                                ref={selectServicesRef}
+                                onChange={handleChange}
                         >
                                {servicios.map((servicio) => (
                                     <option key={servicio.id_myservices} value={servicio.id_myservices}>{servicio.nombre} :: {servicio.descripcion}</option>
