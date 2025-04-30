@@ -135,12 +135,15 @@ const Categories = ({titleModule}) => {
                                             ModalCategoriesUpdate = {ModalCategoriesUpdate}
                                             category={dataCate}
                                             getDataUpdate={getDataUpdate}
+                                            value={'Actualizar'}
                                             />
 
                                         <ButtonDelete 
                                             ModalCategoriesDelete={ModalCategoriesDelete} 
                                             category={dataCate}
-                                            getDataDelete={getDataDelete} />
+                                            getDataDelete={getDataDelete} 
+                                            value={'Eliminar'}
+                                        />
                                     </div>
                                 </td>
                             </tr>

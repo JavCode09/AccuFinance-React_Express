@@ -132,4 +132,29 @@ Router.post("/planesdp", async(req,res) => {
   }
 })
 
+
+//Slect meses de un plan de pagos anuales
+Router.get("/monthSelect", async(req,res) => {
+  const {id_plan,id_user} = req.query;
+
+  try {
+    if (!id_plan) { return res.status(400).json({message:"No se encontro este plan de pagos."}); }
+    if (!id_user) { return res.status(400).json({message:"No se encontro al al usuario"}) }
+
+    //Consulta para los planes de pago por mes
+    const consulta = `SELECT nombre_plan, meses, año FROM ${planes} WHERE id_plan = ? AND user_id = ?`;
+    const result = await query(consulta,[id_plan, id_user]);
+
+    //Si no encuentra nada
+    if (result.length === 0) {
+      return res.status(404).json({message:"No se encontro ningun registro."})
+    }
+    return res.status(200).json({data:result})
+  } catch (error) {
+    console.error("Error al obtener al obtener los meses del plan de pago.");
+    return res.status(500).json({message:"Error al obtener los planes por año"})
+    
+  }
+})
+
 module.exports = Router
