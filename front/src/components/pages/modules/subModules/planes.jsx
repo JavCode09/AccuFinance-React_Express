@@ -73,8 +73,8 @@ const Planes = ({getMeses}) => {
                                 >
                                     Ver Plan
                                 </Button>
-                                <ButtonUpdate size="sm" ModalCategoriesUpdate={UpdateModalPlanes} />
-                                <ButtonDelete size="sm" />
+                                <ButtonUpdate size="sm" value={'Actualizar'} ModalCategoriesUpdate={UpdateModalPlanes} category={dataPlanes.id_plan}/>
+                                <ButtonDelete size="sm"  value={'Eliminar'} />
                             </div>
                         </td>
                     </tr>

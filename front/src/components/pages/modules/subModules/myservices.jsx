@@ -144,12 +144,14 @@ const MyServices = ({titleModule}) => {
                                             <ButtonUpdate 
                                                 ModalCategoriesUpdate={ModalUpdateMyServices}
                                                 category={mySer.id_myservices}
-                                                getDataUpdate = {getDataUpdate}                                                
+                                                getDataUpdate = {getDataUpdate} 
+                                                value={'Actualizar'}                                               
                                             />
                                             <ButtonDelete 
                                                 ModalCategoriesDelete={ModalMyServicesDelete}
                                                 category={mySer}
                                                 getDataDelete={getDataDelete}
+                                                value={'Eliminar'}
                                             />
                                         </div>
                                     </td>
