@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Button } from 'react-bootstrap';
+import { useState } from 'react';
 
 //css
 import '../../styles/views/PanelControl.css';

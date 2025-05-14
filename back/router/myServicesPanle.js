@@ -157,4 +157,77 @@ Router.get("/monthSelect", async(req,res) => {
   }
 })
 
+//Update (Plan depagos seccion anual)
+Router.put("/udt", async (req, res) => {
+  const { id_plan, nombre_plan, año, DataNewMeses } = req.body;
+
+  try {
+    await beginTransaction();
+
+    // Validaciones
+    if (!nombre_plan) {
+      throw new Error("Nombre del plan está vacío.");
+    }
+
+    if (!año) {
+      throw new Error("El año está vacío.");
+    }
+
+    if (!Array.isArray(DataNewMeses) || DataNewMeses.length === 0) {
+      throw new Error("No hay meses seleccionados.");
+    }
+
+    // Verificamos que exista el plan
+    const consulta1 = "SELECT * FROM planes WHERE id_plan = ?";
+    const result = await query(consulta1, [id_plan]);
+
+    if (result.length === 0) {
+      throw new Error("Plan no encontrado.");
+    }
+
+    // Parsear meses existentes
+    let mesesExistentes = [];
+    try {
+      mesesExistentes = JSON.parse(result[0].meses); // columna "meses"
+    } catch (e) {
+      throw new Error("Error al procesar los meses del plan.");
+    }
+
+    // Verificar duplicados
+    const mesesDuplicados = DataNewMeses.map(String).filter(mes => mesesExistentes.includes(mes));
+    if (mesesDuplicados.length > 0) {
+      await rollback();
+      return res.status(409).json({
+        message: "Algunos meses ya existen en el plan.",
+        duplicados: mesesDuplicados
+      });
+    }
+
+    // Mezclar meses
+    const nuevosMeses = [...mesesExistentes, ...DataNewMeses.map(String)];
+    const mesesFinal = JSON.stringify(nuevosMeses);
+
+    // Actualizar el plan
+    const consulta2 = "UPDATE planes SET nombre_plan = ?, año = ?, meses = ? WHERE id_plan = ?";
+    const result2 = await query(consulta2, [nombre_plan, año, mesesFinal, id_plan]);
+
+    // Validar que la actualización se haya realizado
+    if (!result2 || result2.affectedRows === 0) {
+      throw new Error("No se pudo actualizar el plan.");
+    }
+
+    // Confirmar transacción
+    await commit();
+    return res.status(200).json({
+      message: "Plan actualizado correctamente.",
+      meses: nuevosMeses
+    });
+
+  } catch (error) {
+    console.error("Error en /udt:", error.message);
+    await rollback();
+    return res.status(500).json({ message: error.message || "Error al actualizar el plan." });
+  }
+});
+
 module.exports = Router
