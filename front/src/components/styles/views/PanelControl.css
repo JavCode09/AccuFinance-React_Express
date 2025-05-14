@@ -43,4 +43,88 @@
     max-width: 70% !important; /* ajusta a tu gusto */
     margin: auto;
 }
-  
+
+/* Tablas años y meses con scroll */
+
+/* Años */
+
+/* Estilo general */
+.stylesTableAños {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+/* Encabezado fijo */
+.stylesTableAños thead {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+/* Scroll vertical solo al tbody */
+.stylesTableAños tbody {
+    display: block;
+    max-height: 220px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+/* Fila dentro de tbody también como tabla para conservar alineación */
+.stylesTableAños tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+/* Ancho de columnas */
+.stylesTableAños th,
+.stylesTableAños td {
+    width: 25%; /* Ajusta según tus columnas */
+    text-align: center;
+    vertical-align: middle;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+
+
+
+/* Meses */
+
+/* Estilo general */
+.stylesTableMeses {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+/* Encabezado fijo */
+.stylesTableMeses thead {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+/* Scroll vertical solo al tbody */
+.stylesTableMeses tbody {
+    display: block;
+    max-height: 220px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+/* Fila dentro de tbody también como tabla para conservar alineación */
+.stylesTableMeses tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+/* Ancho de columnas */
+.stylesTableMeses th,
+.stylesTableMeses td {
+    width: 25%; /* Ajusta según tus columnas */
+    text-align: center;
+    vertical-align: middle;
+    padding: 8px;
+    box-sizing: border-box;
+}

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Modal, Button, Table } from 'react-bootstrap';
+import { Modal, Button } from 'react-bootstrap';
 
 //Jquery y select2
 import $, { initSelect2, destroySelect2 }  from '../../../../utils/jqueryYselect2';
@@ -9,15 +9,16 @@ import { UserContext } from '../../../../contexts/UserContext';
 
 //LLamamos la API 
 import { API_selectmeses } from '../../../api/newSystemCpanle';
+import { API_updatePlanAnual } from '../../../api/newSystemCpanle';
 
-
-const UpdateModalPlanes = ({showModal_Update, closeModal_update, category}) => {
+const UpdateModalPlanes = ({showModal_Update, closeModal_update, category, getDataUpdate}) => {
 
     //Informacion de la sesion 
     const {userData} = useContext(UserContext);
 
     //Hook de estado para los planes de pago por mes del usuario
     const [mesesPlan, setMesesPlan] = useState({
+        id_plan:'',
         nombre_plan:'',
         año:'',
         DataNewMeses:[]
@@ -38,13 +39,14 @@ const UpdateModalPlanes = ({showModal_Update, closeModal_update, category}) => {
                 if (showModal_Update  && id_user && category) {
                      //Llamamos los planes de pago
                     const resultMeses = await API_selectmeses(category, id_user);
-                    console.log('resultMeses: ' , resultMeses);
+                    // console.log('resultMeses: ' , resultMeses);
                     
                     const nombre_plan = resultMeses.data[0]?.nombre_plan
                     const año = resultMeses.data[0]?.año;
 
                     //pasamos al estado de cambio 
                     setMesesPlan({
+                        id_plan:category,
                         nombre_plan:nombre_plan,
                         año:año
                     })
@@ -127,13 +129,38 @@ const UpdateModalPlanes = ({showModal_Update, closeModal_update, category}) => {
     }
 
 
+    const API_FormUpdatePlan = async(e) => {
+        e.preventDefault();
+
+        try {
+            const resultApiUpdate = await API_updatePlanAnual(mesesPlan);
+            console.log(resultApiUpdate);
+            alert(resultApiUpdate.message);
+
+            getDataUpdate();
+            closeModal_update();
+
+        } catch (error) {
+            // console.error(error);
+            if (error.response && error.response.status === 500) {
+                alert(error.response.data.message)
+            } else if (error.response && error.response.status === 409) {
+                alert(error.response.data.message)
+            }else{
+                alert("Ocurrio un error inesperado.")
+            }
+        }
+        
+    }
+
     return ( 
        <Modal show={showModal_Update} onHide={closeModal_update}>
             <Modal.Header>
                 <Modal.Title>Actualiza tu Plan de pago</Modal.Title>
             </Modal.Header>
-            <form>
+            <form onSubmit={API_FormUpdatePlan}>
                 <Modal.Body>
+                    <input type="text" placeholder='id' id='id_plan' name='id_plan' value={mesesPlan.id_plan} readOnly />
                     <div className="mb-3">
                         <label htmlFor="nombre_plan" className='form-label label'>Nombre del Plan</label>
                         <input type="text" required
