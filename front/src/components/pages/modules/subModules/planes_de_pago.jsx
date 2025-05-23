@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { Table, Button } from 'react-bootstrap';
 
 //Informacion de session
@@ -33,6 +33,8 @@ const MesesDePlanes = ({meses, id_plan, Getplanes_de_pago}) => {
         mesesArray = meses;
     }
 
+    // Ordenar los meses del 1 (enero) al 12 (diciembre)
+    mesesArray.sort((a, b) => parseInt(a) - parseInt(b));
 
     //API_obtener Planes de pago
     const API_planesPago = async(idplan, id_user, mes) => {
@@ -62,7 +64,7 @@ const MesesDePlanes = ({meses, id_plan, Getplanes_de_pago}) => {
     }
 
     return ( 
-        <Table>
+        <Table className='stylesTableMeses'>
             <thead>
                 <tr>
                     {/* <th>Id</th> */}

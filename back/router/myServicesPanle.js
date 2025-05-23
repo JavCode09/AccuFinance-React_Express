@@ -132,4 +132,114 @@ Router.post("/planesdp", async(req,res) => {
   }
 })
 
+
+//Slect meses de un plan de pagos anuales
+Router.get("/monthSelect", async(req,res) => {
+  const {id_plan,id_user} = req.query;
+
+  try {
+    if (!id_plan) { return res.status(400).json({message:"No se encontro este plan de pagos."}); }
+    if (!id_user) { return res.status(400).json({message:"No se encontro al al usuario"}) }
+
+    //Consulta para los planes de pago por mes
+    const consulta = `SELECT nombre_plan, meses, año FROM ${planes} WHERE id_plan = ? AND user_id = ?`;
+    const result = await query(consulta,[id_plan, id_user]);
+
+    //Si no encuentra nada
+    if (result.length === 0) {
+      return res.status(404).json({message:"No se encontro ningun registro."})
+    }
+    return res.status(200).json({data:result})
+  } catch (error) {
+    console.error("Error al obtener al obtener los meses del plan de pago.");
+    return res.status(500).json({message:"Error al obtener los planes por año"})
+    
+  }
+})
+
+//Update (Plan depagos seccion anual)
+Router.put("/udt", async (req, res) => {
+  const { id_plan, nombre_plan, año, DataNewMeses } = req.body;
+
+  try {
+    await beginTransaction();
+
+    // Validaciones
+    if (!nombre_plan) {
+      throw new Error("Nombre del plan está vacío.");
+    }
+
+    if (!año) {
+      throw new Error("El año está vacío.");
+    }
+
+    // Verificamos que exista el plan
+    const consulta1 = "SELECT * FROM planes WHERE id_plan = ?";
+    const result = await query(consulta1, [id_plan]);
+
+    if (result.length === 0) {
+      throw new Error("Plan no encontrado.");
+    }
+
+    let nuevosMeses= null;
+
+    if (!Array.isArray(DataNewMeses) || DataNewMeses.length === 0) {
+      // throw new Error("No hay meses seleccionados.");
+
+      //Si no hay meses actualizamos solo los campos.
+      const consultaSM = "UPDATE planes SET nombre_plan = ? , año = ? WHERE id_plan = ?";
+      const resultSM = await query(consultaSM, [nombre_plan,año,id_plan]);
+
+      if (!resultSM || resultSM.affectedRows === 0) {
+        throw new Error("Error al actualizar el plan de pagos.");
+      }
+    }else{
+
+      // Parsear meses existentes
+      let mesesExistentes = [];
+      try {
+        mesesExistentes = JSON.parse(result[0].meses); // columna "meses"
+      } catch (e) {
+        throw new Error("Error al procesar los meses del plan.");
+      }
+  
+      // Verificar duplicados
+      const mesesDuplicados = DataNewMeses.map(String).filter(mes => mesesExistentes.includes(mes));
+      if (mesesDuplicados.length > 0) {
+        await rollback();
+        return res.status(409).json({
+          message: "Algunos meses ya existen en el plan.",
+          duplicados: mesesDuplicados
+        });
+      }
+  
+      // Mezclar meses
+      nuevosMeses = [...mesesExistentes, ...DataNewMeses.map(String)];
+      const mesesFinal = JSON.stringify(nuevosMeses);
+  
+      // Actualizar el plan
+      const consulta2 = "UPDATE planes SET nombre_plan = ?, año = ?, meses = ? WHERE id_plan = ?";
+      const result2 = await query(consulta2, [nombre_plan, año, mesesFinal, id_plan]);
+  
+      // Validar que la actualización se haya realizado
+      if (!result2 || result2.affectedRows === 0) {
+        throw new Error("No se pudo actualizar el plan.");
+      }
+    }
+
+
+    // Confirmar transacción
+    await commit();
+    return res.status(200).json({
+      message: "Plan actualizado correctamente.",
+      meses: nuevosMeses
+    });
+
+  } catch (error) {
+    console.error("Error en /udt:", error.message);
+    await rollback();
+    return res.status(500).json({ message: error.message || "Error al actualizar el plan." });
+  }
+});
+
 module.exports = Router

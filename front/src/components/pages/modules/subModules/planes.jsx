@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {Button} from 'react-bootstrap';
 
 import { Table } from 'react-bootstrap';
@@ -43,14 +43,24 @@ const Planes = ({getMeses}) => {
             
             //Integramos info al estado
             setPlanes(resultPlanes.data)
+            console.log("Entro al rederizado");
+            
         } catch (error) {
             console.error("Error en la funcion: " , error);
             throw error;
         }
     }
 
+    const getDataUpdate = () => {
+        if (userData?.id) {
+            console.log("Si llego");
+            
+            APIselectPlanes(userData.id);
+        }
+    };
+
     return ( 
-       <Table responsive className='tableAños'>
+       <Table responsive className='tableAños stylesTableAños'>
             <thead>
                 <tr>
                     <th>Id</th>
@@ -62,19 +72,20 @@ const Planes = ({getMeses}) => {
             <tbody>
                  {planes.map((dataPlanes) => (
                     <tr key={dataPlanes.id_plan}>
-                        <td>{dataPlanes.id_plan}</td>
-                        <td>{dataPlanes.nombre_plan}</td>
-                        <td>{dataPlanes.año}</td>
-                        <td>
+                        <td className=''>{dataPlanes.id_plan}</td>
+                        <td className=''>{dataPlanes.nombre_plan}</td>
+                        <td className=''>{dataPlanes.año}</td>
+                        <td className=''> 
                             <div className="divcss">
                                 <Button size="sm" onClick={
                                                 () => getMeses(dataPlanes.meses , dataPlanes.id_plan)
                                                 }
                                 >
-                                    Ver Plan
+                                <i className="fa fa-eye" aria-hidden="true"></i>
                                 </Button>
-                                <ButtonUpdate size="sm" ModalCategoriesUpdate={UpdateModalPlanes} />
-                                <ButtonDelete size="sm" />
+                                <ButtonUpdate size="sm" value={<i className="fa fa-pencil" aria-hidden="true"></i>} ModalCategoriesUpdate={UpdateModalPlanes} 
+                                                        category={dataPlanes.id_plan} getDataUpdate={getDataUpdate} />
+                                <ButtonDelete size="sm"  value={<i className="fa fa-trash" aria-hidden="true"></i>} category={dataPlanes.id_plan} />
                             </div>
                         </td>
                     </tr>
