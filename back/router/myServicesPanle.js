@@ -173,10 +173,6 @@ Router.put("/udt", async (req, res) => {
       throw new Error("El año está vacío.");
     }
 
-    if (!Array.isArray(DataNewMeses) || DataNewMeses.length === 0) {
-      throw new Error("No hay meses seleccionados.");
-    }
-
     // Verificamos que exista el plan
     const consulta1 = "SELECT * FROM planes WHERE id_plan = ?";
     const result = await query(consulta1, [id_plan]);
@@ -185,36 +181,52 @@ Router.put("/udt", async (req, res) => {
       throw new Error("Plan no encontrado.");
     }
 
-    // Parsear meses existentes
-    let mesesExistentes = [];
-    try {
-      mesesExistentes = JSON.parse(result[0].meses); // columna "meses"
-    } catch (e) {
-      throw new Error("Error al procesar los meses del plan.");
+    let nuevosMeses= null;
+
+    if (!Array.isArray(DataNewMeses) || DataNewMeses.length === 0) {
+      // throw new Error("No hay meses seleccionados.");
+
+      //Si no hay meses actualizamos solo los campos.
+      const consultaSM = "UPDATE planes SET nombre_plan = ? , año = ? WHERE id_plan = ?";
+      const resultSM = await query(consultaSM, [nombre_plan,año,id_plan]);
+
+      if (!resultSM || resultSM.affectedRows === 0) {
+        throw new Error("Error al actualizar el plan de pagos.");
+      }
+    }else{
+
+      // Parsear meses existentes
+      let mesesExistentes = [];
+      try {
+        mesesExistentes = JSON.parse(result[0].meses); // columna "meses"
+      } catch (e) {
+        throw new Error("Error al procesar los meses del plan.");
+      }
+  
+      // Verificar duplicados
+      const mesesDuplicados = DataNewMeses.map(String).filter(mes => mesesExistentes.includes(mes));
+      if (mesesDuplicados.length > 0) {
+        await rollback();
+        return res.status(409).json({
+          message: "Algunos meses ya existen en el plan.",
+          duplicados: mesesDuplicados
+        });
+      }
+  
+      // Mezclar meses
+      nuevosMeses = [...mesesExistentes, ...DataNewMeses.map(String)];
+      const mesesFinal = JSON.stringify(nuevosMeses);
+  
+      // Actualizar el plan
+      const consulta2 = "UPDATE planes SET nombre_plan = ?, año = ?, meses = ? WHERE id_plan = ?";
+      const result2 = await query(consulta2, [nombre_plan, año, mesesFinal, id_plan]);
+  
+      // Validar que la actualización se haya realizado
+      if (!result2 || result2.affectedRows === 0) {
+        throw new Error("No se pudo actualizar el plan.");
+      }
     }
 
-    // Verificar duplicados
-    const mesesDuplicados = DataNewMeses.map(String).filter(mes => mesesExistentes.includes(mes));
-    if (mesesDuplicados.length > 0) {
-      await rollback();
-      return res.status(409).json({
-        message: "Algunos meses ya existen en el plan.",
-        duplicados: mesesDuplicados
-      });
-    }
-
-    // Mezclar meses
-    const nuevosMeses = [...mesesExistentes, ...DataNewMeses.map(String)];
-    const mesesFinal = JSON.stringify(nuevosMeses);
-
-    // Actualizar el plan
-    const consulta2 = "UPDATE planes SET nombre_plan = ?, año = ?, meses = ? WHERE id_plan = ?";
-    const result2 = await query(consulta2, [nombre_plan, año, mesesFinal, id_plan]);
-
-    // Validar que la actualización se haya realizado
-    if (!result2 || result2.affectedRows === 0) {
-      throw new Error("No se pudo actualizar el plan.");
-    }
 
     // Confirmar transacción
     await commit();

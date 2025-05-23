@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {Button} from 'react-bootstrap';
 
 import { Table } from 'react-bootstrap';
@@ -81,10 +81,11 @@ const Planes = ({getMeses}) => {
                                                 () => getMeses(dataPlanes.meses , dataPlanes.id_plan)
                                                 }
                                 >
-                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                <i className="fa fa-eye" aria-hidden="true"></i>
                                 </Button>
-                                <ButtonUpdate size="sm" value={<i class="fa fa-pencil" aria-hidden="true"></i>} ModalCategoriesUpdate={UpdateModalPlanes} category={dataPlanes.id_plan} getDataUpdate={getDataUpdate} />
-                                <ButtonDelete size="sm"  value={<i class="fa fa-trash" aria-hidden="true"></i>} />
+                                <ButtonUpdate size="sm" value={<i className="fa fa-pencil" aria-hidden="true"></i>} ModalCategoriesUpdate={UpdateModalPlanes} 
+                                                        category={dataPlanes.id_plan} getDataUpdate={getDataUpdate} />
+                                <ButtonDelete size="sm"  value={<i className="fa fa-trash" aria-hidden="true"></i>} category={dataPlanes.id_plan} />
                             </div>
                         </td>
                     </tr>

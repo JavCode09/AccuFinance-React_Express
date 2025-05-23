@@ -5,11 +5,16 @@
     flex-direction: column;
 }
 
+.containerPanel-title{
+ margin-bottom: 5px;
+}
+
 .bodyHead{
     /* background-color: aqua; */
     display: flex;
     justify-content: space-between;
     padding: 5px;
+     margin-bottom: 5px;
 }
 
 .bodyPanelbox1{
