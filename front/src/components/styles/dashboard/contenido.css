@@ -16,7 +16,9 @@
 }
 
     .sidebar {
-        width: 280px; /* Ajusta el tamaño del sidebar como desees */
+        width: 280px !important;
+        min-width: 280px !important;
+        max-width: 280px !important;
         background-color: #0A4578; /* Puedes ajustar el color de fondo del sidebar */
         color: white;
         padding: 10px;

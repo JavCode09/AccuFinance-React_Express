@@ -140,6 +140,10 @@ const UpdateModalPlanes = ({showModal_Update, closeModal_update, category, getDa
             getDataUpdate();
             closeModal_update();
 
+            //Limpiamos el campo meses
+            setMesesPlan(prev => ({
+                ...prev, DataNewMeses: []
+            }))
         } catch (error) {
             // console.error(error);
             if (error.response && error.response.status === 500) {
