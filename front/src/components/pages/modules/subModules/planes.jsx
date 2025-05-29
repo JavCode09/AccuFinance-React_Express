@@ -53,7 +53,7 @@ const Planes = ({getMeses}) => {
 
     const getDataUpdate = () => {
         if (userData?.id) {
-            console.log("Si llego");
+            // console.log("Si llego");
             
             APIselectPlanes(userData.id);
         }

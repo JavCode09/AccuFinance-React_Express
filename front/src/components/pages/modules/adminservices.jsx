@@ -30,14 +30,16 @@ const AdminServices = ({titleModule}) => {
     //hook de estado planes de pago optenidos por el mes
     const [planesPorMes, setplanesPorMes] = useState([])
     const [mesNumero, setmesNumero] = useState([])
+    const [planes, setplanes] = useState([])
 
     //funcion para porcesar el estado de planes de pago
-    const Getplanes_de_pago = (planesdp, mes) => {
+    const Getplanes_de_pago = (planesdp, mes, id_plan) => {
         // console.log('planesdp: '  , planesdp);
         
         //Pasamos al estado
         setplanesPorMes(planesdp);
         setmesNumero(mes);
+        setplanes(id_plan);
     }
 
     return ( 
@@ -59,7 +61,7 @@ const AdminServices = ({titleModule}) => {
                 </div>
             </div>
             <div className="bodyPanelbox2">
-                <PanelPrincipal planesPorMes={planesPorMes} mesNumero={mesNumero}/>
+                <PanelPrincipal planesPorMes={planesPorMes} mesNumero={mesNumero} planes={planes}/>
             </div>
         </div>
      );
