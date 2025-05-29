@@ -119,10 +119,11 @@ Router.post("/planesdp", async(req,res) => {
 
   try {
     const consulta = `SELECT planes.*,
-                             serv.nombre
+                      serv.nombre
                       FROM ${planes_de_pago} planes
-                      INNER JOIN services serv ON serv.id = planes.my_service
-                      WHERE id_plan = ? AND user_id = ? AND mes = ?`;
+                      INNER JOIN my_services ms ON ms.id_myservices = planes.my_service
+                      INNER JOIN services serv ON serv.id = ms.id_services
+                      WHERE planes.id_plan = ? AND planes.user_id = ? AND planes.mes = ?`;
     const result = await query(consulta, [idPlan, id_user, mes]);
 
     return res.status(200).json({data:result})
@@ -241,5 +242,81 @@ Router.put("/udt", async (req, res) => {
     return res.status(500).json({ message: error.message || "Error al actualizar el plan." });
   }
 });
+
+Router.post("/insertNewS" ,  async(req,res) => {
+  const {idplan, idUsuario, mesid, servicios} = req.body;
+
+  try {
+    await beginTransaction();
+
+    if(!idplan){ throw new Error("No se encontró el plan. "); }
+    if(!idUsuario){ throw new Error("No se encontró el al usuario. "); }
+    if(!mesid){ throw new Error("No se encontró el mes asignado. "); }
+    if (!Array.isArray(servicios) || servicios.length === 0 || servicios.includes("0")){
+        throw new Error("No hay servicios asignados." );
+    }
+
+    // Optenemos los servicios del pan de pagos
+    const consulta1 = "SELECT servicios, año FROM planes WHERE id_plan = ? AND user_id =?";
+    const result1 = await query(consulta1, [idplan, idUsuario]);
+
+    if (result1.length === 0) {
+      throw new Error("No se encontro el plan de pagos.")
+    }
+
+    // Intentar convertir el campo "servicios" a una array
+    let serviciosArray ; // variable para guardar el array  parseado
+
+    const año = result1[0].año;
+    const seviciosRaw = result1[0].servicios; //este es el string de mi bd en string
+    serviciosArray = JSON.parse(seviciosRaw); // converetir a array
+
+    // vamos a comparar los aray el obtenido y el mandado por el formulario
+    // si existe el servicio en el array no lo agrega si no existe agregalo
+
+    //Unimos ambos arrays sin duplicados
+    const nuevosServicios =  servicios.filter(s => !serviciosArray.includes(s)); // s => !.. hacemos que los elementos s no este incluido en el array que ya existe en la bd
+
+    //Si hay servicios nuevos que agregar 
+    if(nuevosServicios.length > 0){
+      // Unimos los servicios antiguos con los nuevos
+      const serviciosActualizados = [...serviciosArray, ...nuevosServicios];
+
+      //Convertimos a JOSN  para guardar en la base de datos
+      const serviciosJSON = JSON.stringify(serviciosActualizados)
+
+      console.log(serviciosActualizados);
+
+      // Actualizar el plan de pagos
+      const consulta2 = "UPDATE planes SET servicios = ? WHERE id_plan = ? ";
+      const result2  = await query(consulta2, [serviciosJSON, idplan]);
+      
+      if (!result2 || result2.affectedRows === 0) {
+          throw new Error("No se pudo actualizar el plan.")
+      }
+
+      // Actualizamos los planes de pago. necesitamos el mes y servicios dentro de.
+      // Recorremos el array de servicios
+      console.log("Servicios nuevos a insertar:");
+      console.log(JSON.stringify(nuevosServicios, null, 2));
+      
+      for (let servicio of nuevosServicios) {
+        console.log("Insertando nuevo servicio en el plan:");
+        console.log("ID del servicio:", servicio);
+      }
+      
+    }
+
+    await commit();
+
+    console.log("Se actualizo el plan de pagos");
+    
+  } catch (error) {
+    console.error("Error:", error.message);
+    await rollback();
+    return res.status(500).json({ message: error.message || "Error al insertar servicios." });
+  }
+})
+
 
 module.exports = Router
