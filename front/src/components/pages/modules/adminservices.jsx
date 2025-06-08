@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 
 //css
 import '../../styles/views/PanelControl.css';
@@ -12,8 +12,36 @@ import AddNewPlan from '../modals/panelcenter/modal_add';
 //Vistas
 import Planes from './subModules/planes';
 import PanelPrincipal from './subModules/panelprincipal';
+import MesesDePlanes from './subModules/planes_de_pago';
 
 const AdminServices = ({titleModule}) => {
+
+    const [mesesUnicos, setMeses] = useState([]);
+    const [idpla, setIdplan] =useState(null)
+
+    const getMesesYidplan = (meses,id_plan) => {
+        // console.log('Meses:', meses);
+        // console.log('ID Plan:', id_plan);
+        //pasamos al hook de cambio de meses
+        setMeses(meses)
+        setIdplan(id_plan)
+    }
+   
+    //hook de estado planes de pago optenidos por el mes
+    const [planesPorMes, setplanesPorMes] = useState([])
+    const [mesNumero, setmesNumero] = useState([])
+    const [planes, setplanes] = useState([])
+
+    //funcion para porcesar el estado de planes de pago
+    const Getplanes_de_pago = (planesdp, mes, id_plan) => {
+        // console.log('planesdp: '  , planesdp);
+        
+        //Pasamos al estado
+        setplanesPorMes(planesdp);
+        setmesNumero(mes);
+        setplanes(id_plan);
+    }
+
     return ( 
         <div className='containerPanel'>
             <div className="bodyHead">
@@ -26,14 +54,14 @@ const AdminServices = ({titleModule}) => {
             </div>
             <div className="bodyPanelbox1">
                 <div className="myservicesAdmin">
-                    <Planes />
+                    <Planes getMeses={getMesesYidplan} />
                 </div>
                 <div className="bodyExtras">
-                    Plan por mes sobre el del año seleccionado
+                    <MesesDePlanes meses={mesesUnicos} id_plan={idpla} Getplanes_de_pago={Getplanes_de_pago}/>
                 </div>
             </div>
             <div className="bodyPanelbox2">
-                <PanelPrincipal />
+                <PanelPrincipal planesPorMes={planesPorMes} mesNumero={mesNumero} planes={planes}/>
             </div>
         </div>
      );

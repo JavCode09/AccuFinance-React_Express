@@ -2,7 +2,9 @@ const jwt = require('jsonwebtoken');
 const express = require("express");
 const bcrypt = require("bcrypt")
 const Router = express.Router();
-const conexion = require("../conexion");
+
+const {query, beginTransaction, commit, rollback } = require("../conexion");
+
 
 let tabla = 'users';
 
@@ -11,93 +13,80 @@ const SECRET_KEY = 'accufinance'; // Cambiar por una clave segura
 
 // Define la ruta POST para registro
 Router.post("/add", async (req, res) => {
-    const { nombre, apellidos, email, password} = req.body;
+    const { nombre, apellidos, email, password } = req.body;
     const grupo = 1;
-    const saltRounds = 10; // Define cuántas veces quieres hacer el "salting"
+    const saltRounds = 10;
+
     try {
-        //Encriptamos passwword antes de insertar
         const password_hash = await bcrypt.hash(password, saltRounds);
 
-        // Insertamos en la tabla USERS
-        const result = await new Promise((resolve, reject) => {
-            const consulta = "INSERT INTO users (nombre, apellidos, email, password, grupo) VALUES (?, ?, ?, ?, ?)";
-            conexion.query(consulta, [nombre, apellidos, email, password_hash, grupo], (err, success) => {
-                if (err) {
-                    console.error(`Error en la query, Tabla: ${tabla}, Post`);
-                    reject(err);
-                    return;
-                }
-                resolve(`Registro Insertado con éxito, Tabla: ${tabla}, server`);
-                // el console.log e spara que aparesca en terminal de servidor
-                console.log(`Registro Insertado con éxito, Tabla: ${tabla}, server`);
-                
-            });
-        });
-        res.status(200).json({ message: result });
+        await query(
+            "INSERT INTO users (nombre, apellidos, email, password, grupo) VALUES (?, ?, ?, ?, ?)",
+            [nombre, apellidos, email, password_hash, grupo]
+        );
+
+        console.log(`Registro insertado con éxito en la tabla ${tabla}`);
+        res.status(200).json({ message: `Registro insertado con éxito en la tabla ${tabla}` });
+
     } catch (error) {
-        console.error(`Error en la operación, Tabla: ${tabla}, Post:`, error);
-        res.status(500).json({ message: `Ocurrió un error al realizar la operación. Tabla: ${tabla}, Registro` });
+        console.error(`Error en la operación, Tabla: ${tabla}`, error);
+        res.status(500).json({
+            message: `Ocurrió un error al realizar la operación en la tabla: ${tabla}`,
+            error: error.message
+        });
     }
 });
 
 //Login 
 Router.post("/", async (req, res) => {
     const { usuario, contrasena } = req.body;
+
     try {
-        const result = await new Promise((resolve, reject) => {
-            // Consultamos si existe el registro
-            const consulta = "SELECT * FROM users WHERE email = ?";
-            conexion.query(consulta, [usuario], async (err, success) => {
-                if (err) {
-                    console.error(`Error en la query, Tabla: ${tabla}, Login`);
-                    reject(err);
-                    return;
-                }
-                
-                if (success.length > 0) {
-                    // Obtenemos la contraseña hasheada almacenada
-                    const password_bd = success[0];//como la respuesta bierne en array se ocupa la pocion 0
-                    const password_hash = password_bd.password;
+        // Consultamos el usuario por email
+        const usuarios = await query("SELECT * FROM users WHERE email = ?", [usuario]);
 
-                    // Comparamos la contraseña ingresada con el hash
-                    const password_verify = await bcrypt.compare(contrasena, password_hash);
-                    if (password_verify) {
-                        
-                        resolve({ status: 'success', usuario: success[0] });
-                    } else {
-                        resolve({ status: 'error', message: 'Contraseña incorrecta' });
-                    }
-                } else {
-                   
-                    resolve({ status: 'error', message: 'Usuario no encontrado' });
-                }
-            });
-        });
-
-        // Si el resultado es de error, enviamos el mensaje correspondiente
-        if (result.status === 'error') {
-            res.status(200).json({ success:false, message: result.message });
-        } else {
-             //Generamos JWT
-             const token = jwt.sign({ id: result.usuario.id_user,
-                                    nombre_completo: `${result.usuario.nombre} ${result.usuario.apellidos}`,
-                                    email: result.usuario.email,
-                                    grupo: result.usuario.grupo
-                                    }, SECRET_KEY, { expiresIn: '1h' });
-
-
-             res.status(200).json({ 
-                success: true,  
-                message: "Login exitoso", 
-                usuario: result.usuario, 
-                token 
-            });
+        if (usuarios.length === 0) {
+            return res.status(200).json({ success: false, message: "Usuario no encontrado" });
         }
+
+        const usuarioEncontrado = usuarios[0];
+        const password_hash = usuarioEncontrado.password;
+
+        // Comparamos contraseña ingresada con el hash almacenado
+        const password_verify = await bcrypt.compare(contrasena, password_hash);
+
+        if (!password_verify) {
+            return res.status(200).json({ success: false, message: "Contraseña incorrecta" });
+        }
+
+        // Generamos JWT
+        const token = jwt.sign(
+            {
+                id: usuarioEncontrado.id_user,
+                nombre_completo: `${usuarioEncontrado.nombre} ${usuarioEncontrado.apellidos}`,
+                email: usuarioEncontrado.email,
+                grupo: usuarioEncontrado.grupo,
+            },
+            SECRET_KEY,
+            { expiresIn: "1h" }
+        );
+
+        res.status(200).json({
+            success: true,
+            message: "Login exitoso",
+            usuario: usuarioEncontrado,
+            token,
+        });
     } catch (error) {
-        console.error(`Error en la operación, Tabla: ${tabla}, Post:`, error);
-        res.status(500).json({ message: `Ocurrió un error al realizar la operación. Tabla: ${tabla}, Error: ${error}` });
+        console.error(`Error en la operación, Tabla: ${tabla}, Login:`, error);
+        res.status(500).json({
+            message: `Ocurrió un error al realizar la operación. Tabla: ${tabla}`,
+            error: error.message,
+        });
     }
 });
+
+
 
 
 module.exports = Router;

@@ -1,3 +1,4 @@
+
 import config from "./config"; //URL del BACK END
 
 
@@ -55,7 +56,7 @@ export const inseertNewSystemPanel = async(formData) => {
 //Select planes
 export const API_selectPlanes = async(idUser) => {
     try {
-        const response = await fetch(`${config.API_URL}/myServicesPanle/allPlan?idUser=${idUser}`, {
+        const response = await fetch(`${config.API_URL}myServicesPanle/allPlan?idUser=${idUser}`, {
             method:'GET',
             headers:{
                 'Content-Type':'application/json',
@@ -68,9 +69,109 @@ export const API_selectPlanes = async(idUser) => {
             error.response = {status:response.status, data:errorData}
             throw error
         }
+        return await response.json();
     } catch (error) {
         console.error("Error en la peticion: ", error);
         throw error
         
+    }
+}
+
+export const API_planes_de_pago = async(idPlan, id_user, mes) => {
+    try {
+        const response = await fetch(`${config.API_URL}myServicesPanle/planesdp`, {
+            method:"POST",
+            headers: {
+                "Content-Type":"application/json",
+                "Authorization":`Bearer ${token}`,
+            },
+            body:JSON.stringify({
+                idPlan,
+                id_user,
+                mes
+            })
+        })
+        if (!response.ok) {
+            const errorData = await response.json();
+            const error = new Error("Error en la solicitud a la API");
+            error.response = {status:response.status, data:errorData}
+            throw error
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error en la peticion: ", error);
+        throw error;
+    }
+}
+
+//UPDATE meses 
+export const API_selectmeses = async(id_plan,id_user) => {
+    try {
+        const response = await fetch(`${config.API_URL}myServicesPanle/monthSelect?id_plan=${id_plan}&id_user=${id_user} `,{
+            method:"GET",
+            headers:{
+                "Content-Type":"application/json",
+                "Authorization":`Bearer ${token}`,
+            },
+        })
+        if(!response.ok){
+            const errorData = await response.json();
+            const error = new Error("Error en la solicitud a la API");
+            error.response = {status:response.status, data:errorData}
+            throw error;
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error en la peticion");
+        throw error;
+        
+    }
+}
+
+export const API_updatePlanAnual = async(formData) => {
+    try {
+        const response = await fetch(`${config.API_URL}myServicesPanle/udt`, {
+            method:"PUT",
+            headers:{
+                'Content-Type':"application/json",
+                "Authorization":`Bearer ${token}`
+            },
+            body:JSON.stringify(formData)
+        })
+        if(!response.ok){
+            const errorData = await response.json();
+            const error = new Error ("Error en la solicitud a la API");
+            error.response = {status:response.status , data:errorData};
+            throw error;
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error en la peticion");
+        throw error;
+        
+        
+    }
+}
+
+export const API_insertNewServices = async(formData) => {
+    try {
+        const response = await fetch(`${config.API_URL}myServicesPanle/insertNewS`, {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json",
+                "Authorization":`Bearer ${token}`
+            },
+            body:JSON.stringify(formData)
+        })
+        if(!response.ok){
+            const errorData = await response.json();
+            const error = new Error ("Error en la solicitud a la API");
+            error.response = {status:response.status , data:errorData}
+            throw error; // <-- ¡ESTO FALTABA!
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error en la peticion");
+        throw error;
     }
 }
