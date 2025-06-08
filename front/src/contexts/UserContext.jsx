@@ -14,20 +14,22 @@ export const UserProvider = ({ children }) => {
   const verifyToken = async () => {
     const token = localStorage.getItem('token');
     if (!token) {
+      navigate('/');
       return;
     }
 
     try {
-      const data = await ApiMain(token); // Aquí utilizas ApiMain
+      const data = await ApiMain(token);
       setUserData(data.user);
       console.log(data);
-      
     } catch (error) {
-      console.error('Error verificando el token:', error);
-      // alert("Sesión finalizada por inactividad"); // Mensaje antes de redirigir
-      navigate('/'); // Si el token está expirado o no existe, redirige al login
+      console.error('Token inválido:', error);
+      localStorage.removeItem('token'); // Elimina el token
+      setUserData(null); // Limpia contexto
+      navigate('/'); // Redirige al login
     }
   };
+
 
   useEffect(() => {
     verifyToken();

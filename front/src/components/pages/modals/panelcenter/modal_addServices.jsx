@@ -102,7 +102,7 @@ const AddModalServiciosMes = ({showModal, closeModal, category}) => {
 
         try {
             const response_API = await API_insertNewServices(serviciosN);
-            console.log(response_API);
+            console.log('response_API: ' + response_API);
             
         } catch (error) {
             

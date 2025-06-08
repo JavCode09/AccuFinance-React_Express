@@ -211,7 +211,9 @@ const UpdateModalPlanes = ({showModal_Update, closeModal_update, category, getDa
                             <option value="11">Noviembre</option>
                             <option value="12">Diciembre</option>
                         </select>
-                        <span>No puedes tener dos meses en el mismo plan</span>
+                        <span className='nota'>  NOTA: No puedes tener dos meses iguales en el mismo plan, 
+                                al actualizar un mes nuevo este se agrega con los servicios ya existentes en el plan anual.
+                        </span>
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
