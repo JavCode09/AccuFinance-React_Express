@@ -14,7 +14,7 @@ import ButtonDelete from '../../../common/buttons/btn-delete';
 
 //Modals
 import UpdateModalPlanes from '../../modals/panelcenter/modal_update';
-
+import ModalDeletePlanAnual from '../../modals/panelcenter/modal_delete';
 
 //API
 import { API_selectPlanes } from '../../../api/newSystemCpanle';
@@ -83,9 +83,15 @@ const Planes = ({getMeses}) => {
                                 >
                                 <i className="fa fa-eye" aria-hidden="true"></i>
                                 </Button>
-                                <ButtonUpdate size="sm" value={<i className="fa fa-pencil" aria-hidden="true"></i>} ModalCategoriesUpdate={UpdateModalPlanes} 
-                                                        category={dataPlanes.id_plan} getDataUpdate={getDataUpdate} />
-                                <ButtonDelete size="sm"  value={<i className="fa fa-trash" aria-hidden="true"></i>} category={dataPlanes.id_plan} />
+                                <ButtonUpdate size="sm" 
+                                                value={<i className="fa fa-pencil" aria-hidden="true"></i>} 
+                                                ModalCategoriesUpdate={UpdateModalPlanes} 
+                                                category={dataPlanes.id_plan} 
+                                                getDataUpdate={getDataUpdate} />
+                                <ButtonDelete size="sm"  
+                                            value={<i className="fa fa-trash" aria-hidden="true"></i>} 
+                                            ModalCategoriesDelete = {ModalDeletePlanAnual}
+                                            category={dataPlanes} />
                             </div>
                         </td>
                     </tr>

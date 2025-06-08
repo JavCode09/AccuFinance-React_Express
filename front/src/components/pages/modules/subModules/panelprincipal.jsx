@@ -29,7 +29,10 @@ const PanelPrincipal = ({planesPorMes,mesNumero, planes}) => {
 
     return ( 
         <div className="containerPanel1">
-            <center>Tus planes de pago, {nombreMes}</center>
+            <div className="container-table">
+                <center>Tus planes de pago, {nombreMes}</center>
+                < ButtonAdd ModalComponent = {AddModalServiciosMes} category={{planes, mesNumero}} size='sm' value={'Agregar Servicio +'}/>
+            </div>
             <table className='Myservices-tabla'>
                     <thead>
                         <tr>
@@ -56,14 +59,15 @@ const PanelPrincipal = ({planesPorMes,mesNumero, planes}) => {
                                         <td>{pdp.service_status}</td>
                                         <td>{formatDate(pdp.paid_at)}</td>
                                         <td>{formatDate(pdp.due_date)}</td>
-                                        <td>Opciones</td>
+                                        <td>
+                                            botones de Acciones
+                                        </td>
                                     </tr>
                                 ))
                             ) : (
                                 <tr>
                                   <td colSpan="7" style={{ textAlign: 'center' }}>
                                         <p>No hay registros disponibles</p>
-                                        < ButtonAdd ModalComponent = {AddModalServiciosMes} category={{planes, mesNumero}} value={'Agregar Servicio +'}/>
                                   </td>
                                 </tr>
                             )

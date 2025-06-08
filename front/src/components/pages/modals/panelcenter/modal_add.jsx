@@ -89,7 +89,7 @@ const AddNewPlan = ({showModal, closeModal}) => {
     }, [showModal,userData?.id])
 
     
-     // Función para bucle de años
+     // Función para bucle de añosfecha_fin_pago
     const functionAños = () => {
         const currentYear = new Date().getFullYear();
         const yearsOpcions = [];

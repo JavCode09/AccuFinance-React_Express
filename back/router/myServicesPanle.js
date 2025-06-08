@@ -200,8 +200,10 @@ Router.put("/udt", async (req, res) => {
       let mesesExistentes = [];
       try {
         mesesExistentes = JSON.parse(result[0].meses); // columna "meses"
+        serviciosExistentes = JSON.parse(result[0].servicios); // columna "meses"
+        user_id = JSON.parse(result[0].user_id); // columna user_id
       } catch (e) {
-        throw new Error("Error al procesar los meses del plan.");
+        throw new Error("Error al procesar los meses y/o servicios del plan.");
       }
   
       // Verificar duplicados
@@ -225,6 +227,29 @@ Router.put("/udt", async (req, res) => {
       // Validar que la actualización se haya realizado
       if (!result2 || result2.affectedRows === 0) {
         throw new Error("No se pudo actualizar el plan.");
+      }
+
+      //Insertamos nuevos servicios existentes del plan al nuevo mes
+      for(let servicios of serviciosExistentes){
+
+        //consulatamos el monto de cada servicio
+        const consulta3 = "SELECT monto, fecha_fin_pago FROM my_services WHERE id_myservices = ? ";
+        const result3 = await query(consulta3, [servicios]);
+        
+        if (result3.length === 0) {
+          throw new Error("Error al consultar el servicio.")
+        }
+        
+        ServiciosMonto = JSON.parse(result3[0].monto);
+        ServiciosFechaF = result3[0].fecha_fin_pago;
+
+        const consulta4 = "INSERT INTO planes_de_pago (id_plan, user_id, año, mes, monto, my_service, due_date) VALUE (?,?,?,?,?,?,?)";
+        const result4 = await query(consulta4,[id_plan,user_id,año,DataNewMeses,ServiciosMonto,servicios, ServiciosFechaF]);
+
+        if (!result4 || result4.affectedRows === 0 ) {
+          throw new Error("Error al insertar el servicio nuevo a planes de pago.")
+        }
+
       }
     }
 
@@ -275,7 +300,7 @@ Router.post("/insertNewS" ,  async(req,res) => {
     // si existe el servicio en el array no lo agrega si no existe agregalo
 
     //Unimos ambos arrays sin duplicados
-    const nuevosServicios =  servicios.filter(s => !serviciosArray.includes(s)); // s => !.. hacemos que los elementos s no este incluido en el array que ya existe en la bd
+    const nuevosServicios =  servicios.filter(s => !serviciosArray.includes(s));
 
     //Si hay servicios nuevos que agregar 
     if(nuevosServicios.length > 0){
@@ -297,13 +322,38 @@ Router.post("/insertNewS" ,  async(req,res) => {
 
       // Actualizamos los planes de pago. necesitamos el mes y servicios dentro de.
       // Recorremos el array de servicios
-      console.log("Servicios nuevos a insertar:");
-      console.log(JSON.stringify(nuevosServicios, null, 2));
+      // console.log("Servicios nuevos a insertar:");
+      // console.log(JSON.stringify(nuevosServicios, null, 2));
       
       for (let servicio of nuevosServicios) {
-        console.log("Insertando nuevo servicio en el plan:");
         console.log("ID del servicio:", servicio);
+        // Obtenemos el monto del nuevo servicio 
+        const  consulta3 = `SELECT monto, fecha_fin_pago FROM ${my_services} WHERE id_myservices = ?`;
+        const result3 = await query(consulta3, [servicio]);
+
+        if (result3.length === 0) {
+          throw new Error("No se encontraron registros.")
+        }
+        // Obtenemos monto
+        const monto = result3[0].monto;
+        const fecha_fin_pago = result3[0].fecha_fin_pago;
+        
+        // Insertamos cada servicio nuevo en el mes nuevo
+        const consulta4 = `INSERT INTO ${planes_de_pago} (id_plan, user_id, año, mes, monto, my_service, due_date) VALUES (?,?,?,?,?,?,?)`;
+        const result4 = await query(consulta4, [idplan
+                                              , idUsuario
+                                              , año
+                                              , mesid
+                                              , monto
+                                              , servicio
+                                              , fecha_fin_pago])
+        if (!result4 || result4.affectedRows === 0) {
+          throw new Error("Error en la inserción de los servicios. ") 
+        }
+
       }
+    }else{
+      console.log(servicios);
       
     }
 
