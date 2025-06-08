@@ -1,6 +1,13 @@
 import React from 'react';
 
-const PanelPrincipal = ({planesPorMes,mesNumero}) => {
+// Button add
+import ButtonAdd from '../../../common/buttons/btn-add';
+
+
+//Api add servicos
+import AddModalServiciosMes from '../../modals/panelcenter/modal_addServices';
+
+const PanelPrincipal = ({planesPorMes,mesNumero, planes}) => {
 
     const formatDate = (dateString) => {
         if (!dateString) return '-';
@@ -8,6 +15,8 @@ const PanelPrincipal = ({planesPorMes,mesNumero}) => {
     };
 
     // console.log('planesPorMes: ' , planesPorMes);
+    // console.log('mesNumero: ' , mesNumero);
+    // console.log('planes: ' , planes);
     
     const meses = [
         'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -20,7 +29,10 @@ const PanelPrincipal = ({planesPorMes,mesNumero}) => {
 
     return ( 
         <div className="containerPanel1">
-            <center>Tus planes de pago, {nombreMes}</center>
+            <div className="container-table">
+                <center>Tus planes de pago, {nombreMes}</center>
+                < ButtonAdd ModalComponent = {AddModalServiciosMes} category={{planes, mesNumero}} size='sm' value={'Agregar Servicio +'}/>
+            </div>
             <table className='Myservices-tabla'>
                     <thead>
                         <tr>
@@ -36,17 +48,29 @@ const PanelPrincipal = ({planesPorMes,mesNumero}) => {
                     <tbody>
                        
                         {
-                            planesPorMes.map((pdp)=>(
-                                <tr key={pdp.id_payment}>
-                                    <td>{pdp.id_payment}</td>
-                                    <td>{pdp.nombre}</td>
-                                    <td>${pdp.monto}</td>
-                                    <td>{pdp.service_status}</td>
-                                    <td>{formatDate(pdp.paid_at)}</td>
-                                    <td>{formatDate(pdp.due_date)}</td>
-                                    <td>Opciones</td>
+                            // si no hay registros en el mes
+                            planesPorMes.length > 0 ? (
+
+                                planesPorMes.map((pdp)=>(
+                                    <tr key={pdp.id_payment}>
+                                        <td>{pdp.id_payment}</td>
+                                        <td>{pdp.nombre}</td>
+                                        <td>${pdp.monto}</td>
+                                        <td>{pdp.service_status}</td>
+                                        <td>{formatDate(pdp.paid_at)}</td>
+                                        <td>{formatDate(pdp.due_date)}</td>
+                                        <td>
+                                            botones de Acciones
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                  <td colSpan="7" style={{ textAlign: 'center' }}>
+                                        <p>No hay registros disponibles</p>
+                                  </td>
                                 </tr>
-                            ))
+                            )
                         }
                        
                             

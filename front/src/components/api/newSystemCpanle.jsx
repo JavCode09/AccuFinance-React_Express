@@ -152,3 +152,26 @@ export const API_updatePlanAnual = async(formData) => {
         
     }
 }
+
+export const API_insertNewServices = async(formData) => {
+    try {
+        const response = await fetch(`${config.API_URL}myServicesPanle/insertNewS`, {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json",
+                "Authorization":`Bearer ${token}`
+            },
+            body:JSON.stringify(formData)
+        })
+        if(!response.ok){
+            const errorData = await response.json();
+            const error = new Error ("Error en la solicitud a la API");
+            error.response = {status:response.status , data:errorData}
+            throw error; // <-- ¡ESTO FALTABA!
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error en la peticion");
+        throw error;
+    }
+}
