@@ -42,6 +42,15 @@ const AdminServices = ({titleModule}) => {
         setplanes(id_plan);
     }
 
+    const [refreshPlanes, setRefreshPlanes] = useState(false);
+
+    const getData = () => {
+        // console.log("Se actualiza aqui");
+        
+        setRefreshPlanes(prev => !prev); // Cambia el valor a su opuesto para forzar la actualización
+    };
+
+
     return ( 
         <div className='containerPanel'>
             <div className="bodyHead">
@@ -49,15 +58,15 @@ const AdminServices = ({titleModule}) => {
                     <h2>{titleModule}</h2>
                 </div>
                 <div className="containerPanel_add">
-                    <ButtonAdd ModalComponent={AddNewPlan} value={'Nuevo Plan'} />
+                    <ButtonAdd ModalComponent={AddNewPlan} value={'Nuevo Plan'} getData={getData} />
                 </div>
             </div>
             <div className="bodyPanelbox1">
                 <div className="myservicesAdmin">
-                    <Planes getMeses={getMesesYidplan} />
+                    <Planes getMeses={getMesesYidplan} refresh={refreshPlanes} />
                 </div>
                 <div className="bodyExtras">
-                    <MesesDePlanes meses={mesesUnicos} id_plan={idpla} Getplanes_de_pago={Getplanes_de_pago}/>
+                    <MesesDePlanes meses={mesesUnicos} id_plan={idpla} Getplanes_de_pago={Getplanes_de_pago} />
                 </div>
             </div>
             <div className="bodyPanelbox2">
