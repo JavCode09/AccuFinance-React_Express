@@ -144,7 +144,7 @@ const UpdateModalPlanes = ({showModal_Update, closeModal_update, category, getDa
             setMesesPlan({
                 id_plan: '',
                 nombre_plan: '',
-                año: '',
+                año: '', 
                 DataNewMeses: []
             });
             closeModal_update();
