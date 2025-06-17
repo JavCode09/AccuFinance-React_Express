@@ -12,7 +12,7 @@ import { selectMyServicesPanel, inseertNewSystemPanel } from '../../../api/newSy
 
 
 
-const AddNewPlan = ({showModal, closeModal}) => {
+const AddNewPlan = ({showModal, closeModal, getData}) => {
     //Data login
     const {userData} = useContext(UserContext)
 
@@ -153,7 +153,24 @@ const AddNewPlan = ({showModal, closeModal}) => {
         try {
             const responseApi = await inseertNewSystemPanel(panel);
             console.log(responseApi);
-            
+
+            if (responseApi && responseApi.message) {
+                alert(responseApi.message);
+            }
+
+            //Limpiamos modal
+            setPanel({
+                idUser: userData.id,
+                Año: '',
+                Meses: [],
+                myServicesPanel: [],
+                nombre_plan: ''
+            })
+
+            //Cerramos modal
+            closeModal();
+            //Llamamos getData para mandarlo como señal al componente padre y renderizar vista
+            getData();
         } catch (error) {
             console.error("Error en la solicitud: " , error);
             throw error;
@@ -196,7 +213,7 @@ const AddNewPlan = ({showModal, closeModal}) => {
                             </select>
                         </div>
                         <div className="col">
-                            <label htmlFor="Meses" className='form-label label '>Meses</label>
+                            <label htmlFor="Meses" className='form-label label '>Tus Meses</label>
                             <select  className='form-select mb-3' 
                                     name='Meses'
                                     id='Meses' 

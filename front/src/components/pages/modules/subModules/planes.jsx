@@ -19,7 +19,7 @@ import ModalDeletePlanAnual from '../../modals/panelcenter/modal_delete';
 //API
 import { API_selectPlanes } from '../../../api/newSystemCpanle';
 
-const Planes = ({getMeses}) => {
+const Planes = ({getMeses, refresh}) => {
     //Informacion del logeado o sesion
     const {userData} = useContext(UserContext);
 
@@ -34,7 +34,7 @@ const Planes = ({getMeses}) => {
             APIselectPlanes(idUsuario);
         }
 
-    },[userData?.id])
+    },[userData?.id, refresh])
 
     const APIselectPlanes = async(idUsuario) => {
         try {
@@ -51,14 +51,19 @@ const Planes = ({getMeses}) => {
         }
     }
 
+    // Renderizados
     const getDataUpdate = () => {
         if (userData?.id) {
             // console.log("Si llego");
-            
             APIselectPlanes(userData.id);
         }
     };
 
+    const getDataDelete = () => {
+        if (userData?.id) {
+            APIselectPlanes(userData.id);
+        }
+    }
     return ( 
        <Table responsive className='tableAños stylesTableAños'>
             <thead>
@@ -77,21 +82,24 @@ const Planes = ({getMeses}) => {
                         <td className=''>{dataPlanes.año}</td>
                         <td className=''> 
                             <div className="divcss">
-                                <Button size="sm" onClick={
+                                <Button size="sm" title='Actualizar o Ver' onClick={
                                                 () => getMeses(dataPlanes.meses , dataPlanes.id_plan)
                                                 }
                                 >
                                 <i className="fa fa-eye" aria-hidden="true"></i>
                                 </Button>
-                                <ButtonUpdate size="sm" 
+                                <ButtonUpdate size="sm" title={'Agregar Nuevo Mes'}
                                                 value={<i className="fa fa-pencil" aria-hidden="true"></i>} 
                                                 ModalCategoriesUpdate={UpdateModalPlanes} 
                                                 category={dataPlanes.id_plan} 
-                                                getDataUpdate={getDataUpdate} />
-                                <ButtonDelete size="sm"  
+                                                getDataUpdate={getDataUpdate}
+                                                />
+                                                
+                                <ButtonDelete size="sm" title={'Eliminar Plan'}
                                             value={<i className="fa fa-trash" aria-hidden="true"></i>} 
                                             ModalCategoriesDelete = {ModalDeletePlanAnual}
-                                            category={dataPlanes} />
+                                            category={dataPlanes}
+                                            getDataDelete = {getDataDelete} />
                             </div>
                         </td>
                     </tr>

@@ -115,3 +115,11 @@ CREATE TABLE planes_de_pago (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- le agregamos cascade a id_plan com oforenkey
+-- Esto es para eliminacion en cascada
+ALTER TABLE planes_de_pago
+ADD CONSTRAINT fk_planes_pago
+FOREIGN KEY (id_plan)
+REFERENCES planes(id_plan)
+ON DELETE CASCADE;
