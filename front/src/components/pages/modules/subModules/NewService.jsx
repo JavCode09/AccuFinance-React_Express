@@ -133,12 +133,14 @@ const NuevoServicio = ({titleModule}) => {
                                 <td>
                                     <div className="btns_option_NewServices">
                                         <ButtonUpdate 
+                                            size = {'sm'}
                                             ModalCategoriesUpdate={ModalNewService_update}
                                             category={dataServ}
                                             getDataUpdate={getDataUpdate}
                                             value={'Actualizar'}
                                         />
                                         <ButtonDelete 
+                                            size = {'sm'}
                                             ModalCategoriesDelete={ModalCategoriesDelete} 
                                             category={dataServ}
                                             getDataDelete={getDataDelete}

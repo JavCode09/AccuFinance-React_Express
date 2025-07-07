@@ -30,11 +30,13 @@ const AddModalServiciosMes = ({showModal, closeModal, category}) => {
     const selectServicios = useRef(null);
 
     useEffect(()=>{
+        console.log(category);
+        
         //llamamos a la funcion para obtenr los servicios del usuario
         if (category?.planes && userData?.id && category?.mesNumero) {
             setServicios(prev => ({
                 ...prev,
-                idplan: category.planes,
+                idplan: category.planes.id_plan,
                 idUsuario: userData.id,
                 mesid: category.mesNumero
             }));
@@ -105,6 +107,7 @@ const AddModalServiciosMes = ({showModal, closeModal, category}) => {
             console.log('response_API: ' + response_API);
             
         } catch (error) {
+            console.log(error);
             
         }
         
@@ -122,7 +125,7 @@ const AddModalServiciosMes = ({showModal, closeModal, category}) => {
                         <input type="text"
                                 name='idplan'
                                 id='idplan'
-                                value={category.planes || ''} 
+                                value={category.planes.id_plan || ''} 
                                 readOnly
                         />
                     </div>

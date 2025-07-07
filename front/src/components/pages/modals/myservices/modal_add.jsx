@@ -67,7 +67,7 @@ const ModalAddMyservices = ({showModal,closeModal,getData}) => {
             if (response && response.message) {
                 alert(`✅ Status: Éxito\n📝 Mensaje: ${response.message}`);
 
-                getData()
+                getData();
                 closeModal();
             }
             

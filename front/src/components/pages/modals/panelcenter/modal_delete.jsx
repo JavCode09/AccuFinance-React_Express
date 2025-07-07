@@ -5,7 +5,7 @@ import { Modal, Button} from 'react-bootstrap';
 import { DeletePlanDePagos } from '../../../api/newSystemCpanle';
 import { useEffect } from 'react';
 
-const ModalDeletePlanAnual = ({showModalDelete,clseModalDelete, category, getDataDelete}) => {
+const ModalDeletePlanAnual = ({showModalDelete,clseModalDelete, category, getDataDelete, getData}) => {
 
     //hook de estado
     const [data, setData] = useState({
@@ -41,6 +41,7 @@ const ModalDeletePlanAnual = ({showModalDelete,clseModalDelete, category, getDat
 
             clseModalDelete();
             getDataDelete();
+            getData();
         } catch (error) {
             console.error("Error al eliminar el plan de pagos: ", error);
             if (error.response && error.response.status === 400) {

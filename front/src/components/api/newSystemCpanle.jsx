@@ -39,7 +39,7 @@ export const inseertNewSystemPanel = async(formData) => {
             },
             body:JSON.stringify(formData)
         })
-        if (!response) {
+        if (!response.ok) {
             const errorData = await response.json();
             const error = new Error("Error en la solicitud a la API");
             error.response = {status:response.status, data:errorData}
@@ -167,7 +167,7 @@ export const API_insertNewServices = async(formData) => {
             const errorData = await response.json();
             const error = new Error ("Error en la solicitud a la API");
             error.response = {status:response.status , data:errorData}
-            throw error; // <-- ¡ESTO FALTABA!
+            throw error;
         }
         return await response.json();
     } catch (error) {

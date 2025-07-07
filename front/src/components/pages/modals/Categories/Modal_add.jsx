@@ -35,13 +35,14 @@ const ModalCategoriesAdd = ({showModal,closeModal, getData}) => {
             console.log("API_categoriesAdd: ", API_categoriesAdd);
     
              // Suposición: API_categoriesAdd.message contiene los datos correctos
-            if (API_categoriesAdd && API_categoriesAdd.message) {
+            if (API_categoriesAdd && API_categoriesAdd.status) {
                 getData(API_categoriesAdd.message);
             }
 
     
             // Cerrar el modal después de agregar
             closeModal();
+            
         } catch (error) {
             console.log(error);
         }

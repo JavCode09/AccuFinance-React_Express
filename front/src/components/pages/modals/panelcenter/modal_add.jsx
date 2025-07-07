@@ -152,7 +152,7 @@ const AddNewPlan = ({showModal, closeModal, getData}) => {
 
         try {
             const responseApi = await inseertNewSystemPanel(panel);
-            console.log(responseApi);
+            // console.log(responseApi);
 
             if (responseApi && responseApi.message) {
                 alert(responseApi.message);
@@ -172,8 +172,14 @@ const AddNewPlan = ({showModal, closeModal, getData}) => {
             //Llamamos getData para mandarlo como señal al componente padre y renderizar vista
             getData();
         } catch (error) {
-            console.error("Error en la solicitud: " , error);
-            throw error;
+             // console.error(error);
+            if (error.response && error.response.status === 500) {
+                alert(error.response.data.message)
+            } else if (error.response && error.response.status === 409) {
+                alert(error.response.data.message)
+            }else{
+                alert("Ocurrio un error inesperado." + error)
+            }
             
         }
     }
