@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button} from 'react-bootstrap';
 
-const ButtonUpdate = ({ModalCategoriesUpdate,category,getDataUpdate, size, value}) => {
+const ButtonUpdate = ({ModalCategoriesUpdate,category,getDataUpdate, size, title, value, updateInfo}) => {
 
     //hook de estado para abrir y cerrar modales
     const [ModalUpdate, setModalUpdate] = useState(false);
@@ -18,7 +18,7 @@ const ButtonUpdate = ({ModalCategoriesUpdate,category,getDataUpdate, size, value
     return ( 
         <>
            <div className="btn_update">
-            <Button className='btn_update btn btn-warning'  size={size}  onClick={showModal_Update}>{value}</Button>
+            <Button className='btn_update btn btn-warning'  size={size} title={title} onClick={showModal_Update}>{value}</Button>
             </div>
             {/* Aqui va el modal para actualizar */}
             {ModalCategoriesUpdate && (
@@ -26,7 +26,9 @@ const ButtonUpdate = ({ModalCategoriesUpdate,category,getDataUpdate, size, value
                     showModal_Update={ModalUpdate} 
                     closeModal_update={closeModal_Update} 
                     category={category}
-                    getDataUpdate ={getDataUpdate}/>
+                    getDataUpdate ={getDataUpdate}
+                    updateInfo={updateInfo}
+                />
             )}
         </>
      );

@@ -11,7 +11,7 @@ import { UserContext } from '../../../../contexts/UserContext';
 import { API_selectmeses } from '../../../api/newSystemCpanle';
 import { API_updatePlanAnual } from '../../../api/newSystemCpanle';
 
-const UpdateModalPlanes = ({showModal_Update, closeModal_update, category, getDataUpdate}) => {
+const UpdateModalPlanes = ({showModal_Update, closeModal_update, category, getDataUpdate, updateInfo }) => {
 
     //Informacion de la sesion 
     const {userData} = useContext(UserContext);
@@ -135,15 +135,21 @@ const UpdateModalPlanes = ({showModal_Update, closeModal_update, category, getDa
         try {
             const resultApiUpdate = await API_updatePlanAnual(mesesPlan);
             console.log(resultApiUpdate);
-            alert(resultApiUpdate.message);
 
-            getDataUpdate();
-            closeModal_update();
+            if (resultApiUpdate && resultApiUpdate.message) {
+                alert(resultApiUpdate.message);
+            }
 
-            //Limpiamos el campo meses
-            setMesesPlan(prev => ({
-                ...prev, DataNewMeses: []
-            }))
+            // Limpia y cierra
+            setMesesPlan({
+                id_plan: '',
+                nombre_plan: '',
+                año: '', 
+                DataNewMeses: []
+            });
+            closeModal_update(); // Cerramos modal
+            getDataUpdate(); // Renderizamos planes anuales 
+            updateInfo(resultApiUpdate.meses , resultApiUpdate.id_plan); //Renderizamos meses del plan anual
         } catch (error) {
             // console.error(error);
             if (error.response && error.response.status === 500) {
@@ -151,7 +157,7 @@ const UpdateModalPlanes = ({showModal_Update, closeModal_update, category, getDa
             } else if (error.response && error.response.status === 409) {
                 alert(error.response.data.message)
             }else{
-                alert("Ocurrio un error inesperado.")
+                alert("Ocurrio un error inesperado." + error)
             }
         }
         
@@ -164,7 +170,7 @@ const UpdateModalPlanes = ({showModal_Update, closeModal_update, category, getDa
             </Modal.Header>
             <form onSubmit={API_FormUpdatePlan}>
                 <Modal.Body>
-                    <input type="text" placeholder='id' id='id_plan' name='id_plan' value={mesesPlan.id_plan} readOnly />
+                    <input type="hidden" placeholder='id' id='id_plan' name='id_plan' value={mesesPlan.id_plan} readOnly />
                     <div className="mb-3">
                         <label htmlFor="nombre_plan" className='form-label label'>Nombre del Plan</label>
                         <input type="text" required

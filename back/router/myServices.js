@@ -12,7 +12,8 @@ Router.get('/all', async (req, res) => {
                 my_services.*,
                 services.nombre
             FROM ${tabla}
-            INNER JOIN services ON ${tabla}.id_services = services.id
+            INNER JOIN services ON ${tabla}.id_services = services.id 
+            ORDER BY id_myservices  DESC
         `;
         const result = await query(sql);
         res.status(200).json(result);

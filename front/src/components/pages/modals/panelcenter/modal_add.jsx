@@ -12,7 +12,7 @@ import { selectMyServicesPanel, inseertNewSystemPanel } from '../../../api/newSy
 
 
 
-const AddNewPlan = ({showModal, closeModal}) => {
+const AddNewPlan = ({showModal, closeModal, getData}) => {
     //Data login
     const {userData} = useContext(UserContext)
 
@@ -152,11 +152,34 @@ const AddNewPlan = ({showModal, closeModal}) => {
 
         try {
             const responseApi = await inseertNewSystemPanel(panel);
-            console.log(responseApi);
-            
+            // console.log(responseApi);
+
+            if (responseApi && responseApi.message) {
+                alert(responseApi.message);
+            }
+
+            //Limpiamos modal
+            setPanel({
+                idUser: userData.id,
+                Año: '',
+                Meses: [],
+                myServicesPanel: [],
+                nombre_plan: ''
+            })
+
+            //Cerramos modal
+            closeModal();
+            //Llamamos getData para mandarlo como señal al componente padre y renderizar vista
+            getData();
         } catch (error) {
-            console.error("Error en la solicitud: " , error);
-            throw error;
+             // console.error(error);
+            if (error.response && error.response.status === 500) {
+                alert(error.response.data.message)
+            } else if (error.response && error.response.status === 409) {
+                alert(error.response.data.message)
+            }else{
+                alert("Ocurrio un error inesperado." + error)
+            }
             
         }
     }
@@ -196,7 +219,7 @@ const AddNewPlan = ({showModal, closeModal}) => {
                             </select>
                         </div>
                         <div className="col">
-                            <label htmlFor="Meses" className='form-label label '>Meses</label>
+                            <label htmlFor="Meses" className='form-label label '>Tus Meses</label>
                             <select  className='form-select mb-3' 
                                     name='Meses'
                                     id='Meses' 

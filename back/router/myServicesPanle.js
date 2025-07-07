@@ -98,7 +98,7 @@ Router.get("/allPlan", async(req, res) => {
   if(!idUser){ return res.status(400).json({message:"No se encontro al usuario."}) }
 
   try {
-    const consulta = `SELECT * FROM ${planes} WHERE user_id = ?`;
+    const consulta = `SELECT * FROM ${planes} WHERE user_id = ? ORDER BY id_plan DESC`;
     const result = await query(consulta, [idUser]);
     return res.status(200).json({data: result})
   } catch (error) {
@@ -118,12 +118,14 @@ Router.post("/planesdp", async(req,res) => {
   if (!mes) { return res.status(400).json({message:"No se encontro el mes."})}
 
   try {
-    const consulta = `SELECT planes.*,
+    const consulta = `SELECT planesp.*,
+                      pl.nombre_plan,
                       serv.nombre
-                      FROM ${planes_de_pago} planes
-                      INNER JOIN my_services ms ON ms.id_myservices = planes.my_service
+                      FROM ${planes_de_pago} planesp
+                      INNER JOIN planes pl ON pl.id_plan = planesp.id_plan
+                      INNER JOIN my_services ms ON ms.id_myservices = planesp.my_service
                       INNER JOIN services serv ON serv.id = ms.id_services
-                      WHERE planes.id_plan = ? AND planes.user_id = ? AND planes.mes = ?`;
+                      WHERE planesp.id_plan = ? AND planesp.user_id = ? AND planesp.mes = ?`;
     const result = await query(consulta, [idPlan, id_user, mes]);
 
     return res.status(200).json({data:result})
@@ -258,7 +260,8 @@ Router.put("/udt", async (req, res) => {
     await commit();
     return res.status(200).json({
       message: "Plan actualizado correctamente.",
-      meses: nuevosMeses
+      meses: nuevosMeses ?? JSON.parse(result[0].meses), // usa los meses actuales si no hubo nuevos
+      id_plan: id_plan // 👈 esto es lo que te faltaba
     });
 
   } catch (error) {
@@ -280,7 +283,7 @@ Router.post("/insertNewS" ,  async(req,res) => {
     if (!Array.isArray(servicios) || servicios.length === 0 || servicios.includes("0")){
         throw new Error("No hay servicios asignados." );
     }
-
+    
     // Optenemos los servicios del pan de pagos
     const consulta1 = "SELECT servicios, año FROM planes WHERE id_plan = ? AND user_id =?";
     const result1 = await query(consulta1, [idplan, idUsuario]);
@@ -353,7 +356,7 @@ Router.post("/insertNewS" ,  async(req,res) => {
 
       }
     }else{
-      console.log(servicios);
+      console.log('servicios duplicados:  ' , servicios);
       
     }
 
@@ -368,5 +371,37 @@ Router.post("/insertNewS" ,  async(req,res) => {
   }
 })
 
+Router.delete("/deleteplan", async(req, res) => {
+  const {id_plan} = req.body;
+
+  //validamos si el id del plan existe
+  if(!id_plan){ return res.status(400).json({ message:"No se encontro el plan de pagos."})};
+
+  try {
+    await beginTransaction();
+
+    //Consulta para eliminar todo lo relacionado al plan de pagos
+    //solo eliminamos de planes ya que planes_de_pago tiene forein key cascade
+    // Por lo mismo es que no es necesario eliminar con consulta, se eliminan en cascada automatico
+    const consulta1 = `DELETE FROM ${planes} WHERE id_plan = ?`; 
+    const resultado1 = await query(consulta1, [id_plan]);
+
+    // throw new Error("Prueba forzada de error.");
+    
+    if(resultado1.affectedRows === 0){
+      throw new Error("No se encontró el plan de pagos para eliminar.");
+    }
+
+    await commit();
+
+    // console.log("Se eliminó el plan de pagos exitosamente.");
+    return res.status(200).json({message:"Tu plan de pago fue eliminado exitosamente."})
+  } catch (error) {
+    console.error("Error:" , error.message);
+    await rollback();
+    return res.status(500).json({message: error.message || "Error en al eliminar el plan de pagos"})
+    
+  }
+})
 
 module.exports = Router
