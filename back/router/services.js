@@ -12,7 +12,7 @@ Router.get("/all", async (req, res) => {
         const consulta = `
             SELECT s.*, c.nombre AS nombre_categoria
             FROM ${tabla} s
-            JOIN categories c ON s.categoria = c.id
+            JOIN categories c ON s.categoria = c.id ORDER BY s.id DESC
         `;
         const result = await query(consulta);
         

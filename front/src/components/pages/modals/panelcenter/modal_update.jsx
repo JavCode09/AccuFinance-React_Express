@@ -11,7 +11,7 @@ import { UserContext } from '../../../../contexts/UserContext';
 import { API_selectmeses } from '../../../api/newSystemCpanle';
 import { API_updatePlanAnual } from '../../../api/newSystemCpanle';
 
-const UpdateModalPlanes = ({showModal_Update, closeModal_update, category, getDataUpdate, getMeses }) => {
+const UpdateModalPlanes = ({showModal_Update, closeModal_update, category, getDataUpdate, updateInfo }) => {
 
     //Informacion de la sesion 
     const {userData} = useContext(UserContext);
@@ -144,16 +144,12 @@ const UpdateModalPlanes = ({showModal_Update, closeModal_update, category, getDa
             setMesesPlan({
                 id_plan: '',
                 nombre_plan: '',
-                año: '',
+                año: '', 
                 DataNewMeses: []
             });
-            closeModal_update();
-            getDataUpdate();
-
-            //Limpiamos el campo meses
-            // setMesesPlan(prev => ({
-            //     ...prev, DataNewMeses: []
-            // }))
+            closeModal_update(); // Cerramos modal
+            getDataUpdate(); // Renderizamos planes anuales 
+            updateInfo(resultApiUpdate.meses , resultApiUpdate.id_plan); //Renderizamos meses del plan anual
         } catch (error) {
             // console.error(error);
             if (error.response && error.response.status === 500) {

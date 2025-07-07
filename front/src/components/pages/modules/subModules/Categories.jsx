@@ -132,6 +132,7 @@ const Categories = ({titleModule}) => {
                                 <td>
                                     <div className="btns_option_categories">
                                         <ButtonUpdate
+                                            size= {'sm'}
                                             ModalCategoriesUpdate = {ModalCategoriesUpdate}
                                             category={dataCate}
                                             getDataUpdate={getDataUpdate}
@@ -139,6 +140,7 @@ const Categories = ({titleModule}) => {
                                             />
 
                                         <ButtonDelete 
+                                            size= {'sm'}
                                             ModalCategoriesDelete={ModalCategoriesDelete} 
                                             category={dataCate}
                                             getDataDelete={getDataDelete} 

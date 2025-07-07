@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 // Button add
 import ButtonAdd from '../../../common/buttons/btn-add';
@@ -16,8 +16,8 @@ const PanelPrincipal = ({planesPorMes,mesNumero, planes}) => {
 
     // console.log('planesPorMes: ' , planesPorMes);
     // console.log('mesNumero: ' , mesNumero);
-    // console.log('planes: ' , planes);
-    
+    console.log('planes: ' , planes);
+
     const meses = [
         'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
         'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
@@ -30,8 +30,9 @@ const PanelPrincipal = ({planesPorMes,mesNumero, planes}) => {
     return ( 
         <div className="containerPanel1">
             <div className="container-table">
-                <center>Tus planes de pago, {nombreMes}</center>
-                < ButtonAdd ModalComponent = {AddModalServiciosMes} category={{planes, mesNumero}} size='sm' value={'Agregar Servicio +'}/>
+                <center>{planesPorMes && planesPorMes[0] ? `Servicios del mes de ${nombreMes}, Plan: ${planesPorMes[0].nombre_plan}` : ', sin plan asignado'}
+                    < ButtonAdd ModalComponent = {AddModalServiciosMes} category={{planes, mesNumero}} size='sm' value={'Nuevo Servicio +'}/>
+                </center>
             </div>
             <table className='Myservices-tabla'>
                     <thead>

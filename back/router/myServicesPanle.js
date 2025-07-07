@@ -98,7 +98,7 @@ Router.get("/allPlan", async(req, res) => {
   if(!idUser){ return res.status(400).json({message:"No se encontro al usuario."}) }
 
   try {
-    const consulta = `SELECT * FROM ${planes} WHERE user_id = ?`;
+    const consulta = `SELECT * FROM ${planes} WHERE user_id = ? ORDER BY id_plan DESC`;
     const result = await query(consulta, [idUser]);
     return res.status(200).json({data: result})
   } catch (error) {
@@ -118,12 +118,14 @@ Router.post("/planesdp", async(req,res) => {
   if (!mes) { return res.status(400).json({message:"No se encontro el mes."})}
 
   try {
-    const consulta = `SELECT planes.*,
+    const consulta = `SELECT planesp.*,
+                      pl.nombre_plan,
                       serv.nombre
-                      FROM ${planes_de_pago} planes
-                      INNER JOIN my_services ms ON ms.id_myservices = planes.my_service
+                      FROM ${planes_de_pago} planesp
+                      INNER JOIN planes pl ON pl.id_plan = planesp.id_plan
+                      INNER JOIN my_services ms ON ms.id_myservices = planesp.my_service
                       INNER JOIN services serv ON serv.id = ms.id_services
-                      WHERE planes.id_plan = ? AND planes.user_id = ? AND planes.mes = ?`;
+                      WHERE planesp.id_plan = ? AND planesp.user_id = ? AND planesp.mes = ?`;
     const result = await query(consulta, [idPlan, id_user, mes]);
 
     return res.status(200).json({data:result})
@@ -281,7 +283,7 @@ Router.post("/insertNewS" ,  async(req,res) => {
     if (!Array.isArray(servicios) || servicios.length === 0 || servicios.includes("0")){
         throw new Error("No hay servicios asignados." );
     }
-
+    
     // Optenemos los servicios del pan de pagos
     const consulta1 = "SELECT servicios, año FROM planes WHERE id_plan = ? AND user_id =?";
     const result1 = await query(consulta1, [idplan, idUsuario]);
@@ -354,7 +356,7 @@ Router.post("/insertNewS" ,  async(req,res) => {
 
       }
     }else{
-      console.log(servicios);
+      console.log('servicios duplicados:  ' , servicios);
       
     }
 

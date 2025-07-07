@@ -19,7 +19,7 @@ import ModalDeletePlanAnual from '../../modals/panelcenter/modal_delete';
 //API
 import { API_selectPlanes } from '../../../api/newSystemCpanle';
 
-const Planes = ({getMeses, refresh}) => {
+const Planes = ({getMeses, refresh, getData, updateInfo}) => {
     //Informacion del logeado o sesion
     const {userData} = useContext(UserContext);
 
@@ -43,7 +43,7 @@ const Planes = ({getMeses, refresh}) => {
             
             //Integramos info al estado
             setPlanes(resultPlanes.data)
-            console.log("Entro al rederizado");
+            // console.log("Entro al rederizado");
             
         } catch (error) {
             console.error("Error en la funcion: " , error);
@@ -93,13 +93,16 @@ const Planes = ({getMeses, refresh}) => {
                                                 ModalCategoriesUpdate={UpdateModalPlanes} 
                                                 category={dataPlanes.id_plan} 
                                                 getDataUpdate={getDataUpdate}
+                                                updateInfo={updateInfo}
                                                 />
                                                 
                                 <ButtonDelete size="sm" title={'Eliminar Plan'}
                                             value={<i className="fa fa-trash" aria-hidden="true"></i>} 
                                             ModalCategoriesDelete = {ModalDeletePlanAnual}
                                             category={dataPlanes}
-                                            getDataDelete = {getDataDelete} />
+                                            getDataDelete = {getDataDelete}
+                                            getData={getData}  // 👈 PASAMOS ESTA PROP 
+                                        />
                             </div>
                         </td>
                     </tr>
