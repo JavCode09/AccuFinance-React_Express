@@ -313,7 +313,7 @@ Router.post("/insertNewS" ,  async(req,res) => {
       //Convertimos a JOSN  para guardar en la base de datos
       const serviciosJSON = JSON.stringify(serviciosActualizados)
 
-      console.log(serviciosActualizados);
+      console.log(serviciosActualizados); //imprime el array
 
       // Actualizar el plan de pagos
       const consulta2 = "UPDATE planes SET servicios = ? WHERE id_plan = ? ";
@@ -357,13 +357,52 @@ Router.post("/insertNewS" ,  async(req,res) => {
       }
     }else{
       console.log('servicios duplicados:  ' , servicios);
-      
+
+      //Recorremos los servicios a agregar (este es en caso de que ya en la tabla planes existan los serviciois pero no en el mes correspondietne)
+      for (let servicio of servicios) {
+        // console.log("Servicio: " , servicio);
+       
+        const consulta5 = `SELECT * FROM ${planes_de_pago} WHERE id_plan = ? AND  user_id = ? AND mes = ? AND my_service = ?`;
+        const result5 = await query(consulta5, [idplan ,idUsuario, mesid, servicio])
+
+        if (result5.length === 0) {
+          // Obtenemos los datos del nuevo servicio 
+          const  consulta6 = `SELECT monto, fecha_fin_pago FROM ${my_services} WHERE id_myservices = ?`;
+          const result6 = await query(consulta6, [servicio]);
+
+          if (result6.length === 0) {
+            throw new Error("No se encontraron registros.")
+          }
+          // Obtenemos monto
+          const monto = result6[0].monto;
+          const fecha_fin_pago = result6[0].fecha_fin_pago;
+
+          //Si no existen insertamos
+          const consulta7 = `INSERT INTO ${planes_de_pago} (id_plan, user_id, año, mes, monto, my_service, due_date) VALUES (?,?,?,?,?,?,?)`;
+            const result7 = await query(consulta7, [idplan
+                                              , idUsuario
+                                              , año
+                                              , mesid
+                                              , monto
+                                              , servicio
+                                              , fecha_fin_pago])
+          if (!result7 || result7.affectedRows === 0) {
+            throw new Error("Error en la inserción de los servicios. ") 
+          }
+        }else{
+
+          throw new Error("Tienes servicios duplicados, Intentalo de nuevo"); 
+        }
+      }
+
     }
 
-    await commit();
+    await commit(); // ✅ SOLO UNA VEZ
 
-    console.log("Se actualizo el plan de pagos");
-    
+    return res.status(200).json({
+      message: "Servicios agregados."
+    });
+
   } catch (error) {
     console.error("Error:", error.message);
     await rollback();

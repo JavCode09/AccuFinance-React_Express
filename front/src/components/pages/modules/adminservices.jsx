@@ -14,6 +14,10 @@ import Planes from './subModules/planes';
 import PanelPrincipal from './subModules/panelprincipal';
 import MesesDePlanes from './subModules/planes_de_pago';
 
+
+//Funciones
+import { API_planes_de_pago } from '../../api/newSystemCpanle';
+
 const AdminServices = ({titleModule}) => {
 
     const [mesesUnicos, setMeses] = useState([]);
@@ -71,6 +75,30 @@ const AdminServices = ({titleModule}) => {
         setIdplan(id_plan) // obtenemos el id_plan 
     }
 
+    const onRefreshOtro = async({idplan, idUsuario, mesid, planesPorMes}) => {
+      
+        // console.log(idplan);
+        // console.log(mesid);
+        // console.log(planesPorMes);
+        
+
+        // LLamamos la misma funcion del panel MesesDePlanes que ocupa para traer los datos de un plan espesiifco y lo mandanmos a panelPrincipal para renderizar
+         const responseApiplanes = await API_planes_de_pago(idplan,idUsuario,mesid)
+
+            // console.log(responseApiplanes);
+            if (responseApiplanes) {
+                // console.log("Datos: " , responseApiplanes);
+                
+                //Pasamos al estado
+                setplanesPorMes(responseApiplanes.data);
+                setmesNumero(mesid);
+                
+                setplanes({ idplan });
+            }
+        
+    };
+
+
     return ( 
         <div className='containerPanel'>
             <div className="bodyHead">
@@ -90,7 +118,7 @@ const AdminServices = ({titleModule}) => {
                 </div>
             </div>
             <div className="bodyPanelbox2">
-                <PanelPrincipal planesPorMes={planesPorMes} mesNumero={mesNumero} planes={planes} />
+                <PanelPrincipal planesPorMes={planesPorMes} mesNumero={mesNumero} planes={planes} onRefreshOtro={onRefreshOtro} />
             </div>
         </div>
      );

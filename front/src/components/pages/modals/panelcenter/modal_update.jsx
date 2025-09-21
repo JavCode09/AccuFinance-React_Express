@@ -134,7 +134,7 @@ const UpdateModalPlanes = ({showModal_Update, closeModal_update, category, getDa
 
         try {
             const resultApiUpdate = await API_updatePlanAnual(mesesPlan);
-            console.log(resultApiUpdate);
+            // console.log(resultApiUpdate);
 
             if (resultApiUpdate && resultApiUpdate.message) {
                 alert(resultApiUpdate.message);
