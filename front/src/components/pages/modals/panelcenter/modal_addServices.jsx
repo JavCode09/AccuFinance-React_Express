@@ -10,7 +10,7 @@ import {UserContext} from '../../../../contexts/UserContext';
 //api 
 import { selectMyServicesPanel, API_insertNewServices } from '../../../api/newSystemCpanle';
 
-const AddModalServiciosMes = ({showModal, closeModal, category}) => {
+const AddModalServiciosMes = ({showModal, closeModal, category, onRefreshOtro }) => {
 
     //Data login
     const {userData} = useContext(UserContext)
@@ -30,7 +30,7 @@ const AddModalServiciosMes = ({showModal, closeModal, category}) => {
     const selectServicios = useRef(null);
 
     useEffect(()=>{
-        console.log(category);
+        // console.log(category);
         
         //llamamos a la funcion para obtenr los servicios del usuario
         if (category?.planes && userData?.id && category?.mesNumero) {
@@ -38,7 +38,8 @@ const AddModalServiciosMes = ({showModal, closeModal, category}) => {
                 ...prev,
                 idplan: category.planes.id_plan,
                 idUsuario: userData.id,
-                mesid: category.mesNumero
+                mesid: category.mesNumero,
+                planesPorMes: category.planesPorMes
             }));
             
             // Pedimos la informacin de los servicios
@@ -102,13 +103,39 @@ const AddModalServiciosMes = ({showModal, closeModal, category}) => {
     const API_insertServices = async(e) => {
         e.preventDefault();
 
+        // console.log("funcion click");
+        // return
         try {
             const response_API = await API_insertNewServices(serviciosN);
-            console.log('response_API: ' + response_API);
+            // console.log('response_API: ' , response_API);
             
+            if (response_API && response_API.message) {
+                alert(response_API.message)
+            }
+
+            setServicios({
+                idplan: '',
+                idUsuario : '',
+                mesid:'',
+                servicios: []
+            })
+            closeModal(); // cerramos el modal
+             // ✅ llamamos onRefreshOtro con los datos necesarios
+            if (onRefreshOtro) {
+                onRefreshOtro({
+                    idplan: category.planes.id_plan,
+                    idUsuario: userData.id,
+                    mesid: category.mesNumero,
+                    planesPorMes: category.planesPorMes
+                });
+            }
         } catch (error) {
-            console.log(error);
-            
+            // console.log(error);
+            if (error.response && error.response.data?.message) {
+                alert(error.response.data.message); // ✅ Mensaje de error del backend
+            } else {
+                alert("Ocurrió un error inesperado"); // fallback
+            }
         }
         
     }
@@ -122,7 +149,7 @@ const AddModalServiciosMes = ({showModal, closeModal, category}) => {
                 <Modal.Body>
                     {/* id del plan a editar */}
                     <div className="mb-3">
-                        <input type="text"
+                        <input type="hidden"
                                 name='idplan'
                                 id='idplan'
                                 value={category.planes.id_plan || ''} 
@@ -131,7 +158,7 @@ const AddModalServiciosMes = ({showModal, closeModal, category}) => {
                     </div>
                     {/* id usuario */}
                     <div className="mb-3">
-                        <input type="text"
+                        <input type="hidden"
                             name='idUsuario'
                             id= 'idUsuario'
                             value={userData?.id} 
@@ -140,7 +167,7 @@ const AddModalServiciosMes = ({showModal, closeModal, category}) => {
                     </div>
                     {/* mes */}
                     <div className="mb-3">
-                        <input type="text"
+                        <input type="hidden"
                             name='mesid'
                             id= 'mesid'
                             value={category.mesNumero || ''} 
