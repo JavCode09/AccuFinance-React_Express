@@ -7,6 +7,7 @@ import ButtonUpdate from '../../../common/buttons/btn-update';
 
 //Api add servicos
 import AddModalServiciosMes from '../../modals/panelcenter/modal_addServices';
+import ModalUpdateServices from '../../modals/panelcenter/modal_updateServices';
 
 const PanelPrincipal = ({planesPorMes,mesNumero, planes, onRefreshOtro}) => {
 
@@ -68,6 +69,8 @@ const PanelPrincipal = ({planesPorMes,mesNumero, planes, onRefreshOtro}) => {
                                         <td>{formatDate(pdp.due_date)}</td>
                                         <td>
                                            <ButtonUpdate 
+                                              ModalCategoriesUpdate = {ModalUpdateServices}
+                                              category={pdp}
                                               value={<i className="fa fa-pencil" aria-hidden="true"></i>} 
                                               size="sm" title={'Editar Servicios'}
                                            />
