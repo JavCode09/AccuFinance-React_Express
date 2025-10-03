@@ -7,7 +7,7 @@ const {query, beginTransaction, commit, rollback } = require("../conexion");
 //Selct
 Router.get("/", async (req, res) => {
     try {
-        const result = await query(`SELECT * FROM ${tabla}`);
+        const result = await query(`SELECT * FROM ${tabla} ORDER BY id DESC`);
         res.status(200).json(result);
     } catch (error) {
         console.error(`Error al consultar la tabla ${tabla}:`, error);

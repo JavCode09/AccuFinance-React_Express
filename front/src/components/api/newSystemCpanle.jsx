@@ -39,7 +39,7 @@ export const inseertNewSystemPanel = async(formData) => {
             },
             body:JSON.stringify(formData)
         })
-        if (!response) {
+        if (!response.ok) {
             const errorData = await response.json();
             const error = new Error("Error en la solicitud a la API");
             error.response = {status:response.status, data:errorData}
@@ -167,11 +167,35 @@ export const API_insertNewServices = async(formData) => {
             const errorData = await response.json();
             const error = new Error ("Error en la solicitud a la API");
             error.response = {status:response.status , data:errorData}
-            throw error; // <-- ¡ESTO FALTABA!
+            throw error;
         }
         return await response.json();
     } catch (error) {
         console.error("Error en la peticion");
         throw error;
+    }
+}
+
+export const DeletePlanDePagos = async(formData) => {
+    try {
+        const response = await fetch(`${config.API_URL}myServicesPanle/deleteplan`, {
+            method:'DELETE',
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${token}`,
+                },
+            body: JSON.stringify(formData)
+            })
+            if (!response.ok) {
+                const errorData = await response.json();
+                const error = new Error(errorData.message || "Error en la solicitud a la API");
+                error.response = {status:response.status , data:errorData}
+                throw error;
+            }
+            return await response.json();
+    } catch (error) {
+        console.error("Error en la peticion");
+        throw error;
+        
     }
 }

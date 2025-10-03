@@ -115,3 +115,16 @@ CREATE TABLE planes_de_pago (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- le agregamos cascade a id_plan com oforenkey
+-- Esto es para eliminacion en cascada
+ALTER TABLE planes_de_pago
+ADD CONSTRAINT fk_planes_pago
+FOREIGN KEY (id_plan)
+REFERENCES planes(id_plan)
+ON DELETE CASCADE;
+
+-- Le agregamos comentarios a dos campos due_date y paid_at para saber cual es cual
+Alter table planes_de_pago
+MODIFY due_date DATE COMMENT 'Fecha limite para realizar el pago',
+MODIFY paid_at DATETIME COMMENT 'Fecha en la que se realizó el pago';
