@@ -2,12 +2,14 @@ import React, { useEffect } from 'react';
 
 // Button add
 import ButtonAdd from '../../../common/buttons/btn-add';
+import ButtonUpdate from '../../../common/buttons/btn-update';
 
 
 //Api add servicos
 import AddModalServiciosMes from '../../modals/panelcenter/modal_addServices';
+import ModalUpdateServices from '../../modals/panelcenter/modal_updateServices';
 
-const PanelPrincipal = ({planesPorMes,mesNumero, planes}) => {
+const PanelPrincipal = ({planesPorMes,mesNumero, planes, onRefreshOtro}) => {
 
     const formatDate = (dateString) => {
         if (!dateString) return '-';
@@ -16,7 +18,7 @@ const PanelPrincipal = ({planesPorMes,mesNumero, planes}) => {
 
     // console.log('planesPorMes: ' , planesPorMes);
     // console.log('mesNumero: ' , mesNumero);
-    console.log('planes: ' , planes);
+    // console.log('planes: ' , planes);
 
     const meses = [
         'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
@@ -31,7 +33,12 @@ const PanelPrincipal = ({planesPorMes,mesNumero, planes}) => {
         <div className="containerPanel1">
             <div className="container-table">
                 <center>{planesPorMes && planesPorMes[0] ? `Servicios del mes de ${nombreMes}, Plan: ${planesPorMes[0].nombre_plan}` : ', sin plan asignado'}
-                    < ButtonAdd ModalComponent = {AddModalServiciosMes} category={{planes, mesNumero}} size='sm' value={'Nuevo Servicio +'}/>
+                    < ButtonAdd ModalComponent = {AddModalServiciosMes} 
+                                category={{planes, mesNumero, planesPorMes}} 
+                                size='sm' 
+                                value={'Nuevo Servicio +'}
+                                onRefreshOtro={onRefreshOtro}   // ✅ pasamos la prop
+                    />
                 </center>
             </div>
             <table className='Myservices-tabla'>
@@ -61,7 +68,12 @@ const PanelPrincipal = ({planesPorMes,mesNumero, planes}) => {
                                         <td>{formatDate(pdp.paid_at)}</td>
                                         <td>{formatDate(pdp.due_date)}</td>
                                         <td>
-                                            botones de Acciones
+                                           <ButtonUpdate 
+                                              ModalCategoriesUpdate = {ModalUpdateServices}
+                                              category={pdp}
+                                              value={<i className="fa fa-pencil" aria-hidden="true"></i>} 
+                                              size="sm" title={'Editar Servicios'}
+                                           />
                                         </td>
                                     </tr>
                                 ))
