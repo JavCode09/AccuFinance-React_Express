@@ -3,11 +3,14 @@ import React, { useEffect } from 'react';
 // Button add
 import ButtonAdd from '../../../common/buttons/btn-add';
 import ButtonUpdate from '../../../common/buttons/btn-update';
-
+import ButtonDelete from '../../../common/buttons/btn-delete';
 
 //Api add servicos
 import AddModalServiciosMes from '../../modals/panelcenter/modal_addServices';
 import ModalUpdateServices from '../../modals/panelcenter/modal_updateServices';
+import ModalDeleteServicePanel from '../../modals/panelcenter/modal_deleteServices';
+import ModalValidationService from '../../modals/panelcenter/modal_addServiceValidation';
+
 
 const PanelPrincipal = ({planesPorMes,mesNumero, planes, onRefreshOtro}) => {
 
@@ -68,9 +71,24 @@ const PanelPrincipal = ({planesPorMes,mesNumero, planes, onRefreshOtro}) => {
                                         <td>{formatDate(pdp.paid_at)}</td>
                                         <td>{formatDate(pdp.due_date)}</td>
                                         <td>
+                                           <ButtonAdd 
+                                              ModalComponent = {ModalValidationService}
+                                              category={pdp}
+                                              value={<i className="fa fa-pencil" aria-hidden="true"></i>} 
+                                              size="sm" title={'Editar Servicios'}
+                                              styleColor= 'success'
+                                           />
+                                       
                                            <ButtonUpdate 
                                               ModalCategoriesUpdate = {ModalUpdateServices}
                                               category={pdp}
+                                              value={<i className="fa fa-pencil" aria-hidden="true"></i>} 
+                                              size="sm" title={'Editar Servicios'}
+                                           />
+                                        
+                                           <ButtonDelete 
+                                              ModalCategoriesDelete = {ModalDeleteServicePanel}
+                                              category={pdp.id_payment}
                                               value={<i className="fa fa-pencil" aria-hidden="true"></i>} 
                                               size="sm" title={'Editar Servicios'}
                                            />
