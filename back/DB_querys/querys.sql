@@ -1,4 +1,4 @@
-Consultas de BD
+-- Consultas de BD nombre de la bd: accufinance
 
 -------- Tabla users --------
 
