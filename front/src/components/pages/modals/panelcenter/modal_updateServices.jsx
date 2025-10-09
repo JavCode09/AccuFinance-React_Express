@@ -4,6 +4,9 @@ import { Modal, Button } from 'react-bootstrap';
 //Jquery y select2
 import $, { initSelect2, destroySelect2 }  from '../../../../utils/jqueryYselect2';
 
+//API
+import { APIupdateServicePlan } from '../../../api/newSystemCpanle';
+
 const ModalUpdateServices = ({showModal_Update , closeModal_update , category}) => {
     //Selector de estado
     const Estados = useRef();
@@ -65,7 +68,7 @@ const ModalUpdateServices = ({showModal_Update , closeModal_update , category}) 
         })
     }
 
-    const API_UbdateService = (e) => {
+    const API_UbdateService = async(e) => {
         e.preventDefault();
 
         if (isNaN(DataCategory.monto) || DataCategory.monto === '') {
@@ -76,7 +79,26 @@ const ModalUpdateServices = ({showModal_Update , closeModal_update , category}) 
         console.log("Entro a la funcion");
         console.log("Data actualizada: " , DataCategory);
         //Precesamos la informacion al back
-        
+
+        // Llamada a la 
+        try {
+            const APIupdate = await APIupdateServicePlan(DataCategory)
+            if (APIupdate && APIupdate.message) {
+                alert(`✅ Status: Éxito\n📝 Mensaje: ${APIupdate.message}`);
+
+                //cerrar modal
+                closeModal_update();
+            }
+        } catch (error) {
+            // console.log('error: ' + error);
+            // Verifica si existe una respuesta con status y data
+            if (error.response && error.response.status === 400 && error.response.data) {
+                alert(`⚠️ Error: ${error.response.data.message}`); // Mensaje exacto del backend
+            } else {
+                alert("❌ Error: No se pudo actualizar el servicio. Intenta de nuevo.");
+            }
+            
+        }
     }
 
 
