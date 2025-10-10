@@ -53,6 +53,7 @@ const AdminServices = ({titleModule}) => {
 
     const [refreshPlanes, setRefreshPlanes] = useState(false);
 
+    //Recarga todos los Planes desde el plan anual general
     const getData = () => {
         // console.log("Se actualiza aqui");
         
@@ -75,12 +76,38 @@ const AdminServices = ({titleModule}) => {
         setIdplan(id_plan) // obtenemos el id_plan 
     }
 
+    //Recarga solo meses y servicios
     const onRefreshOtro = async({idplan, idUsuario, mesid, planesPorMes}) => {
       
         // console.log(idplan);
+        // console.log(idUsuario);
         // console.log(mesid);
         // console.log(planesPorMes);
         
+
+        // LLamamos la misma funcion del panel MesesDePlanes que ocupa para traer los datos de un plan espesiifco y lo mandanmos a panelPrincipal para renderizar
+         const responseApiplanes = await API_planes_de_pago(idplan,idUsuario,mesid)
+
+            // console.log(responseApiplanes);
+            if (responseApiplanes) {
+                console.log("Datos: " , responseApiplanes);
+                
+                //Pasamos al estado
+                setplanesPorMes(responseApiplanes.data);
+                setmesNumero(mesid);
+                
+                setplanes({ idplan });
+            }
+        
+    };
+
+    //Recarga solo meses y servicios lo mismo que onRefreshOtro pero desde actualizacion y updateInfo no se pudo ocupar ya que ya existe funcion
+    // por suerte tenemos getDataUpdate tambien en el boton actualizar
+    const getDataUpdate = async({idplan, idUsuario, mesid}) => {
+      
+        // console.log(idplan);
+        // console.log(idUsuario);
+        // console.log(mesid);
 
         // LLamamos la misma funcion del panel MesesDePlanes que ocupa para traer los datos de un plan espesiifco y lo mandanmos a panelPrincipal para renderizar
          const responseApiplanes = await API_planes_de_pago(idplan,idUsuario,mesid)
@@ -95,9 +122,7 @@ const AdminServices = ({titleModule}) => {
                 
                 setplanes({ idplan });
             }
-        
     };
-
 
     return ( 
         <div className='containerPanel'>
@@ -118,7 +143,7 @@ const AdminServices = ({titleModule}) => {
                 </div>
             </div>
             <div className="bodyPanelbox2">
-                <PanelPrincipal planesPorMes={planesPorMes} mesNumero={mesNumero} planes={planes} onRefreshOtro={onRefreshOtro} />
+                <PanelPrincipal planesPorMes={planesPorMes} mesNumero={mesNumero} planes={planes} onRefreshOtro={onRefreshOtro} getDataUpdate={getDataUpdate}/>
             </div>
         </div>
      );

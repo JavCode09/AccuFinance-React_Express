@@ -1,11 +1,18 @@
 import React from 'react';
-import { useEffect } from 'react';
+import { useEffect,useContext } from 'react';
 import { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 
 import { APIvalidarServicos } from '../../../api/newSystemCpanle';
 
-const ModalValidationService = ({ showModal, closeModal, category }) => {
+//Data del login
+import { UserContext } from '../../../../contexts/UserContext';
+
+
+const ModalValidationService = ({ showModal, closeModal, category, onRefreshOtro }) => {
+
+    //Data login
+    const {userData} = useContext(UserContext)
 
     const currentDate = new Date().toISOString().split('T')[0];
     const service_status = 'Paid';
@@ -40,7 +47,22 @@ const ModalValidationService = ({ showModal, closeModal, category }) => {
             if (APIvalidarRes && APIvalidarRes.message) {
                 alert(`✅ Status: Éxito\n📝 Mensaje: ${APIvalidarRes.message}`);
 
-                //cerrar modal
+                //Limpiamos estado de cambio
+                setdata1({
+                    id_payment : '',
+                    id_plan: '',
+                    service_status: '',
+                    currentDateAuto: '',
+                    nombre: '',
+                })
+                
+                onRefreshOtro({
+                    idplan:category.id_plan,
+                    idUsuario: userData.id,
+                    mesid:category.mes
+                });
+
+                 //cerrar modal
                 closeModal();
             }
         } catch (error) {
