@@ -477,7 +477,7 @@ Router.put("/valida", async(req,res)=> {
 
 
 //Update de servicios de un mes dentro del plan de pago
-Router.post("/updateplan", async(req,res) => {
+Router.put("/updateplan", async(req,res) => {
   const {due_date,id_payment,monto,paid_at,service_status} = req.body;
 
   //Comensamos transaccion
@@ -491,18 +491,29 @@ Router.post("/updateplan", async(req,res) => {
     if(!due_date){ throw new Error("No se encontro la fecha de vencimiento");}
 
     // Convertir due_date de formato ISO a 'YYYY-MM-DD'
-    const formattedDueDate = new Date(due_date).toISOString().split('T')[0];
+    const formattedpaid_at = paid_at?.split('T')[0] || paid_at;
+    const formattedDueDate = due_date?.split('T')[0] || due_date;
 
-    console.log({
-      id_payment:id_payment,
-      monto:monto,
-      paid_at:paid_at,
-      service_status:service_status,
-      due_date:formattedDueDate,
-    });
-    //Queda pedniente primero el toon para cambviar de estus a pago
+    // console.log({
+    //   id_payment:id_payment,
+    //   monto:monto,
+    //   paid_at:formattedpaid_at,
+    //   service_status:service_status,
+    //   due_date:formattedDueDate,
+    // });
+  
     //Actualizamos
+    const consulta = `UPDATE ${planes_de_pago} SET monto = ?, service_status = ?, paid_at= ?, due_date = ? WHERE id_payment = ?`;
+    const result = await query(consulta, [monto,service_status,formattedpaid_at,formattedDueDate,id_payment]);
 
+    if (!result || result.affectedRows === 0) {
+      throw new Error("Error al actualizar el servicos.");
+    }
+    
+    // console.log("Actualizacion");
+    commit();
+
+    return res.status(200).json({message:"Se actualizo el servico."})
     
   } catch (error) {
     console.error("Error:", error.message);

@@ -12,7 +12,7 @@ import ModalDeleteServicePanel from '../../modals/panelcenter/modal_deleteServic
 import ModalValidationService from '../../modals/panelcenter/modal_addServiceValidation';
 
 
-const PanelPrincipal = ({planesPorMes,mesNumero, planes, onRefreshOtro}) => {
+const PanelPrincipal = ({planesPorMes,mesNumero, planes, onRefreshOtro, getDataUpdate}) => {
 
     const formatDate = (dateString) => {
         if (!dateString) return '-';
@@ -77,6 +77,7 @@ const PanelPrincipal = ({planesPorMes,mesNumero, planes, onRefreshOtro}) => {
                                               value={<i className="fa fa-pencil" aria-hidden="true"></i>} 
                                               size="sm" title={'Editar Servicios'}
                                               styleColor= 'success'
+                                              onRefreshOtro = {onRefreshOtro}
                                            />
                                        
                                            <ButtonUpdate 
@@ -84,6 +85,7 @@ const PanelPrincipal = ({planesPorMes,mesNumero, planes, onRefreshOtro}) => {
                                               category={pdp}
                                               value={<i className="fa fa-pencil" aria-hidden="true"></i>} 
                                               size="sm" title={'Editar Servicios'}
+                                              getDataUpdate = {getDataUpdate}
                                            />
                                         
                                            <ButtonDelete 
