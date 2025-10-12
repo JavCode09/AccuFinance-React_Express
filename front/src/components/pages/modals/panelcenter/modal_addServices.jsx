@@ -11,7 +11,8 @@ import {UserContext} from '../../../../contexts/UserContext';
 import { selectMyServicesPanel, API_insertNewServices } from '../../../api/newSystemCpanle';
 
 const AddModalServiciosMes = ({showModal, closeModal, category, onRefreshOtro }) => {
-
+    // console.log("id: " + category.planes.id_plan);
+    
     //Data login
     const {userData} = useContext(UserContext)
   
@@ -119,9 +120,11 @@ const AddModalServiciosMes = ({showModal, closeModal, category, onRefreshOtro })
                 mesid:'',
                 servicios: []
             })
+
             closeModal(); // cerramos el modal
              // ✅ llamamos onRefreshOtro con los datos necesarios
-            if (onRefreshOtro) {
+            
+             if (onRefreshOtro) {
                 onRefreshOtro({
                     idplan: category.planes.id_plan,
                     idUsuario: userData.id,
@@ -149,7 +152,7 @@ const AddModalServiciosMes = ({showModal, closeModal, category, onRefreshOtro })
                 <Modal.Body>
                     {/* id del plan a editar */}
                     <div className="mb-3">
-                        <input type="hidden"
+                        <input type="text"
                                 name='idplan'
                                 id='idplan'
                                 value={category.planes.id_plan || ''} 

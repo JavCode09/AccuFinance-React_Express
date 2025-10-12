@@ -199,3 +199,79 @@ export const DeletePlanDePagos = async(formData) => {
         
     }
 }
+
+export const APIupdateServicePlan = async(formData) => {
+
+    try {
+        const response = await fetch(`${config.API_URL}myServicesPanle/updateplan`,{
+            method: 'PUT',
+            headers: {
+                "Content-Type":"application/json",
+                'Authorization':`Bearer ${token}`,
+            },
+            body: JSON.stringify(formData)
+        })
+        if (!response.ok) {
+            const errorData = await response.json();
+            const error = new Error(errorData.message || "Error en la solicitud a la API");
+            error.response = {status:response.status , data:errorData}
+            throw error;
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error en la peticion");
+        throw error;
+    }
+}
+
+export const APIvalidarServicos = async(formData) => {
+
+    try {
+        const response = await fetch(`${config.API_URL}myServicesPanle/valida`, {
+            method:"PUT",
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${token}`
+            },
+            body: JSON.stringify(formData)
+        })
+        if (!response.ok) {
+            const errorData = await response.json();
+            const error = new Error(errorData.message || "Error en la solicitud a la API");
+            error.response = {status:response.status ,  data:errorData}
+            throw error;
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error en la peticion");
+        throw error;
+        
+    }
+}
+
+//Elimina el servicio dentro del mes de form apermanente
+export const APIdeleteServicePxM = async (id) => {
+    try {
+        const response = await fetch(`${config.API_URL}myServicesPanle/deleteService`, {
+            method: "DELETE",
+            headers: {
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${token}`,
+            },
+            body:JSON.stringify({
+                id:id
+            }),
+        })
+        if (!response.ok) {
+            const errorData = await response.json();
+            const error  = new Error(errorData.message || "Error en la solicitud a la API");
+            error.response = {status:response.status , data:errorData}
+            throw error;
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error en la peticion");
+        throw error;
+        
+    }
+}

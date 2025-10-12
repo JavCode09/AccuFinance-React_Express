@@ -120,7 +120,8 @@ Router.post("/planesdp", async(req,res) => {
   try {
     const consulta = `SELECT planesp.*,
                       pl.nombre_plan,
-                      serv.nombre
+                      serv.nombre,
+                      ms.descripcion
                       FROM ${planes_de_pago} planesp
                       INNER JOIN planes pl ON pl.id_plan = planesp.id_plan
                       INNER JOIN my_services ms ON ms.id_myservices = planesp.my_service
@@ -278,7 +279,7 @@ Router.post("/insertNewS" ,  async(req,res) => {
     await beginTransaction();
 
     if(!idplan){ throw new Error("No se encontró el plan. "); }
-    if(!idUsuario){ throw new Error("No se encontró el al usuario. "); }
+    if(!idUsuario){ throw new Error("No se encontró al usuario. "); }
     if(!mesid){ throw new Error("No se encontró el mes asignado. "); }
     if (!Array.isArray(servicios) || servicios.length === 0 || servicios.includes("0")){
         throw new Error("No hay servicios asignados." );
@@ -440,6 +441,118 @@ Router.delete("/deleteplan", async(req, res) => {
     await rollback();
     return res.status(500).json({message: error.message || "Error en al eliminar el plan de pagos"})
     
+  }
+})
+
+// Actualizacion de estado de cada servicio dentro del mes en cuestion
+Router.put("/valida", async(req,res)=> {
+  const {id_payment, id_plan, service_status, currentDateAuto, nombre} = req.body;
+  
+  
+  try {
+    await beginTransaction();
+
+    if(!id_payment){ throw new Error("El dato id_payment esta vacio")}
+    if(!service_status){ throw new Error("El dato service_status esta vacio")}
+    if(!currentDateAuto){ throw new Error("El dato currentDateAuto esta vacio")}
+    if(!nombre){ throw new Error("El dato nombre esta vacio")}
+
+    // Actualizar el plan de pagos
+    const consulta = `UPDATE ${planes_de_pago} SET service_status = ?, paid_at = ? WHERE id_payment = ? AND id_plan = ? `;
+    const result  = await query(consulta, [service_status, currentDateAuto, id_payment, id_plan]);
+      
+    if (!result || result.affectedRows === 0) {
+        throw new Error("No se pudo actualizar el plan.")
+    }
+
+    await  commit();
+    
+    return res.status(200).json({message:`Tu servicio: ${nombre} esta pagado`})
+  } catch (error) {
+    console.error("Error:", error.message);
+    await rollback();
+    return res.status(500).json({ message: error.message || "Error al insertar servicios." });
+  }
+})
+
+
+//Update de servicios de un mes dentro del plan de pago
+Router.put("/updateplan", async(req,res) => {
+  const {due_date,id_payment,monto,paid_at,service_status} = req.body;
+
+  //Comensamos transaccion
+  try {
+    await beginTransaction();
+
+    if(!id_payment){ throw new Error("No se encontro el id_payment");}
+    if(!monto){ throw new Error("No se encontro el monto a pagar");}
+    // if(!paid_at){ throw new Error("No se encontro el la fecha ");}
+    if(!service_status){ throw new Error("No se encontro el estado");}
+    if(!due_date){ throw new Error("No se encontro la fecha de vencimiento");}
+
+
+    // Validar y formatear fechas
+    let formattedpaid_at = null;
+    if (paid_at && paid_at !== '0000-00-00' && paid_at !== '0000-00-00 00:00:00') {
+      formattedpaid_at = paid_at.split('T')[0];
+    }
+
+    // Convertir due_date de formato ISO a 'YYYY-MM-DD'
+    // const formattedpaid_at = paid_at?.split('T')[0] || paid_at;
+    const formattedDueDate = due_date?.split('T')[0] || due_date;
+
+    // console.log({
+    //   id_payment:id_payment,
+    //   monto:monto,
+    //   paid_at:formattedpaid_at,
+    //   service_status:service_status,
+    //   due_date:formattedDueDate,
+    // });
+  
+    //Actualizamos
+    const consulta = `UPDATE ${planes_de_pago} SET monto = ?, service_status = ?, paid_at= ?, due_date = ? WHERE id_payment = ?`;
+    const result = await query(consulta, [monto,service_status,formattedpaid_at,formattedDueDate,id_payment]);
+
+    if (!result || result.affectedRows === 0) {
+      throw new Error("Error al actualizar el servicos.");
+    }
+    
+    // console.log("Actualizacion");
+    await commit();
+
+    return res.status(200).json({message:"Se actualizo el servico."})
+    
+  } catch (error) {
+    console.error("Error:", error.message);
+    await rollback();
+    return res.status(500).json({ message: error.message || "Error al insertar servicios." });
+  }
+})
+
+Router.delete("/deleteService", async(req,res) => {
+  const {id} = req.body;
+
+  try {
+    if (!id) {
+      throw new Error("No se encontró el servicio a eliminar. Inténtalo más tarde.");
+    }
+
+    //Consulta de eliminacion 
+    const consulta = `DELETE FROM ${planes_de_pago} WHERE id_payment = ?`;
+    const result = await query  (consulta,[id]);
+
+    if (!result || result.affectedRows === 0) {
+      throw new Error("No se pudo eliminar el servicio, probablemente no existe.");
+    }
+
+    await commit();
+
+    return res.status(200).json({message:"Servicio Eliminado"})
+
+  } catch (error) {
+    console.error("Error:", error.message);
+    await rollback();
+    return res.status(500).json({ message: error.message || "Error al insertar servicios." });
   }
 })
 

@@ -51,7 +51,7 @@ const MesesDePlanes = ({meses, id_plan, Getplanes_de_pago}) => {
 
             // console.log(responseApiplanes);
             if (responseApiplanes) {
-                console.log("Datos: " , responseApiplanes);
+                // console.log("Datos: " , responseApiplanes);
                 
                 //Pasamos al hook de estados de planes
                 Getplanes_de_pago(responseApiplanes.data, mes, id_plan)

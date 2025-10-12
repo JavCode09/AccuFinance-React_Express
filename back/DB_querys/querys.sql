@@ -1,4 +1,4 @@
-Consultas de BD
+-- Consultas de BD nombre de la bd: accufinance
 
 -------- Tabla users --------
 
@@ -111,7 +111,7 @@ CREATE TABLE planes_de_pago (
     my_service INT NOT NULL,
     service_status ENUM('Pending','Paid','Overdue') DEFAULT 'Pending',
     due_date DATE NOT NULL,  -- Fecha vencimiento
-    paid_at DATETIME NULL, -- Fecha de Pago realizado --
+    paid_at DATE NULL, -- Fecha de Pago realizado --
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

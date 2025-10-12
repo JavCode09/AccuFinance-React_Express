@@ -1,15 +1,21 @@
 import React, { useEffect } from 'react';
 
+//CSS
+import '../../../styles/views/DeleteServicesPlanes.css'
+
 // Button add
 import ButtonAdd from '../../../common/buttons/btn-add';
 import ButtonUpdate from '../../../common/buttons/btn-update';
-
+import ButtonDelete from '../../../common/buttons/btn-delete';
 
 //Api add servicos
 import AddModalServiciosMes from '../../modals/panelcenter/modal_addServices';
 import ModalUpdateServices from '../../modals/panelcenter/modal_updateServices';
+import ModalDeleteServicePanel from '../../modals/panelcenter/modal_deleteServices';
+import ModalValidationService from '../../modals/panelcenter/modal_addServiceValidation';
 
-const PanelPrincipal = ({planesPorMes,mesNumero, planes, onRefreshOtro}) => {
+
+const PanelPrincipal = ({planesPorMes,mesNumero, planes, onRefreshOtro, getDataUpdate, getDataDelete}) => {
 
     const formatDate = (dateString) => {
         if (!dateString) return '-';
@@ -35,7 +41,7 @@ const PanelPrincipal = ({planesPorMes,mesNumero, planes, onRefreshOtro}) => {
                 <center>{planesPorMes && planesPorMes[0] ? `Servicios del mes de ${nombreMes}, Plan: ${planesPorMes[0].nombre_plan}` : ', sin plan asignado'}
                     < ButtonAdd ModalComponent = {AddModalServiciosMes} 
                                 category={{planes, mesNumero, planesPorMes}} 
-                                size='sm' 
+                                size='sm' title={'Agregar Servicio'}
                                 value={'Nuevo Servicio +'}
                                 onRefreshOtro={onRefreshOtro}   // ✅ pasamos la prop
                     />
@@ -68,12 +74,32 @@ const PanelPrincipal = ({planesPorMes,mesNumero, planes, onRefreshOtro}) => {
                                         <td>{formatDate(pdp.paid_at)}</td>
                                         <td>{formatDate(pdp.due_date)}</td>
                                         <td>
-                                           <ButtonUpdate 
-                                              ModalCategoriesUpdate = {ModalUpdateServices}
-                                              category={pdp}
-                                              value={<i className="fa fa-pencil" aria-hidden="true"></i>} 
-                                              size="sm" title={'Editar Servicios'}
-                                           />
+                                            <div className="DeleteServicesPlanes-divcss">
+                                            <ButtonAdd 
+                                                ModalComponent = {ModalValidationService}
+                                                category={pdp}
+                                                value={<i className="fa fa-pencil" aria-hidden="true"></i>} 
+                                                size="sm" title={'Validar Servicios'}
+                                                styleColor= 'success'
+                                                onRefreshOtro = {onRefreshOtro}
+                                            />
+                                        
+                                            <ButtonUpdate 
+                                                ModalCategoriesUpdate = {ModalUpdateServices}
+                                                category={pdp}
+                                                value={<i className="fa fa-pencil" aria-hidden="true"></i>} 
+                                                size="sm" title={'Editar Servicios'}
+                                                getDataUpdate = {getDataUpdate}
+                                            />
+                                            
+                                            <ButtonDelete 
+                                                ModalCategoriesDelete = {ModalDeleteServicePanel}
+                                                category={pdp}
+                                                value={<i className="fa fa-trash" aria-hidden="true"></i>} 
+                                                size="sm" title={'Eliminar Servicios'}
+                                                getDataDelete = {getDataDelete}
+                                                />
+                                            </div>
                                         </td>
                                     </tr>
                                 ))
