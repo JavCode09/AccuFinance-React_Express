@@ -3,7 +3,7 @@ import {Button} from 'react-bootstrap';
 
 import { Table } from 'react-bootstrap';
 
-import '../../../styles/views/planes.css'
+import '../../../styles/views/Planes.css'
 
 //Informacion de session
 import { UserContext } from '../../../../contexts/UserContext';
@@ -65,7 +65,7 @@ const Planes = ({getMeses, refresh, getData, updateInfo}) => {
         }
     }
     return ( 
-       <Table responsive className='tableAños stylesTableAños'>
+       <Table responsive className='planes-tableAños stylesTableAños'>
             <thead>
                 <tr>
                     <th>Id</th>
@@ -81,7 +81,7 @@ const Planes = ({getMeses, refresh, getData, updateInfo}) => {
                         <td className=''>{dataPlanes.nombre_plan}</td>
                         <td className=''>{dataPlanes.año}</td>
                         <td className=''> 
-                            <div className="divcss">
+                            <div className="planes-divcss">
                                 <Button size="sm" title='Actualizar o Ver' onClick={
                                                 () => getMeses(dataPlanes.meses , dataPlanes.id_plan)
                                                 }

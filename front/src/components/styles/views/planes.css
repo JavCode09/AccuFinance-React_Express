@@ -1,11 +1,12 @@
-.divcss{
+.planes-divcss{
     /* background-color: aqua; */
     padding: 2px;
     display: inline-flex; /*Tamaño del contenedor sin desbordarce sino al tamaño de los botoens*/
     gap: 10px; /*Espacio entre botones*/
     align-items: center;
+    /* background-color: aqua; */
 }
 
-.tableAños{
+.planes-tableAños{
     text-align: center;
 }

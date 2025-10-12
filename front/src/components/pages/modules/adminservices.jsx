@@ -34,7 +34,7 @@ const AdminServices = ({titleModule}) => {
     //hook de estado planes de pago optenidos por el mes
     const [planesPorMes, setplanesPorMes] = useState([])
     const [mesNumero, setmesNumero] = useState([])
-    const [planes, setplanes] = useState({
+    const [planes, setplanes] = useState({ //Aqui se pasa el id_plan y nombre_plan en los ocmponetes
         id_plan: null,
         nombre_plan: ''
     });
@@ -46,7 +46,6 @@ const AdminServices = ({titleModule}) => {
         //Pasamos al estado
         setplanesPorMes(planesdp);
         setmesNumero(mes);
-        
         setplanes({ id_plan });
 
     }
@@ -76,39 +75,11 @@ const AdminServices = ({titleModule}) => {
         setIdplan(id_plan) // obtenemos el id_plan 
     }
 
-    //Recarga solo meses y servicios
-    const onRefreshOtro = async({idplan, idUsuario, mesid, planesPorMes}) => {
-      
-        // console.log(idplan);
-        // console.log(idUsuario);
-        // console.log(mesid);
-        // console.log(planesPorMes);
-        
+    //Se puede unificar en una sola funcion pero da error dejamos las funciones talcual
 
-        // LLamamos la misma funcion del panel MesesDePlanes que ocupa para traer los datos de un plan espesiifco y lo mandanmos a panelPrincipal para renderizar
-         const responseApiplanes = await API_planes_de_pago(idplan,idUsuario,mesid)
 
-            // console.log(responseApiplanes);
-            if (responseApiplanes) {
-                console.log("Datos: " , responseApiplanes);
-                
-                //Pasamos al estado
-                setplanesPorMes(responseApiplanes.data);
-                setmesNumero(mesid);
-                
-                setplanes({ idplan });
-            }
-        
-    };
-
-    //Recarga solo meses y servicios lo mismo que onRefreshOtro pero desde actualizacion y updateInfo no se pudo ocupar ya que ya existe funcion
-    // por suerte tenemos getDataUpdate tambien en el boton actualizar
-    const getDataUpdate = async({idplan, idUsuario, mesid}) => {
-      
-        // console.log(idplan);
-        // console.log(idUsuario);
-        // console.log(mesid);
-
+    // pero se unifico todo llamando a una sola funcion
+    const onRefreshOtro = async({idplan, idUsuario, mesid}) => {
         // LLamamos la misma funcion del panel MesesDePlanes que ocupa para traer los datos de un plan espesiifco y lo mandanmos a panelPrincipal para renderizar
          const responseApiplanes = await API_planes_de_pago(idplan,idUsuario,mesid)
 
@@ -119,10 +90,47 @@ const AdminServices = ({titleModule}) => {
                 //Pasamos al estado
                 setplanesPorMes(responseApiplanes.data);
                 setmesNumero(mesid);
-                
-                setplanes({ idplan });
+
+                let id_plan = idplan;
+                setplanes({ id_plan });
+            }
+        
+    };
+
+    // Recarga solo meses y servicios lo mismo que onRefreshOtro pero desde actualizacion y updateInfo no se pudo ocupar ya que ya existe funcion
+    // por suerte tenemos getDataUpdate tambien en el boton actualizar
+    const getDataUpdate = async({idplan, idUsuario, mesid}) => {
+
+        // LLamamos la misma funcion del panel MesesDePlanes que ocupa para traer los datos de un plan espesiifco y lo mandanmos a panelPrincipal para renderizar
+         const responseApiplanes = await API_planes_de_pago(idplan,idUsuario,mesid)
+
+            // console.log(responseApiplanes);
+            if (responseApiplanes) {
+                // console.log("Datos: " , responseApiplanes);
+                //Pasamos al estado
+                setplanesPorMes(responseApiplanes.data);
+                setmesNumero(mesid);
+                let id_plan = idplan;
+                setplanes({ id_plan });
             }
     };
+
+    const getDataDelete = async({idplan, idUsuario, mesid}) => {
+
+        // LLamamos la misma funcion del panel MesesDePlanes que ocupa para traer los datos de un plan espesiifco y lo mandanmos a panelPrincipal para renderizar
+         const responseApiplanes = await API_planes_de_pago(idplan,idUsuario,mesid)
+            // console.log(responseApiplanes);
+            if (responseApiplanes) {
+                // console.log("Datos: " , responseApiplanes);
+                
+                //Pasamos al estado
+                setplanesPorMes(responseApiplanes.data);
+                setmesNumero(mesid);
+                let id_plan = idplan;
+                setplanes({ id_plan });
+            }
+    };
+
 
     return ( 
         <div className='containerPanel'>
@@ -143,7 +151,11 @@ const AdminServices = ({titleModule}) => {
                 </div>
             </div>
             <div className="bodyPanelbox2">
-                <PanelPrincipal planesPorMes={planesPorMes} mesNumero={mesNumero} planes={planes} onRefreshOtro={onRefreshOtro} getDataUpdate={getDataUpdate}/>
+                <PanelPrincipal planesPorMes={planesPorMes} mesNumero={mesNumero} planes={planes} 
+                                onRefreshOtro={onRefreshOtro} 
+                                getDataUpdate={getDataUpdate}
+                                getDataDelete={getDataDelete}
+                />
             </div>
         </div>
      );
