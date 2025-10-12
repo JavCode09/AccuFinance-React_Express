@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 
 
-const ButtonDelete = ({ModalCategoriesDelete,category, getDataDelete,  size, title, value, getData}) => {
+const ButtonDelete = ({ModalCategoriesDelete,category, getDataDelete,  size, styleColor, title, value, getData}) => {
 
     //Nuevo estado para abrir y cerrar modales
     const [ModalDelete, setModalDelete] = useState(false);
@@ -16,10 +16,13 @@ const ButtonDelete = ({ModalCategoriesDelete,category, getDataDelete,  size, tit
         setModalDelete(false);
     }
 
+    // 👇 Si styleColor está vacío, null o undefined, usar 'Danger'
+    const buttonColor = styleColor && styleColor.trim() !== '' ? styleColor : 'danger';
+
     return ( 
         <>
             <div className="btn_delete">
-                <Button className='btn_delete btn btn-danger'  size={size} title={title}  onClick={showModalDelete}>{value}</Button>
+                <Button className={`btn_add btn btn-${buttonColor}`}  size={size} title={title}  onClick={showModalDelete}>{value}</Button>
             </div>
             {ModalCategoriesDelete && (
             <ModalCategoriesDelete  

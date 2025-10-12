@@ -279,7 +279,7 @@ Router.post("/insertNewS" ,  async(req,res) => {
     await beginTransaction();
 
     if(!idplan){ throw new Error("No se encontró el plan. "); }
-    if(!idUsuario){ throw new Error("No se encontró el al usuario. "); }
+    if(!idUsuario){ throw new Error("No se encontró al usuario. "); }
     if(!mesid){ throw new Error("No se encontró el mes asignado. "); }
     if (!Array.isArray(servicios) || servicios.length === 0 || servicios.includes("0")){
         throw new Error("No hay servicios asignados." );
@@ -490,8 +490,15 @@ Router.put("/updateplan", async(req,res) => {
     if(!service_status){ throw new Error("No se encontro el estado");}
     if(!due_date){ throw new Error("No se encontro la fecha de vencimiento");}
 
+
+    // Validar y formatear fechas
+    let formattedpaid_at = null;
+    if (paid_at && paid_at !== '0000-00-00' && paid_at !== '0000-00-00 00:00:00') {
+      formattedpaid_at = paid_at.split('T')[0];
+    }
+
     // Convertir due_date de formato ISO a 'YYYY-MM-DD'
-    const formattedpaid_at = paid_at?.split('T')[0] || paid_at;
+    // const formattedpaid_at = paid_at?.split('T')[0] || paid_at;
     const formattedDueDate = due_date?.split('T')[0] || due_date;
 
     // console.log({
@@ -511,10 +518,37 @@ Router.put("/updateplan", async(req,res) => {
     }
     
     // console.log("Actualizacion");
-    commit();
+    await commit();
 
     return res.status(200).json({message:"Se actualizo el servico."})
     
+  } catch (error) {
+    console.error("Error:", error.message);
+    await rollback();
+    return res.status(500).json({ message: error.message || "Error al insertar servicios." });
+  }
+})
+
+Router.delete("/deleteService", async(req,res) => {
+  const {id} = req.body;
+
+  try {
+    if (!id) {
+      throw new Error("No se encontró el servicio a eliminar. Inténtalo más tarde.");
+    }
+
+    //Consulta de eliminacion 
+    const consulta = `DELETE FROM ${planes_de_pago} WHERE id_payment = ?`;
+    const result = await query  (consulta,[id]);
+
+    if (!result || result.affectedRows === 0) {
+      throw new Error("No se pudo eliminar el servicio, probablemente no existe.");
+    }
+
+    await commit();
+
+    return res.status(200).json({message:"Servicio Eliminado"})
+
   } catch (error) {
     console.error("Error:", error.message);
     await rollback();
