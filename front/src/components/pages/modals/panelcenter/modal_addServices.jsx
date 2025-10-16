@@ -133,9 +133,8 @@ const AddModalServiciosMes = ({showModal, closeModal, category, onRefreshOtro })
                 });
             }
         } catch (error) {
-            // console.log(error);
-            if (error.response && error.response.data?.message) {
-                alert(error.response.data.message); // ✅ Mensaje de error del backend
+            if (error.response && error.response.status === 500 && error.response.data) {
+                alert(`⚠️ ${error.response.data.message}`); // Mensaje exacto del backend
             } else {
                 alert("Ocurrió un error inesperado"); // fallback
             }
@@ -152,7 +151,7 @@ const AddModalServiciosMes = ({showModal, closeModal, category, onRefreshOtro })
                 <Modal.Body>
                     {/* id del plan a editar */}
                     <div className="mb-3">
-                        <input type="text"
+                        <input type="hidden"
                                 name='idplan'
                                 id='idplan'
                                 value={category.planes.id_plan || ''} 

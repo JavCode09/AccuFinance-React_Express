@@ -3,6 +3,8 @@ import { Modal,Button } from 'react-bootstrap';
 
 //API 
 import { APIdeleteServicePxM } from '../../../api/newSystemCpanle';
+import { useEffect } from 'react';
+import { useState } from 'react';
 
 const ModalDeleteServicePanel = ({showModalDelete, clseModalDelete, category, getDataDelete}) => {
 
@@ -16,13 +18,31 @@ const ModalDeleteServicePanel = ({showModalDelete, clseModalDelete, category, ge
     ? new Date(category.paid_at).toLocaleDateString()
     : "Sigue pendiente";
 
+    //Estado
+    const [dataDelete ,setDataDelete] = useState({
+        id:'',
+        id_plan:'',
+        my_service:''
+    });
+
+    useEffect(()=> {
+
+        if (category) {
+            setDataDelete({
+                id: category.id_payment || '',
+                id_plan: category.id_plan || '',
+                my_service: category.my_service || '',
+
+            })
+        }
+    },[showModalDelete, category])
 
     const APIdeleteServicePanel = async (e) => {
         e.preventDefault();
 
         // console.log("Entro a la api.");
         try {
-            const responseDelete = await APIdeleteServicePxM(category.id_payment);
+            const responseDelete = await APIdeleteServicePxM(dataDelete);
             if (responseDelete && responseDelete.message) {
                 alert(responseDelete.message);
 
@@ -35,7 +55,7 @@ const ModalDeleteServicePanel = ({showModalDelete, clseModalDelete, category, ge
                 clseModalDelete();
             }
         } catch (error) {
-            if (error.response && error.response.status === 400 && error.response.data) {
+            if (error.response && error.response.status === 500 && error.response.data) {
                 alert(`⚠️ Error: ${error.response.data.message}`);
             } else {
                 alert("❌ Error: No se pudo actualizar el servicio. Intenta de nuevo.");

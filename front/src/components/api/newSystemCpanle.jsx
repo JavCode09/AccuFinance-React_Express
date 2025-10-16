@@ -250,7 +250,7 @@ export const APIvalidarServicos = async(formData) => {
 }
 
 //Elimina el servicio dentro del mes de form apermanente
-export const APIdeleteServicePxM = async (id) => {
+export const APIdeleteServicePxM = async (formData) => {
     try {
         const response = await fetch(`${config.API_URL}myServicesPanle/deleteService`, {
             method: "DELETE",
@@ -258,9 +258,7 @@ export const APIdeleteServicePxM = async (id) => {
                 'Content-Type':'application/json',
                 'Authorization':`Bearer ${token}`,
             },
-            body:JSON.stringify({
-                id:id
-            }),
+            body:JSON.stringify(formData),
         })
         if (!response.ok) {
             const errorData = await response.json();
