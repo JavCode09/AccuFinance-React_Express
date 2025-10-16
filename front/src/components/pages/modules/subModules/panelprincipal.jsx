@@ -78,7 +78,7 @@ const PanelPrincipal = ({planesPorMes,mesNumero, planes, onRefreshOtro, getDataU
                                             <ButtonAdd 
                                                 ModalComponent = {ModalValidationService}
                                                 category={pdp}
-                                                value={<i className="fa fa-pencil" aria-hidden="true"></i>} 
+                                                value={<i className="fa fa-check" aria-hidden="true"></i>} 
                                                 size="sm" title={'Validar Servicios'}
                                                 styleColor= 'success'
                                                 onRefreshOtro = {onRefreshOtro}

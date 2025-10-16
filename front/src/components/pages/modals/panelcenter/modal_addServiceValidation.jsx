@@ -66,10 +66,10 @@ const ModalValidationService = ({ showModal, closeModal, category, onRefreshOtro
                 closeModal();
             }
         } catch (error) {
-            if (error.response && error.response.status === 400 && error.response.data) {
-                alert(`⚠️ Error: ${error.response.data.message}`); // Mensaje exacto del backend
+            if (error.response && error.response.status === 500 && error.response.data) {
+                alert(`⚠️ ${error.response.data.message}`); // Mensaje exacto del backend
             } else {
-                alert("❌ Error: No se pudo actualizar el servicio. Intenta de nuevo.");
+                alert("❌ Error: No se pudo validar el servicio. Intenta de nuevo.");
             }
         }
     }

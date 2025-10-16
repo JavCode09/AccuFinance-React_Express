@@ -314,7 +314,7 @@ Router.post("/insertNewS" ,  async(req,res) => {
       //Convertimos a JOSN  para guardar en la base de datos
       const serviciosJSON = JSON.stringify(serviciosActualizados)
 
-      console.log(serviciosActualizados); //imprime el array
+      // console.log(serviciosActualizados); //imprime el array
 
       // Actualizar el plan de pagos
       const consulta2 = "UPDATE planes SET servicios = ? WHERE id_plan = ? ";
@@ -330,7 +330,7 @@ Router.post("/insertNewS" ,  async(req,res) => {
       // console.log(JSON.stringify(nuevosServicios, null, 2));
       
       for (let servicio of nuevosServicios) {
-        console.log("ID del servicio:", servicio);
+        // console.log("ID del servicio:", servicio);
         // Obtenemos el monto del nuevo servicio 
         const  consulta3 = `SELECT monto, fecha_fin_pago FROM ${my_services} WHERE id_myservices = ?`;
         const result3 = await query(consulta3, [servicio]);
@@ -357,7 +357,7 @@ Router.post("/insertNewS" ,  async(req,res) => {
 
       }
     }else{
-      console.log('servicios duplicados:  ' , servicios);
+      // console.log('servicios duplicados:  ' , servicios);
 
       //Recorremos los servicios a agregar (este es en caso de que ya en la tabla planes existan los serviciois pero no en el mes correspondietne)
       for (let servicio of servicios) {
@@ -407,7 +407,7 @@ Router.post("/insertNewS" ,  async(req,res) => {
   } catch (error) {
     console.error("Error:", error.message);
     await rollback();
-    return res.status(500).json({ message: error.message || "Error al insertar servicios." });
+    return res.status(500).json({ message: "Error al agregar el/los servicio. Si el problema persiste, comunícate con soporte." });
   }
 })
 
@@ -471,7 +471,7 @@ Router.put("/valida", async(req,res)=> {
   } catch (error) {
     console.error("Error:", error.message);
     await rollback();
-    return res.status(500).json({ message: error.message || "Error al insertar servicios." });
+    return res.status(500).json({ message: "Error al validar el servicio. Si el problema persiste, comunícate con soporte." });
   }
 })
 
@@ -523,18 +523,29 @@ Router.put("/updateplan", async(req,res) => {
     return res.status(200).json({message:"Se actualizo el servico."})
     
   } catch (error) {
+    
     console.error("Error:", error.message);
     await rollback();
-    return res.status(500).json({ message: error.message || "Error al insertar servicios." });
+    return res.status(500).json({ message: "Error al actualizar el servicio. Si el problema persiste, comunícate con soporte."});
   }
 })
 
 Router.delete("/deleteService", async(req,res) => {
-  const {id} = req.body;
+  const {id,id_plan,my_service} = req.body;
 
   try {
+    await beginTransaction();
+
     if (!id) {
       throw new Error("No se encontró el servicio a eliminar. Inténtalo más tarde.");
+    }
+    
+    if (!id_plan) {
+      throw new Error("No se encontró el plan del servicio a eliminar. Inténtalo más tarde.");
+    }
+
+    if (!my_service) {
+      throw new Error("No se encontró el identificador a eliminar. Inténtalo más tarde.");
     }
 
     //Consulta de eliminacion 
@@ -545,14 +556,78 @@ Router.delete("/deleteService", async(req,res) => {
       throw new Error("No se pudo eliminar el servicio, probablemente no existe.");
     }
 
+    //Verificamos tomando tods los servicios del plan y verificando si ya no queda ninguno 
+
+    // Primero verificamos si existen mas servicios iguales en el mismo plan anual
+    const consulta2 = `SELECT COUNT(*) AS total1 FROM ${planes_de_pago} WHERE id_plan = ? AND my_service = ?`;
+    const result2 = await query(consulta2, [id_plan, my_service]);
+
+    // Validar error o resultado vacío (por seguridad)
+    if (!result2 || result2.length === 0) {
+      throw new Error("Error al ejecutar la consulta en planes_de_pago.");
+    }
+
+    // Validar si no hay coincidencias
+    if (result2[0].total1 === 0) {
+      // Aquí va tu otra consulta ya que como no entro registros eliminamos de planes el servicio
+      const consulta3 = `SELECT servicios FROM ${planes} WHERE id_plan = ? `;
+      const result3 = await query(consulta3,[id_plan]);
+
+      if (!result3 || result3.length === 0) {
+        throw new Error("Error al ejecutar la consulta planes.");
+      }
+
+      if (result3[0].servicios === 0) {
+        throw new Error("No se encontro servicios");
+      }
+
+      // Obtenemos servicios
+      let serviciosA = result3[0].servicios;
+
+      // Si viene como string, lo convertimos a array
+      if (typeof serviciosA === 'string') {
+        try {
+          serviciosA = JSON.parse(serviciosA);
+        } catch (e) {
+          throw new Error('El campo servicios no contiene un JSON válido.');
+        }
+      }
+
+      // Verificamos que realmente sea un array
+      if (!Array.isArray(serviciosA)) {
+        throw new Error('El campo servicios no es un array.');
+      }
+      
+      let my_serviceS = String(my_service);
+      
+      // 2️⃣ Quitamos el servicio si existe
+      const index = serviciosA.indexOf(my_serviceS);
+      if (index !== -1) {
+        serviciosA.splice(index, 1);
+      }
+      
+      // 3️⃣ Convertimos el array a JSON nuevamente
+      const serviciosActualizados = JSON.stringify(serviciosA);
+      console.log("Actualiza: " + serviciosActualizados);
+      
+      // 4️⃣ Actualizamos en la BD
+      const consulta4 = `UPDATE ${planes} SET servicios = ? WHERE id_plan = ?`;
+      const result4 = await query(consulta4,[serviciosActualizados,id_plan]);
+
+      if (!result4 || result4.affectedRows === 0) {
+        throw new Error("Error al ejecutar la consulta para actuaslizar servicios en planes");
+      }
+    } 
+
     await commit();
 
     return res.status(200).json({message:"Servicio Eliminado"})
 
   } catch (error) {
+
     console.error("Error:", error.message);
     await rollback();
-    return res.status(500).json({ message: error.message || "Error al insertar servicios." });
+    return res.status(500).json({ message: "Error al eliminar el servicio. Si el problema persiste, comunícate con soporte."});
   }
 })
 
