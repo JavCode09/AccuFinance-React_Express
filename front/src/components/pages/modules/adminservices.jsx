@@ -21,13 +21,16 @@ import { API_planes_de_pago } from '../../api/newSystemCpanle';
 const AdminServices = ({titleModule}) => {
 
     const [mesesUnicos, setMeses] = useState([]);
+    const [NombrePlan, setNombrePlan] =useState(null)
     const [idpla, setIdplan] =useState(null)
 
-    const getMesesYidplan = (meses,id_plan) => {
+    const getMesesYidplan = (meses,id_plan, nombrePlan) => {
         // console.log('Meses:', meses);
         // console.log('ID Plan:', id_plan);
+        // console.log('nombrePlan:', nombrePlan);
         //pasamos al hook de cambio de meses
         setMeses(meses)
+        setNombrePlan(nombrePlan)
         setIdplan(id_plan)
     }
    
@@ -74,9 +77,20 @@ const AdminServices = ({titleModule}) => {
         setMeses(meses) // Ontenemos por la prop los meses nuevos
         setIdplan(id_plan) // obtenemos el id_plan 
     }
+     
 
-    //Se puede unificar en una sola funcion pero da error dejamos las funciones talcual
+    const updateInfoMeses = (meses,id_plan) => {
+        // console.log('Meses:', meses);
+        // console.log('ID Plan:', id_plan);
+        
+        // Limpia meses e id_plan si se eliminó un mes dentro de un plan
+        setMeses(meses) // Ontenemos por la prop los meses nuevos
+        setIdplan(id_plan) // obtenemos el id_plan 
 
+        setplanesPorMes(0); // Limpia los servicios del panel
+        setmesNumero(0);  // Limpia el número del mes
+        setRefreshPlanes(prev => !prev);// ✅ Forzar que Planes recargue los datos desde la BD (meses)
+    }
 
     // pero se unifico todo llamando a una sola funcion
     const onRefreshOtro = async({idplan, idUsuario, mesid}) => {
@@ -147,7 +161,7 @@ const AdminServices = ({titleModule}) => {
                     <Planes getMeses={getMesesYidplan} refresh={refreshPlanes} getData={getData} updateInfo={updateInfo}/>
                 </div>
                 <div className="bodyExtras">
-                    <MesesDePlanes meses={mesesUnicos} id_plan={idpla} Getplanes_de_pago={Getplanes_de_pago} />
+                    <MesesDePlanes meses={mesesUnicos} NombrePlan={NombrePlan} id_plan={idpla} Getplanes_de_pago={Getplanes_de_pago} getDataDelete={updateInfoMeses}/>
                 </div>
             </div>
             <div className="bodyPanelbox2">

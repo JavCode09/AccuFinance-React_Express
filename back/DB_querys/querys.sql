@@ -80,7 +80,7 @@ CREATE TABLE my_services (
   monto VARCHAR(45) NOT NULL,
   dia_pago int(11) NOT NULL,
   general_status ENUM('Active', 'Inactive', 'Deleted') DEFAULT 'Active',
-  fecha_fin_pago date NOT NULL,
+  fecha_fin_pago VARCHAR(10) NOT NULL DEFAULT 'General',
   updated_at timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   created_at timestamp NOT NULL DEFAULT current_timestamp()
   FOREIGN KEY (`id_services`) REFERENCES services(`id`) ON DELETE RESTRICT 
@@ -96,9 +96,10 @@ CREATE TABLE planes (
     servicios VARCHAR(100) NOT NULL,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    -- Restricción UNIQUE para combinar nombre_plan y user_id
+    -- Restricción UNIQUE para combinar nombre_plan y user_id (Ayuda a que no se repitan estos campos iguales sino diferentes )
     CONSTRAINT unique_nombre_plan_per_user UNIQUE (nombre_plan, user_id)
 );
+
 
 -- Tabla Planes de pago --
 CREATE TABLE planes_de_pago (
@@ -128,3 +129,34 @@ ON DELETE CASCADE;
 Alter table planes_de_pago
 MODIFY due_date DATE COMMENT 'Fecha limite para realizar el pago',
 MODIFY paid_at DATETIME COMMENT 'Fecha en la que se realizó el pago';
+
+-- Tabla de estaus de estados de meses de servicios (catalogo de estaus)
+CREATE TABLE plan_month_status (
+    id INT PRIMARY kEY AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL COMMENT 'Nombre corto del estado',
+    description VARCHAR(100) NOT NULL COMMENT 'Descripcion mas detallada del estado',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)COMMENT 'Catálogo de estados posibles para los meses de planes' ;
+
+INSERT INTO plan_month_status (name, description) VALUES
+('Pendiente', 'Mes aún no iniciado'),
+('En proceso', 'Mes actual en curso'),
+('Finalizado', 'Mes cerrado correctamente con todos los servicios completados'),
+('Atrasado', 'Mes terminado con servicios o pagos pendientes');
+
+-- Tabla meses para registro de ingresos mensuales y editables
+CREATE TABLE plan_monthly_income (
+    id INT  PRIMARY KEY AUTO_INCREMENT,
+    id_plan INT NOT NULL COMMENT 'ID relacionado en tabla planes',
+    monthly_income DECIMAL(10,2) NOT NULL DEFAULT 0.00 COMMENT 'Ingreso mensual asignado al plan',
+    month TINYINT NOT NULL  COMMENT 'Número de mes (1 a 12)',
+    status_mes INT NOT NULL  DEFAULT '1' COMMENT '(Atrasado, Finalizado, En proceso, Pendiente)',
+    due_date DATE COMMENT 'Fecha límite para el mes',
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    -- FOREN kEY de id_plan relacionada a la tabla planes el campo unico id_plan
+    FOREIGN KEY (id_plan) REFERENCES planes(id_plan) ON DELETE CASCADE,
+
+    -- FOREIGN KEY de status_mes relacionada a la tabla catalogos el campo es id
+    FOREIGN KEY (status_mes) REFERENCES plan_month_status(id)
+)COMMENT='Historial mensual de ingresos por plan y meses';
