@@ -33,7 +33,7 @@ const ModalDeletePlanAnual = ({showModalDelete,clseModalDelete, category, getDat
         //Eliminamos el plan de pagos
         try {
             const deleteAPI = await DeletePlanDePagos(data);
-            console.log(deleteAPI);
+            // console.log(deleteAPI);
             
             if (deleteAPI && deleteAPI.message) {
                 alert(deleteAPI.message)
@@ -43,12 +43,10 @@ const ModalDeletePlanAnual = ({showModalDelete,clseModalDelete, category, getDat
             getDataDelete();
             getData();
         } catch (error) {
-            console.error("Error al eliminar el plan de pagos: ", error);
-            if (error.response && error.response.status === 400) {
-                alert(error.response.data.message)
-            }else{
-                alert("❌ Error: No se pudo agregar el servicio. Intenta de nuevo.");
-                console.log(error);
+            if (error.response && error.response.status === 500 && error.response.data) {
+                alert(`⚠️ ${error.response.data.message}`);
+            } else {
+                alert("❌ Error: No se pudo actualizar el servicio. Intenta de nuevo.");
             }
         }
         

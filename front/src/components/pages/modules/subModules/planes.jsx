@@ -43,7 +43,7 @@ const Planes = ({getMeses, refresh, getData, updateInfo}) => {
             
             //Integramos info al estado
             setPlanes(resultPlanes.data)
-            // console.log("Entro al rederizado");
+            // console.log(resultPlanes.data);
             
         } catch (error) {
             console.error("Error en la funcion: " , error);
@@ -65,7 +65,7 @@ const Planes = ({getMeses, refresh, getData, updateInfo}) => {
         }
     }
     return ( 
-       <Table responsive className='planes-tableAños stylesTableAños'>
+       <Table responsive className='stylesTableAños' hover>
             <thead>
                 <tr>
                     <th>Id</th>
@@ -82,8 +82,8 @@ const Planes = ({getMeses, refresh, getData, updateInfo}) => {
                         <td className=''>{dataPlanes.año}</td>
                         <td className=''> 
                             <div className="planes-divcss">
-                                <Button size="sm" title='Actualizar o Ver' onClick={
-                                                () => getMeses(dataPlanes.meses , dataPlanes.id_plan)
+                                <Button size="sm" title='Ver Meses' onClick={
+                                                () => getMeses(dataPlanes.meses , dataPlanes.id_plan, dataPlanes.nombre_plan)
                                                 }
                                 >
                                 <i className="fa fa-eye" aria-hidden="true"></i>

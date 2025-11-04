@@ -26,7 +26,8 @@ const AddNewPlan = ({showModal, closeModal, getData}) => {
         Año:'',
         Meses:[],
         myServicesPanel:[],
-        nombre_plan:''
+        nombre_plan:'',
+        ingreso_Mensul:''
     })
 
     //Creamos variables (cajitas) para los 3 select
@@ -164,7 +165,8 @@ const AddNewPlan = ({showModal, closeModal, getData}) => {
                 Año: '',
                 Meses: [],
                 myServicesPanel: [],
-                nombre_plan: ''
+                nombre_plan: '',
+                ingreso_Mensul:''
             })
 
             //Cerramos modal
@@ -259,15 +261,40 @@ const AddNewPlan = ({showModal, closeModal, getData}) => {
                                }
                         </select>
                     </div>
-                    <div className="mb-3">
-                        <label htmlFor="nombre_plan" className='form-label label'>Asigna un nombre unico a tu sistema de pagos</label>
-                        <input type="text"
-                               className='form-control input'
-                               id='nombre_plan'
-                               name='nombre_plan'
-                               value={panel.nombre_plan || ''}
-                               onChange={handleChange}
-                        />
+                    <div className="mb-3 d-flex">
+                        <div className="col me-3">
+                            <label htmlFor="ingreso_Mensul" className='form-label label'>Ingreso Mensual</label>
+                            <div className="input-group">
+                                <span className="input-group-text">$</span>
+                                <input
+                                    type="number"
+                                    className="form-control input"
+                                    placeholder="12000"
+                                    id="ingreso_Mensul"
+                                    name="ingreso_Mensul"
+                                    value={panel.ingreso_Mensul || ""}
+                                    onChange={(e) => {
+                                        // Limitar a 2 decimales
+                                        const value = e.target.value;
+                                        // Usamos regex para permitir solo números y hasta 2 decimales
+                                        if (/^\d*\.?\d{0,2}$/.test(value)) {
+                                        handleChange(e);
+                                        }
+                                    }}
+                                    step="0.01"
+                                />
+                            </div>
+                        </div>
+                        <div className="col me-3">
+                            <label htmlFor="nombre_plan" className='form-label label'>Asigna un nombre unico a tu plan de pagos</label>
+                            <input type="text"
+                                className='form-control input'
+                                id='nombre_plan'
+                                name='nombre_plan'
+                                value={panel.nombre_plan || ''}
+                                onChange={handleChange}
+                            />
+                        </div>
                     </div>
                 </Modal.Body>
                 <Modal.Footer>

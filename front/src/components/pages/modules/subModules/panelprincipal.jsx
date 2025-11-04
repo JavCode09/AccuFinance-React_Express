@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Button } from 'react-bootstrap';
 
 //CSS
 import '../../../styles/views/DeleteServicesPlanes.css'
@@ -35,17 +36,80 @@ const PanelPrincipal = ({planesPorMes,mesNumero, planes, onRefreshOtro, getDataU
     const nombreMes = meses[parseInt(mesNumero) - 1];
 
 
+    //Hook de estado para ocultar y mostrar campos inputs
+    const [showCampos, setShowCampos] = useState(false);
+
+   
+
+    useEffect(()=> {
+        if (planesPorMes.length > 0) {
+            setShowCampos(true)
+        }else{
+            setShowCampos(false)
+        }
+    },[planesPorMes])
+
     return ( 
         <div className="containerPanel1">
             <div className="container-table">
-                <center>{planesPorMes && planesPorMes[0] ? `Servicios del mes de ${nombreMes}, Plan: ${planesPorMes[0].nombre_plan}` : ', sin plan asignado'}
-                    < ButtonAdd ModalComponent = {AddModalServiciosMes} 
-                                category={{planes, mesNumero, planesPorMes}} 
-                                size='sm' title={'Agregar Servicio'}
-                                value={'Nuevo Servicio +'}
-                                onRefreshOtro={onRefreshOtro}   // ✅ pasamos la prop
-                    />
-                </center>
+                <div className="titlePanelPrincipal">
+                    {planesPorMes && planesPorMes[0] ? `Servicios de ${nombreMes}, del Plan: ${planesPorMes[0].nombre_plan}` : 'Selecciona un Mes'}
+                </div>
+                {showCampos && (
+                    <div className="containerPanelPrincipalServices">
+                        <div className="infoPanelPrincipal">
+                            <div className="mb-3" id='Imensual'>
+                                <label htmlFor="" className='form-label label'>Insegro Mensual</label>
+                                <input type="text"
+                                    className='form-control input' 
+                                    placeholder='Ingreso mensual'
+                                    id='Ingreso_mensual'
+                                    name='Ingreso_mensual'
+                                />
+                            </div>
+                            <div className="mb-3" id='Pmensual'>
+                                <label htmlFor="" className='form-label label'>Pago Mensual Total</label>
+                                <input type="text"
+                                    className='form-control input' 
+                                    placeholder='Pago mensual'
+                                    id='Pago_mensual'
+                                    name='Pago_mensual'
+                                    />
+                            </div>
+                            <div className="mb-3" id='Pro15na'>
+                                <label htmlFor="" className='form-label label'>Primera 15na</label>
+                                <input type="text"
+                                    className='form-control input' 
+                                    placeholder='primera15'
+                                    id='primera15'
+                                    name='primera15'
+                                    />
+                            </div>
+
+                            <div className="mb-3" id='Se15na'>
+                                <label htmlFor="" className='form-label label'>Segunda 15na</label>
+                                <input type="text" 
+                                    className='form-control input' 
+                                    placeholder='Ingreso mensual'
+                                    id='segunda15'
+                                    name='segunda15'
+                                    />
+                            </div>                    
+                        </div>
+                        <div className="containerPanelPrincipalServices2">
+                            <Button>Info cada 15na</Button>
+                        </div>
+                        <div className="btnNuevoServicioPanelPrincipal">
+                            < ButtonAdd ModalComponent = {AddModalServiciosMes} 
+                                        category={{planes, mesNumero, planesPorMes}} 
+                                        size='sm' title={'Agregar Servicio'}
+                                        value={'Nuevo Servicio +'}
+                                        onRefreshOtro={onRefreshOtro}   // ✅ pasamos la prop
+                            />
+                        </div>
+
+                    </div>
+                )}
             </div>
             <table className='Myservices-tabla'>
                     <thead>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Modal, Button } from 'react-bootstrap';
+import { Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 
 import { UserContext } from '../../../../contexts/UserContext';
@@ -22,7 +23,6 @@ const ModalAddMyservices = ({showModal,closeModal,getData}) => {
         Descripcion:'',
         Monto:'',
         Dia_pago:'',
-        Fecha_fin: ''
     })
 
     useEffect(() => {
@@ -125,7 +125,7 @@ const ModalAddMyservices = ({showModal,closeModal,getData}) => {
                         />
                             
                         <label htmlFor="Descripcion" className='form-label label'>Descripcion</label>
-                        <input className='form-control input'
+                        <input className='form-control input' placeholder='Descripcion genral'
                             name='Descripcion'
                             id='Descripcion'
                             type="text" 
@@ -146,8 +146,21 @@ const ModalAddMyservices = ({showModal,closeModal,getData}) => {
                         />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="Dia_pago" className='form-label label'>Dia de Pago</label>
-                        <input className='form-control input' placeholder='¿Que dia pagas regularmente?'
+                        <label htmlFor="Dia_pago" className='form-label label'>
+                            Dia de Pago
+                            {/* Icono con tooltip */}
+                            <OverlayTrigger
+                                placement="right"
+                                overlay={
+                                    <Tooltip id="tooltip-dia-pago">
+                                    Este campo es el día del mes que tendrás que realizar tu pago a más tardar.
+                                    </Tooltip>
+                                }
+                            >
+                                <i className="fa fa-info-circle" style={{ marginLeft: '5px', cursor: 'pointer' }}></i>
+                            </OverlayTrigger>
+                        </label>
+                        <input className='form-control input' placeholder='¿Que dia pagas regularmente el dinero?'
                             name='Dia_pago'
                             id='Dia_pago'
                             type="text"
@@ -157,16 +170,18 @@ const ModalAddMyservices = ({showModal,closeModal,getData}) => {
                             onChange={handleChange}  
                         />
                     </div>
-                    <div className="mb-3">
+                    {/* <div className="mb-3">
                         <label htmlFor="Fecha_fin" className='form-label label'>Fecha Fin de Pago</label>
-                        <input className='form-control input'
+                        <input className='form-control input' placeholder='¿Que dia maximo del mes pagas regularmente?'
                             name='Fecha_fin'
                             id='Fecha_fin'
-                            type="date" 
+                            type="text" 
+                            min="1"
+                            max="31"  // Permite decimales, usa "1" si solo quieres enteros 
                             value={formDataMyservices.Fecha_fin || ''}
                             onChange={handleChange}  
                         />
-                    </div>
+                    </div> */}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant='secondary' onClick={closeModal}>Cancelar</Button>
