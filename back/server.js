@@ -20,7 +20,7 @@ app.use(express.json());
 const port = process.env.PORT;
 
 //middleware para requerimiento del registro
-app.use("/Registro" ,  require("./router/registro"));
+app.use("/registros" , require("./router/registro"));
 
 //middleware para requerimiento del login
 app.use("/Login" ,  require("./router/registro"));

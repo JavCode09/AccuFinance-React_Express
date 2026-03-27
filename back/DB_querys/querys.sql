@@ -3,15 +3,33 @@
 -------- Tabla users --------
 
 CREATE TABLE users (
-    id_user INT PRIMARY KEY AUTO_INCREMENT,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(100) NOT NULL,
-    apellidos VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    password VARCHAR(100) NOT NULL,
-    grupo INT NOT NULL,
+    apellido_paterno VARCHAR(100) NOT NULL,
+    apellido_materno VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE COMMENT 'UNIQUE',
+    password VARCHAR(255) NOT NULL COMMENT 'bcrypt hashed password',
+    rol INT NOT NULL DEFAULT 1 COMMENT '1:Usuario',
+    status INT(3) NOT NULL DEFAULT 1 COMMENT '1:Activo, 2:Inactivo',
     registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+------- Tabla de person -------
+CREATE TABLE user_access_log (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    apellido_paterno VARCHAR(100) NOT NULL,
+    apellido_materno VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE COMMENT 'UNIQUE',
+    password VARCHAR(255) NOT NULL COMMENT 'bcrypt hashed password',
+    rol INT NOT NULL DEFAULT 1 COMMENT '1:Usuario',
+    status INT(3) NOT NULL DEFAULT 1 COMMENT '1:Activo, 2:Inactivo',
+    registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+------- INSERCION DE SUPER ADMINISTRADOR PRINCIPAL , PASS = Acmilanjavi09 -------
+INSERT INTO `user_access_log` (`id`, `nombre`, `apellido_paterno`, `apellido_materno`, `email`, `password`, `rol`, `status`, `registro`) 
+VALUES (NULL, 'Javier', 'Piña', 'Lopez', 'javier.pilprofesional09@gmail.com', '$2b$10$UVEUfMww0vioWKauulEvI.thZ/5Ci20JXiiLKoKwqtob8Yyn3H/kK', '10', '1', current_timestamp());
 
 -- Tabla de Categorias --
 
@@ -124,6 +142,10 @@ ADD CONSTRAINT fk_planes_pago
 FOREIGN KEY (id_plan)
 REFERENCES planes(id_plan)
 ON DELETE CASCADE;
+
+-- Actualizamos el cmapo de paid 
+ALTER TABLE `planes_de_pago` CHANGE `due_date` `due_date` DATETIME NULL DEFAULT NULL COMMENT 'Fecha limite para realizar el pago';
+ALTER TABLE `planes_de_pago` CHANGE `paid_at` `paid_at` DATETIME NULL DEFAULT NULL COMMENT 'Fecha en la que se realizó el pago';
 
 -- Le agregamos comentarios a dos campos due_date y paid_at para saber cual es cual
 Alter table planes_de_pago

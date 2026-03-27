@@ -6,19 +6,22 @@ const tabla = "users"
 
 export const add_registro = async(formData) => {
     try {
-        const response = await fetch(`${config.API_URL}Registro/add` ,  {
+        const response = await fetch(`${config.API_URL}registros` ,  {
             method: "POST",
             headers: {
                 "Content-Type" : "application/json"
             },
             body: JSON.stringify(formData)
         });
+            const data = await response.json();
         if (!response.ok) {
-            throw new Error(`Error en la petecion al servidor, ${tabla}`);
+            const error = new Error(data.message || "Error al crear el registro");
+            error.status = response.status; // 🔥 AQUÍ LA CLAVE SI SALE MAL AGREGAMOS STATUS
+            throw error;
         }
-        return await response.json();
+        return data;
     } catch (error) {
-        console.error(`Error en la funcion API, ${tabla}`);
+        // console.error("Error en API (registros):", error.message);
         throw error;
         
     }

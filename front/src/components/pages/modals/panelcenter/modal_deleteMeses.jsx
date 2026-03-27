@@ -31,6 +31,8 @@ const ModalDeleteMeses = ({showModalDelete, clseModalDelete, category, getDataDe
 
         try {
             const resultApiDeletePanelMeses = await ApiDeleteMesPanel(dataEliminar);
+            console.log(resultApiDeletePanelMeses);
+            
             if (resultApiDeletePanelMeses && resultApiDeletePanelMeses.message) {
                     alert(resultApiDeletePanelMeses.message);
 

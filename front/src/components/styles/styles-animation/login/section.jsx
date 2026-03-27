@@ -1,15 +1,15 @@
 import React, { Fragment } from 'react';
 // css animation
-
+import style from '../../Login.module.css'
 
 const Seccion_login = () => {
     return ( 
         <Fragment>
             <section>
-                <div className="wave wave1"></div>
-                <div className="wave wave2"></div>
-                <div className="wave wave3"></div>
-                <div className="wave wave4"></div>
+                <div className={`${style.wave} ${style.wave1}`}></div>
+                {/* <div className={`${style.wave} ${style.wave2}`}></div> */}
+                <div className={`${style.wave} ${style.wave3}`}></div>
+                <div className={`${style.wave} ${style.wave4}`}></div>
             </section>
         </Fragment>
      );
