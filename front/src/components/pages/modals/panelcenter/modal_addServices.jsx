@@ -11,7 +11,8 @@ import {UserContext} from '../../../../contexts/UserContext';
 import { selectMyServicesPanel, API_insertNewServices } from '../../../api/newSystemCpanle';
 
 const AddModalServiciosMes = ({showModal, closeModal, category, onRefreshOtro }) => {
-
+    // console.log("id: " + category.planes.id_plan);
+    
     //Data login
     const {userData} = useContext(UserContext)
   
@@ -119,9 +120,11 @@ const AddModalServiciosMes = ({showModal, closeModal, category, onRefreshOtro })
                 mesid:'',
                 servicios: []
             })
+
             closeModal(); // cerramos el modal
              // ✅ llamamos onRefreshOtro con los datos necesarios
-            if (onRefreshOtro) {
+            
+             if (onRefreshOtro) {
                 onRefreshOtro({
                     idplan: category.planes.id_plan,
                     idUsuario: userData.id,
@@ -130,9 +133,8 @@ const AddModalServiciosMes = ({showModal, closeModal, category, onRefreshOtro })
                 });
             }
         } catch (error) {
-            // console.log(error);
-            if (error.response && error.response.data?.message) {
-                alert(error.response.data.message); // ✅ Mensaje de error del backend
+            if (error.response && error.response.status === 500 && error.response.data) {
+                alert(`⚠️ ${error.response.data.message}`); // Mensaje exacto del backend
             } else {
                 alert("Ocurrió un error inesperado"); // fallback
             }

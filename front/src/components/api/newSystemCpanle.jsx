@@ -1,4 +1,5 @@
 
+import { Form } from "react-bootstrap";
 import config from "./config"; //URL del BACK END
 
 
@@ -195,6 +196,180 @@ export const DeletePlanDePagos = async(formData) => {
             return await response.json();
     } catch (error) {
         console.error("Error en la peticion");
+        throw error;
+        
+    }
+}
+
+export const APIupdateServicePlan = async(formData) => {
+
+    try {
+        const response = await fetch(`${config.API_URL}myServicesPanle/updateplan`,{
+            method: 'PUT',
+            headers: {
+                "Content-Type":"application/json",
+                'Authorization':`Bearer ${token}`,
+            },
+            body: JSON.stringify(formData)
+        })
+        if (!response.ok) {
+            const errorData = await response.json();
+            const error = new Error(errorData.message || "Error en la solicitud a la API");
+            error.response = {status:response.status , data:errorData}
+            throw error;
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error en la peticion");
+        throw error;
+    }
+}
+
+export const APIvalidarServicos = async(formData) => {
+
+    try {
+        const response = await fetch(`${config.API_URL}myServicesPanle/valida`, {
+            method:"PUT",
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${token}`
+            },
+            body: JSON.stringify(formData)
+        })
+        if (!response.ok) {
+            const errorData = await response.json();
+            const error = new Error(errorData.message || "Error en la solicitud a la API");
+            error.response = {status:response.status ,  data:errorData}
+            throw error;
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error en la peticion");
+        throw error;
+        
+    }
+}
+
+//Elimina el servicio dentro del mes de form apermanente
+export const APIdeleteServicePxM = async (formData) => {
+    try {
+        const response = await fetch(`${config.API_URL}myServicesPanle/deleteService`, {
+            method: "DELETE",
+            headers: {
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${token}`,
+            },
+            body:JSON.stringify(formData),
+        })
+        if (!response.ok) {
+            const errorData = await response.json();
+            const error  = new Error(errorData.message || "Error en la solicitud a la API");
+            error.response = {status:response.status , data:errorData}
+            throw error;
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error en la peticion");
+        throw error;
+        
+    }
+}
+
+export const ApiDeleteMesPanel = async(formData) => {
+    try {
+        const response = await fetch(`${config.API_URL}myServicesPanle/deleteMespanel`, {
+            method:"DELETE",
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${token}`,
+            },
+            body:JSON.stringify(formData)
+        })
+        if (!response.ok) {
+            const errorData = await response.json();
+            const error = new Error(errorData.message || "Error en la solicitud a la API");
+            error.response = {status:response.status, data: errorData}
+            throw error;
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error en la peticion");
+        throw error;
+    }
+}
+
+// Meses de estado relacionados
+export const APIestadosMeses = async(id_plan) => {
+    try {
+        const response = await fetch(`${config.API_URL}myServicesPanle/allStatusMes?idp=${id_plan}`, {
+            method:"GET",
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${token}`,
+            },
+        })
+        if (!response.ok) {
+            const errorData = await response.json();
+            const error = new Error(errorData.message || "Error en la solicitud a la API");
+            error.response = {status:response.status, data: errorData}
+            throw error;
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error en la peticion");
+        throw error;
+    }
+}
+
+export const APIdataUpdateMes = async(id_plan, mes) => {
+    try {
+        const response = await fetch(`${config.API_URL}myServicesPanle/selectMes`, {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json",
+                "Authorization":`Bearer ${token}`
+            },
+            body: JSON.stringify({
+                id_plan,
+                mes
+            })
+        }); 
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            const error = new  Error(errorData.message || "Error en la solicitud a la API");
+            error.response = {status: response.status, data: errorData}
+            throw error;
+        }
+        return await response.json();
+
+    } catch (error) {
+        console.error("Error en la peticion");
+        throw error;
+        
+    }
+}
+
+export const ApiUpdateDataMes = async(payload) => {
+    try {
+        const response = await fetch(`${config.API_URL}myServicesPanle/updateMes`, {
+            method:"PUT",
+            headers: {
+                "Content-Type":"application/json",
+                "Authorization":`Bearer ${token}`
+            },
+            body: JSON.stringify(payload)
+        })
+        if (!response.ok) {
+            const errorData = await response.json(); //Capturamos el error del back
+            const error = new Error(errorData.message || "Error en la solicitud a la API"); //Creamos error perzonalizado guardando el mensaje del error
+            error.response = {status: response.status, data: errorData} //Al error personalizado le agregamos el status y el errorData (respuesta del back)
+            throw error; //Treonamos el try y lo pasamos al catch
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error(error);
         throw error;
         
     }

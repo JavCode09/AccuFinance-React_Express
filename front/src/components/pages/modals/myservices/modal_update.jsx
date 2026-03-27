@@ -20,7 +20,7 @@ const ModalUpdateMyServices = ({showModal_Update,closeModal_update, category,get
         monto: "",
         diaPago: "",
         general_status: "",
-        fecha_fin_pago: "",
+        // fecha_fin_pago: "",
     });
 
     //estado para traer todos los servicios
@@ -43,7 +43,7 @@ const ModalUpdateMyServices = ({showModal_Update,closeModal_update, category,get
                         monto: DataInformation.data[0].monto,
                         diaPago: DataInformation.data[0].dia_pago,
                         general_status: DataInformation.data[0].general_status,
-                        fecha_fin_pago: DataInformation.data[0].fecha_fin_pago.split("T")[0] // Para compatibilidad con input date,
+                        // fecha_fin_pago: DataInformation.data[0].fecha_fin_pago, // Para compatibilidad con input date,
                     })
                 }
 
@@ -171,16 +171,16 @@ const ModalUpdateMyServices = ({showModal_Update,closeModal_update, category,get
                             <option value="Inactive">Inactive</option>
                         </select>
                     </div>
-                    <div className="mb-3">
+                    {/* <div className="mb-3">
                         <label htmlFor="fecha_fin_pago" className='form-label label'>Fecha Fin de Pago</label>
-                        <input type="date" 
+                        <input type="text" 
                             className='form-control input'
                             id='fecha_fin_pago'
                             name='fecha_fin_pago' 
                             value={DataUpdate.fecha_fin_pago || ""}
                             onChange={handlechange}
                         />
-                    </div>
+                    </div> */}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant='secondary' onClick={closeModal_update}>Cancelar</Button>

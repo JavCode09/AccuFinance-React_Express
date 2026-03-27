@@ -1,0 +1,248 @@
+.Container{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* empieza arriba */
+    align-items: center; 
+    min-height: 100vh;
+    width: 100%;
+    background-color: #1862E2;
+    position: relative;
+    overflow: hidden; /* opcional si quieres que no sobresalga */
+}
+
+.title{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  margin-top: 40px;
+
+}
+    .titlePage{
+        font-size: 50px; /* Tamaño del texto, ajusta según sea necesario */
+        font-weight: bold;
+        color: #ffffff;
+    }
+
+    .SubTitle{
+        font-size: 15px;
+        font-weight: bold;
+        color: #ffffff;
+    }
+
+.formularioLoginRe{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas */
+    gap: 20px;
+    width: 100%;
+    max-width: 500px; /* 🔥 clave */
+    margin-top: 120px;
+    margin-bottom: auto;
+    background-color: rgba(0, 94, 255, 0.1);
+    border-radius: 17px;
+    box-shadow: -1px -1px 15px rgba(247, 184, 1,1.5);
+    padding: 10px;
+    position: relative;
+    z-index: 10;
+}
+    /* campos normales */
+    .groupF{
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* campo que ocupa las 2 columnas */
+    .full{
+        grid-column: span 2;
+    }
+
+    /* si algún día quieres 3 columnas */
+    .three{
+        grid-column: span 3;
+    }
+
+    /* Estilos label e inputas para todo el modulo */
+    .label{
+        color: #ffffff;
+        font-weight: bold;
+    }
+    
+    .input{
+        color: #000000;
+        padding: 5px;
+        border-radius: 10px;
+        border: 2px solid transparent;
+        outline: none;
+        padding-left: 10px;
+        padding-right: 10px;
+        transition: border 0.3s ease;
+        cursor: pointer;
+    }
+
+    .input:hover{
+        border: 2px solid #F7B801;
+    }
+    .input:focus{
+        border: 2px solid #F7B801;
+    }
+
+    /* Estilos de los compoentes del formulario */
+    .titleLogin{
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+        color: #ffffff;
+        margin-bottom: 20px;
+    }
+
+
+    /* El estilo de los bootnes son react-bootstrap  */
+    .btnLogin{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+    }
+    
+/* -------- Animacion */
+
+    section .wave{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        background: url(styles-animation/imagenes/wave.png);
+        background-size: 1000px 100px;
+        z-index: 1; /* importante */
+        pointer-events: none; /* evita que bloquee clicks */
+    }
+
+    section .wave.wave1{
+        animation: animate 25s linear infinite;
+        z-index: 1;
+        opacity: 1;
+        animation-delay: 0s;
+        bottom: 0;
+    }
+    section .wave.wave2{
+        animation: animate2 5s linear infinite;
+        z-index: 1;
+        opacity: 0.5;
+        animation-delay: -5s;
+        bottom: 10px;
+    }
+    section .wave.wave3{
+        animation: animate 25s linear infinite;
+        z-index: 1;
+        opacity: 0.2;
+        animation-delay: -2s;
+        bottom: 15px;
+    }
+    section .wave.wave4{
+        animation: animate2 5s linear infinite;
+        z-index: 1;
+        opacity: 0.7;
+        animation-delay: -5s;
+        bottom: 20px;
+    }
+    @keyframes animate {
+        0%
+        {
+            background-position-x: 0;
+        }
+        100%
+        {
+            background-position-x: 1000px;
+        }
+    }
+
+    /* Responsivo */
+    /* =========================
+   TABLET (<= 1024px)
+========================= */
+@media (max-width: 1024px){
+
+    .titlePage{
+        font-size: 40px;
+    }
+
+    .formularioLoginRe{
+        grid-template-columns: 1fr; /* 1 columna */
+        width: 80%;
+        margin-top: 80px;
+        padding: 20px;
+    }
+
+    .full{
+        grid-column: span 1;
+    }
+}
+
+/* =========================
+   CELULAR (<= 768px)
+========================= */
+@media (max-width: 768px){
+
+    .Container{
+        padding: 20px;
+        height: auto; /* evita problemas en móviles */
+    }
+
+    .title{
+        margin-top: 20px;
+    }
+
+    .titlePage{
+        font-size: 30px;
+    }
+
+    .SubTitle{
+        font-size: 13px;
+    }
+
+    .formularioLoginRe{
+        width: 100%;
+        margin-top: 40px;
+        gap: 15px;
+        padding: 15px;
+        border-radius: 12px;
+    }
+
+    .input{
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .titleLogin{
+        font-size: 18px;
+    }
+
+    section .wave{
+        height: 60px;
+        background-size: 600px 60px;
+    }
+}
+
+/* =========================
+   CELULAR PEQUEÑO (<= 480px)
+========================= */
+@media (max-width: 480px){
+
+    .titlePage{
+        font-size: 24px;
+    }
+
+    .SubTitle{
+        font-size: 12px;
+    }
+
+    .formularioLoginRe{
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .input{
+        font-size: 13px;
+        padding: 8px;
+    }
+}
