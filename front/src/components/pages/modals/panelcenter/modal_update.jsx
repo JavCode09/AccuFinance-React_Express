@@ -39,7 +39,7 @@ const UpdateModalPlanes = ({showModal_Update, closeModal_update, category, getDa
                 if (showModal_Update  && id_user && category) {
                      //Llamamos los planes de pago
                     const resultMeses = await API_selectmeses(category, id_user);
-                    console.log('resultMeses: ' , resultMeses);
+                    // console.log('resultMeses: ' , resultMeses);
                     
                     const nombre_plan = resultMeses.data[0]?.nombre_plan
                     const año = resultMeses.data[0]?.año;

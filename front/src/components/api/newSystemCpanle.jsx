@@ -320,3 +320,57 @@ export const APIestadosMeses = async(id_plan) => {
         throw error;
     }
 }
+
+export const APIdataUpdateMes = async(id_plan, mes) => {
+    try {
+        const response = await fetch(`${config.API_URL}myServicesPanle/selectMes`, {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json",
+                "Authorization":`Bearer ${token}`
+            },
+            body: JSON.stringify({
+                id_plan,
+                mes
+            })
+        }); 
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            const error = new  Error(errorData.message || "Error en la solicitud a la API");
+            error.response = {status: response.status, data: errorData}
+            throw error;
+        }
+        return await response.json();
+
+    } catch (error) {
+        console.error("Error en la peticion");
+        throw error;
+        
+    }
+}
+
+export const ApiUpdateDataMes = async(payload) => {
+    try {
+        const response = await fetch(`${config.API_URL}myServicesPanle/updateMes`, {
+            method:"PUT",
+            headers: {
+                "Content-Type":"application/json",
+                "Authorization":`Bearer ${token}`
+            },
+            body: JSON.stringify(payload)
+        })
+        if (!response.ok) {
+            const errorData = await response.json(); //Capturamos el error del back
+            const error = new Error(errorData.message || "Error en la solicitud a la API"); //Creamos error perzonalizado guardando el mensaje del error
+            error.response = {status: response.status, data: errorData} //Al error personalizado le agregamos el status y el errorData (respuesta del back)
+            throw error; //Treonamos el try y lo pasamos al catch
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error(error);
+        throw error;
+        
+    }
+}

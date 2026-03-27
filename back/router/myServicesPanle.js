@@ -1,4 +1,5 @@
 const express = require('express');
+const HttpError = require("../utils/HttpError")
 const Router = express.Router();
 const my_services = 'my_services';
 const planes = 'planes';
@@ -46,8 +47,8 @@ Router.post("/add", async (req, res) => {
         return res.status(400).json({ message: "No hay Meses asignados." });
       if (!Array.isArray(myServicesPanel) || myServicesPanel.length === 0 || myServicesPanel.includes("0"))
         return res.status(400).json({ message: "No hay servicios asignados." });
+      if (!ingreso_Mensul) return res.status(400).json({ message: "Coloca un ingeso mensul, este puede ser editado mas adelante." });
       if (!nombre_plan) return res.status(400).json({ message: "Asigna un nombre a tu Plan." });
-      // if (!ingreso_Mensul) return res.status(400).json({ message: "No hay ingros mensual." });
       
       const insertPlanSQL = "INSERT INTO planes (nombre_plan, user_id, año, meses, servicios) VALUES (?, ?, ?, ?, ?)";
       const result = await query(insertPlanSQL, [
@@ -153,16 +154,33 @@ Router.post("/planesdp", async(req,res) => {
   try {
     const consulta = `SELECT planesp.*,
                       pl.nombre_plan,
+                      pl.año,
                       serv.nombre,
-                      ms.descripcion
+                      ms.descripcion,
+                      ms.dia_pago
                       FROM ${planes_de_pago} planesp
                       INNER JOIN planes pl ON pl.id_plan = planesp.id_plan
                       INNER JOIN my_services ms ON ms.id_myservices = planesp.my_service
                       INNER JOIN services serv ON serv.id = ms.id_services
-                      WHERE planesp.id_plan = ? AND planesp.user_id = ? AND planesp.mes = ?`;
+                      WHERE planesp.id_plan = ? AND planesp.user_id = ? AND planesp.mes = ? ORDER BY ms.dia_pago ASC`;
     const result = await query(consulta, [idPlan, id_user, mes]);
 
-    return res.status(200).json({data:result})
+    if (result.length === 0) {
+      throw new Error("No se encontro ningun registro.");
+    }
+
+    // Conusltamos la tabla de monto mensual
+    const consulta2 = `SELECT id AS id_monthly_income, 
+                              monthly_income 
+                              FROM ${plan_monthly_income} 
+                              WHERE id_plan = ? AND month = ?`;
+    const result2 = await query(consulta2,[idPlan, mes]);
+
+    if (result2.length === 0) {
+      throw new Error("No se encontro ningun registro 2.");
+    }
+
+    return res.status(200).json({data:result, data2:result2})
   } catch (error) {
     console.error("Error en la consulta: ", error);
     return res.status(500).json({message:"Error al obtener los planes de pago por año."})
@@ -544,11 +562,16 @@ Router.delete("/deleteplan", async(req, res) => {
 
 // Actualizacion de estado de cada servicio dentro del mes en cuestion
 Router.put("/valida", async(req,res)=> {
-  const {id_payment, id_plan, service_status, currentDateAuto, nombre} = req.body;
-  
-  
+  const {id_payment, id_plan, service_status, nombre} = req.body;
+
   try {
     await beginTransaction();
+
+    // ✅ Generar fecha en UTC desde el backend
+    const currentDateAuto = new Date()
+      .toISOString()
+      .slice(0, 19)
+      .replace('T', ' ');
 
     if(!id_payment){ throw new Error("El dato id_payment esta vacio")}
     if(!service_status){ throw new Error("El dato service_status esta vacio")}
@@ -761,7 +784,7 @@ Router.delete("/deleteMespanel", async(req,res)  => {
 
     if (typeof mesesDB === "string") {
       try {
-        mesesDB = JSON.parse(mesesDB);
+        mesesDB = JSON.parse(mesesDB); //Parseo de string a arry u objeto
       } catch (error) {
          throw new Error("Error al interpretar los meses desde la base de datos.");
       }
@@ -788,6 +811,14 @@ Router.delete("/deleteMespanel", async(req,res)  => {
 
     if (!result3 || result3.affectedRows === 0) {
       throw new Error("Error al ejecutar la actualizacion de meses en la tabla planes.");
+    }
+
+    //Eliminamos info de mensualidad por mes
+    const consulta4 = `DELETE FROM ${plan_monthly_income} WHERE id_plan = ? AND month = ?`;
+    const result4 = await query(consulta4, [id_plan, mes]);
+
+    if (!result4 || result4.affectedRows === 0) {
+      throw new Error("Error al ejecutar  la eliminacion del registro mensual en la tabla plan_monthly_income.");
     }
 
     await commit();
@@ -919,6 +950,91 @@ Router.get("/allStatusMes", async(req,res) => {
   }
 })
 
+Router.post("/selectMes", async (req, res) => {
+  try {
+
+    const { id_plan, mes } = req.body;
+
+    if (!id_plan) {
+      return res.status(400).json({ message: "No se reconoce el id del plan." });
+    }
+
+    if (!mes) {
+      return res.status(400).json({ message: "No se reconoce el mes." });
+    }
+
+    const consulta1 = `
+      SELECT monthly_income 
+      FROM ${plan_monthly_income} 
+      WHERE id_plan = ? AND month = ?
+    `;
+
+    const result = await query(consulta1, [id_plan, mes]);
+
+    if (!result || result.length === 0) {
+      return res.status(404).json({ message: "No se encontró el monto mensual." });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Datos obtenidos correctamente",
+      data: {
+        monthly_income: result[0].monthly_income
+      }
+    });
+
+  } catch (error) {
+
+    console.error("selectMes error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Error interno del servidor",
+      data: null
+    });
+
+  }
+});
+
+Router.put("/updateMes", async(req,res) => {
+  const  {id_plan, mes, monto_mensual} = req.body;
+
+  try {
+      await beginTransaction();
+
+      if (!id_plan) {throw new HttpError("No se encontro el id del plan." , 400)}
+      if (!mes) {throw new HttpError("No se encontro el mes.", 400)}
+      if (!monto_mensual) {throw new HttpError("No se encontro el monto_mensual.", 400)}
+
+      //Consulta para actualizar meses
+      const consulta1 = `UPDATE ${plan_monthly_income} SET monthly_income = ? WHERE id_plan = ? AND month = ?`;
+      const result = await query(consulta1, [monto_mensual,id_plan,mes]);
+
+      if (!result || result.affectedRows === 0) {
+        throw new HttpError("Advertencia: no se actualizó ninguna fila. Puede que el valor ya fuera el mismo o que la fila no exista.");
+      }
+
+      await commit();
+
+      return res.status(200).json({
+        success: true,
+        message: "Mes actualizado",
+        data: null
+      })
+
+  } catch (error) {
+    await rollback();
+
+    console.error(error);
+
+    return res.status(error.status || 500).json({
+      success: false,
+      message: error.status ? error.message : "Error interno del servidor",
+      data: null
+    });
+    
+  }
+});
 
 
 

@@ -153,14 +153,14 @@ const ModalAddMyservices = ({showModal,closeModal,getData}) => {
                                 placement="right"
                                 overlay={
                                     <Tooltip id="tooltip-dia-pago">
-                                    Este campo es el día del mes que tendrás que realizar tu pago a más tardar.
+                                    Día del mes que tendrás que realizar tu pago a más tardar.
                                     </Tooltip>
                                 }
                             >
                                 <i className="fa fa-info-circle" style={{ marginLeft: '5px', cursor: 'pointer' }}></i>
                             </OverlayTrigger>
                         </label>
-                        <input className='form-control input' placeholder='¿Que dia pagas regularmente el dinero?'
+                        <input className='form-control input' placeholder='¿Que dia pagas maximo, regularmente?'
                             name='Dia_pago'
                             id='Dia_pago'
                             type="text"
