@@ -51,7 +51,14 @@ const UpdateModalPlanes = ({showModal_Update, closeModal_update, category, getDa
                         año:año
                     })
                     
+                    // ⚙️ Esperamos a que React actualice el DOM y luego forzamos el valor en el Select2
+                    setTimeout(() => {
+                        if (Refaño.current) {
+                            $(Refaño.current).val(año).trigger("change");
+                        }
+                    }, 100);
                 }
+
             } catch (error) {
                 console.error("Error al obtener los meses");
                 
@@ -88,7 +95,7 @@ const UpdateModalPlanes = ({showModal_Update, closeModal_update, category, getDa
             destroySelect2(Resmeses);
         };       
 
-    },[showModal_Update])
+    },[showModal_Update, category])
 
 
     // Estado para años y servicios
@@ -152,12 +159,12 @@ const UpdateModalPlanes = ({showModal_Update, closeModal_update, category, getDa
             updateInfo(resultApiUpdate.meses , resultApiUpdate.id_plan); //Renderizamos meses del plan anual
         } catch (error) {
             // console.error(error);
-            if (error.response && error.response.status === 500) {
-                alert(error.response.data.message)
+            if (error.response && error.response.status === 500 && error.response.data) {
+                alert(`⚠️ ${error.response.data.message}`);
             } else if (error.response && error.response.status === 409) {
-                alert(error.response.data.message)
+                alert(`⚠️ ${error.response.data.message}`);
             }else{
-                alert("Ocurrio un error inesperado." + error)
+                alert("Ocurrio un error inesperado.");
             }
         }
         
@@ -170,7 +177,7 @@ const UpdateModalPlanes = ({showModal_Update, closeModal_update, category, getDa
             </Modal.Header>
             <form onSubmit={API_FormUpdatePlan}>
                 <Modal.Body>
-                    <input type="hidden" placeholder='id' id='id_plan' name='id_plan' value={mesesPlan.id_plan} readOnly />
+                    <input type="text" placeholder='id' id='id_plan' name='id_plan' value={mesesPlan.id_plan} readOnly />
                     <div className="mb-3">
                         <label htmlFor="nombre_plan" className='form-label label'>Nombre del Plan</label>
                         <input type="text" required

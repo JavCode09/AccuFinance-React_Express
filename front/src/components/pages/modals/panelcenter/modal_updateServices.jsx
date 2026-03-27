@@ -110,8 +110,8 @@ const ModalUpdateServices = ({ showModal_Update, closeModal_update, category, ge
             closeModal_update();
         }
         } catch (error) {
-            if (error.response && error.response.status === 400 && error.response.data) {
-                alert(`⚠️ Error: ${error.response.data.message}`);
+            if (error.response && error.response.status === 500 && error.response.data) {
+                alert(`⚠️ ${error.response.data.message}`);
             } else {
                 alert("❌ Error: No se pudo actualizar el servicio. Intenta de nuevo.");
             }

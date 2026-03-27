@@ -14,7 +14,7 @@ const ModalValidationService = ({ showModal, closeModal, category, onRefreshOtro
     //Data login
     const {userData} = useContext(UserContext)
 
-    const currentDate = new Date().toISOString().split('T')[0];
+
     const service_status = 'Paid';
 
     //Hook de estado
@@ -22,7 +22,6 @@ const ModalValidationService = ({ showModal, closeModal, category, onRefreshOtro
         id_payment : '',
         id_plan: '',
         service_status: '',
-        currentDateAuto: '',
         nombre: '',
     })
 
@@ -32,7 +31,6 @@ const ModalValidationService = ({ showModal, closeModal, category, onRefreshOtro
                 id_payment: category.id_payment || '',
                 id_plan: category.id_plan || '',
                 service_status: service_status || '', //Este si viene de category pero no se ocupa por que es pendiente y ponemos aprovado
-                currentDateAuto: currentDate || '',
                 nombre: category.nombre || '',
             })
         }
@@ -52,7 +50,6 @@ const ModalValidationService = ({ showModal, closeModal, category, onRefreshOtro
                     id_payment : '',
                     id_plan: '',
                     service_status: '',
-                    currentDateAuto: '',
                     nombre: '',
                 })
                 
@@ -66,10 +63,10 @@ const ModalValidationService = ({ showModal, closeModal, category, onRefreshOtro
                 closeModal();
             }
         } catch (error) {
-            if (error.response && error.response.status === 400 && error.response.data) {
-                alert(`⚠️ Error: ${error.response.data.message}`); // Mensaje exacto del backend
+            if (error.response && error.response.status === 500 && error.response.data) {
+                alert(`⚠️ ${error.response.data.message}`); // Mensaje exacto del backend
             } else {
-                alert("❌ Error: No se pudo actualizar el servicio. Intenta de nuevo.");
+                alert("❌ Error: No se pudo validar el servicio. Intenta de nuevo.");
             }
         }
     }
@@ -91,11 +88,6 @@ const ModalValidationService = ({ showModal, closeModal, category, onRefreshOtro
                         <hr />
                             <strong>Descripción del servicio:</strong> <br />{category.descripcion}<br />
                         <hr />
-
-                    <p>    
-                        <strong>Fecha de pago:</strong> {currentDate}
-                    </p>
-
                     <p>Confirma esta acción presionando <strong>"Aprobar"</strong>.</p>
                 </Modal.Body>
 
