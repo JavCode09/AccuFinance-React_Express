@@ -29,10 +29,116 @@ CREATE TABLE user_access_log (
 
 ------- INSERCION DE SUPER ADMINISTRADOR PRINCIPAL , PASS = Acmilanjavi09 -------
 INSERT INTO `user_access_log` (`id`, `nombre`, `apellido_paterno`, `apellido_materno`, `email`, `password`, `rol`, `status`, `registro`) 
-VALUES (NULL, 'Javier', 'Piña', 'Lopez', 'javier.pilprofesional09@gmail.com', '$2b$10$UVEUfMww0vioWKauulEvI.thZ/5Ci20JXiiLKoKwqtob8Yyn3H/kK', '10', '1', current_timestamp());
+VALUES (NULL, 'Javier', 'Piña', 'Lopez', 'javier.pilprofesional09@gmail.com', '$2b$10$UVEUfMww0vioWKauulEvI.thZ/5Ci20JXiiLKoKwqtob8Yyn3H/kK', '1', '1', current_timestamp());
+
+
+-- Tabla relacionales a roles, permisos --------
+CREATE TABLE roles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE modulos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    ruta VARCHAR(255),
+    icon VARCHAR(100),
+    parent_id INT NULL COMMENT 'ID del módulo padre (NULL = bloque principal, permite jerarquía de módulos/submódulos)',
+    tipo ENUM('bloque', 'modulo') DEFAULT 'modulo' COMMENT 'bloque = contenedor, modulo = elemento navegable',
+    orden INT DEFAULT 0 COMMENT 'Orden de visualización en el menú (menor número = se muestra primero)',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    -- Si borras al bloque --- se borran los hijos 
+    FOREIGN KEY (parent_id) REFERENCES modulos(id) ON DELETE CASCADE
+);
+
+CREATE TABLE permisos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE rol_permisos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    rol_id INT NOT NULL,
+    modulo_id INT NOT NULL,
+    permiso_id INT NOT NULL,
+
+    FOREIGN KEY (rol_id) REFERENCES roles(id) ON DELETE CASCADE,
+    FOREIGN KEY (modulo_id) REFERENCES modulos(id) ON DELETE CASCADE,
+    FOREIGN KEY (permiso_id) REFERENCES permisos(id) ON DELETE CASCADE,
+
+    UNIQUE (rol_id, modulo_id, permiso_id)
+);
+
+-- Insercion de modulos, roles y permisos ----
+INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES 
+(NULL, 'Inicio', '/main', 'fa-th-large', NULL, 'modulo', '1', current_timestamp());
+
+INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES 
+(NULL, 'Panel de Control', '/main/AdminServices', 'fa-home', NULL, 'modulo', '2', current_timestamp());
+
+INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES 
+(NULL, 'Gestión de Servicios', null, 'fa-server', NULL, 'bloque', '3', current_timestamp());
+
+INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES (NULL, 'Categorías', '/main/categories', 'fa-handshake-o', '3', 'modulo', '1', current_timestamp());
+INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES (NULL, 'Nuevo Servicio', '/main/new_Services', 'fa-plus', '3', 'modulo', '2', current_timestamp());
+
+INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES (NULL, 'Mis Servicios', '/main/my_Services', 'fa-plus-square', NULL, 'modulo', '4', current_timestamp());
+
+INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES (NULL, 'Administración de Usuarios', NULL, 'fa-users', NULL, 'bloque', '5', current_timestamp());
+
+INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES (NULL, 'Usuarios', '/main/users', 'fa-user', '7', 'modulo', '1', current_timestamp());
+
+INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES (NULL, 'Usuarios Internos', '/main/roll_users', 'fa-user-secret', '7', 'modulo', '2', current_timestamp());
+
+INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES (NULL, 'Permisos', '/main/roll_permissions', 'fa-lock', '7', 'modulo', '3', current_timestamp());
+
+-- insersion de todos los permisos por modulo de Super Administrador
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '1', '1');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '2', '1');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '3', '1');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '4', '1');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '5', '1');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '6', '1');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '7', '1');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '8', '1');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '9', '1');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '10', '1');
+
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '1', '2');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '2', '2');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '3', '2');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '4', '2');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '5', '2');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '6', '2');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '7', '2');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '8', '2');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '9', '2');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '10', '2');
+
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '1', '3');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '2', '3');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '3', '3');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '4', '3');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '5', '3');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '6', '3');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '7', '3');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '8', '3');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '9', '3');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '10', '3');
+
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '1', '4');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '2', '4');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '3', '4');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '4', '4');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '5', '4');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '6', '4');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '7', '4');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '8', '4');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '9', '4');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '10', '4');
 
 -- Tabla de Categorias --
-
 CREATE TABLE categories (
     id int PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(100) not null UNIQUE,

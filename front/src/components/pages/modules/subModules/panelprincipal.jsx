@@ -30,7 +30,7 @@ const PanelPrincipal = ({planesPorMes,mesNumero, planes, onRefreshOtro, getDataU
         return new Date(dateString).toLocaleDateString(); // te da algo como 22/04/2025
     };
 
-    console.log('planesPorMes: ' , planesPorMes);
+    // console.log('planesPorMes: ' , planesPorMes);
     // console.log('mesNumero: ' , mesNumero);
     // console.log('planes: ' , planes);
 

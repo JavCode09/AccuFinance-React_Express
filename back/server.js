@@ -8,7 +8,7 @@ const corsOption = {
     optionsSuccessStatus: 200
 }
 
-// LLamos la verificacion el JSW para mas proteccion y seguridad
+// LLamos la verificacion el JWT para mas proteccion y seguridad
 const verifyToken = require("./middlewares/verifyToken");
 
 app.use(cors(corsOption));
@@ -19,14 +19,11 @@ app.use(express.json());
 //asignamos puerto
 const port = process.env.PORT;
 
-//middleware para requerimiento del registro
-app.use("/registros" , require("./router/registro"));
-
-//middleware para requerimiento del login
-app.use("/Login" ,  require("./router/registro"));
+//middleware para requerimiento del registro y login (inicio see sesion)
+app.use("/auth" , require("./router/auth"));
 
 // Rutas protegidas (aplicar verifyToken) Registro y Login
-app.use("/Protected_main", verifyToken,require("./router/main")); // Rutas protegidas
+app.use("/api", verifyToken,require("./router/main")); // Rutas protegidas
 
 // Modulos ------> 
 app.use("/categories",verifyToken, require("./router/categories"));
