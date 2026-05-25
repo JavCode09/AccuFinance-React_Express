@@ -25,8 +25,11 @@ app.use("/auth" , require("./router/auth"));
 // Rutas protegidas (aplicar verifyToken) Registro y Login
 app.use("/api", verifyToken,require("./router/main")); // Rutas protegidas
 
+// Ruta protegida con token para roles
+app.use("/roles",require("./router/roles"));
+
 // Modulos ------> 
-app.use("/categories",verifyToken, require("./router/categories"));
+app.use("/categories", verifyToken, require("./router/categories"));
 
 app.use("/services",verifyToken, require("./router/services"));
 

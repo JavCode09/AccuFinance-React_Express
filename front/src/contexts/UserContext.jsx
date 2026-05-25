@@ -24,7 +24,8 @@ export const UserProvider = ({ children }) => {
 
     try {
       const data = await ApiMain(token);
-
+      console.log(data);
+      
       setUserData(data.user || null);
       // console.log(data);
 

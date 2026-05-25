@@ -16,6 +16,8 @@ const AddNewPlan = ({showModal, closeModal, getData}) => {
     //Data login
     const {userData} = useContext(UserContext)
 
+    // console.log(userData);
+    
     // Estado para años y servicios
     const [years, setYears] = useState([]);
     const [servicios, setServicios] = useState([]);

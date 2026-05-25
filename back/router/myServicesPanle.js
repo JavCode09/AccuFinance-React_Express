@@ -1,12 +1,15 @@
 const express = require('express');
 const HttpError = require("../utils/HttpError")
 const Router = express.Router();
+
+// Tablas
 const my_services = 'my_services';
 const planes = 'planes';
 const planes_de_pago = 'planes_de_pago';
 const plan_monthly_income = 'plan_monthly_income';
 const plan_month_status = 'plan_month_status';
 
+// Conexion a bd junto cin transaccion comit y rollback
 const {query, beginTransaction, commit, rollback } = require("../conexion");
 
 Router.get("/all", async(req,res)=> {
