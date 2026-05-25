@@ -231,9 +231,15 @@ const Login = () => {
                 // console.log("Login exitoso:", loginStart.usuario);
                 // console.log("Login token JWT:", loginStart.token);
 
+                alert("Login exitoso");
+                
+                // Guardamos Token, usuario y accesso en local storage
+                localStorage.setItem("token", loginStart.token);
+                localStorage.setItem("accesos", JSON.stringify(loginStart.accesos));
+                localStorage.setItem("user", JSON.stringify(loginStart.usuario));
+               
                 // Redirigir a la ruta protegida
                 window.location.href = '/main'; // Cambia '/ruta-protegida' a la ruta que desees
-                alert("Login exitoso");
             } else {
                 // Manejo de error en login (por ejemplo, usuario o contraseña incorrecta)
                 console.log("Error en el login:", loginStart.message);

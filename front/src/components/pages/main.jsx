@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Link, Routes, Route, useLocation } from 'react-router-dom';
+import { Link, Routes, Route } from 'react-router-dom';
 import Dashboard from './dashboard'; // Importa el componente Dashboard
 
 // Importa el UserProvider
@@ -10,100 +10,84 @@ import Categories from './modules/subModules/categories';
 import NewService from './modules/subModules/newService';
 import MyServices from './modules/subModules/myservices';
 import AdminServices from './modules/adminservices';
+import UsuariosInternos from './modules/subModules/usuarios_internos';
+import Roles from './modules/subModules/roles';
 
-// css estructura 
+// css estructura global
 import '../styles/dashboard/contenido.css';
 
-//Paginate style
+//Paginate style global
 import '../styles/common_style/paginate.css';
 
+
 const Main = () => {
-    const location = useLocation();
-    const { userData } = useContext(UserContext);
+    const {logout  } = useContext(UserContext);
     const [openModule, setOpenModule] = useState({});
 
-    const toggleSubModules = (moduleName, hasSubmodules) => {
-        setOpenModule((prevState) => {
-            if (!hasSubmodules) {
-                // Si es un módulo sin submódulos, cerrar todos los demás
-                return {};
-            }
+    const modulos = JSON.parse(localStorage.getItem("accesos"));
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    // console.log("user" , user); 
     
-            // Alternar el estado del módulo seleccionado
+
+   const toggleSubModules = (id, hasSubmodules) => {
+        setOpenModule((prev) => {
+            if (!hasSubmodules) return {};
+
             return {
-                [moduleName]: !prevState[moduleName],
+                [id]: !prev[id],
             };
         });
     };
     
-    
-    const modules = [
-        { name: 'Inicio', path: '/main',  icon: 'fa-th-large'  },
-        {
-            name: 'Servicios', icon: 'fa-money',
-            submodules: [
-                { name: 'Categorias', path: '/main/categories',  icon: 'fa-list-alt'},
-                { name: 'Nuevo Servicio', path: '/main/new_Services', icon:'fa-plus-circle'},
-                { name: 'Mis Servicios', path: '/main/my_Services', icon:'fa-briefcase' },
-            ],
-        },
-        { name: 'Panel de Control', path: '/main/AdminServices', icon: 'fa-bar-chart' },
-        {
-            name: 'Inversiones', icon:'fa-line-chart',
-            submodules: [
-                { name: 'Nueva Inversión', path: '/main/Investments', icon:'fa-plus-circle' },
-                { name: 'Mis Inversiones ', path: '/main/MyInvestments', icon:'fa-pie-chart'},
-                { name: 'Administración ', path: '/main/Administration' , icon:'fa-cogs'},
-            ],
-        },
-        { name: 'Usuarios', path: '/main/Usuarios', icon:'fa-users'},
-    ];
+    // Funcion para ordenar modulos sin importar el nivel
+    const renderModulos = (modulos) => {
+        return modulos
+            .sort((a, b) => a.orden - b.orden)
+            .map((modulo) => {
+                if (modulo.permisos?.ver !== true) return null;
+
+                const tieneHijos = modulo.hijos  && modulo.hijos.length > 0 ;
+
+                return (
+                    <li key={modulo.modulo_id}>
+                            <div className={`module ${openModule[modulo.modulo_id] ? 'open' : ''}`}
+                                onClick={() => toggleSubModules(modulo.modulo_id, tieneHijos)}
+                            >
+                                    <i className={`fa ${modulo.icon} mr-2`}></i>
+                                {modulo.ruta ? (
+                                    <Link to={modulo.ruta} onClick={(e) => e.stopPropagation()}>
+                                        {modulo.nombre_modulo}
+                                    </Link>
+                                ): (
+                                    modulo.nombre_modulo
+                                )}
+                            
+                            </div>
+                            
+                        
+
+                        {/* Hijos */}
+                        {tieneHijos && openModule[modulo.modulo_id] && (
+                            <ul className="submodule-list">
+                                {renderModulos(modulo.hijos)}
+                            </ul>
+                        )}
+                    </li>
+                );
+            });
+    };
 
     return (
         <div className="main-container">
             <div className="sidebar">
                 <div className="title-sidebar">
-                    <img src="/logo_AccuFinace.png" alt="" />
+                    {/* <img src="/logo_AccuFinace.png" alt="" /> */}
                     <h3 className='title-sistem'>AccusFinance</h3>
                 </div>
                 <div className="modules-list">
                     <ul className="module-list">
-                        {modules.map((module, index) => (
-                            <li key={index} className='liModulos'>
-                                {module.submodules ? (
-                                    <>
-                                        <div
-                                            className={`module ${openModule[module.name] ? 'open' : ''}`}
-                                            onClick={() => toggleSubModules(module.name, true)} // Pasa true si tiene submódulos
-                                        >
-                                            <i className={`fa ${module.icon} mr-2`}></i> {/* Icono del módulo */}
-                                            {module.name}
-                                        </div>
-                                        {openModule[module.name] && (
-                                            <ul className="submodule-list">
-                                                {module.submodules.map((subModule, subIndex) => (
-                                                    <li key={subIndex}>
-                                                        <div
-                                                            className={`module ${location.pathname === subModule.path ? 'active' : 'inactive'}`}
-                                                        >
-                                                            <i className={`fa ${subModule.icon} mr-2`}></i> {/* Icono del submódulo */}
-                                                            <Link to={subModule.path}>{subModule.name}</Link>
-                                                        </div>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        )}
-                                    </>
-                                ) : (
-                                    <div className={`module ${location.pathname === module.path ? 'active' : ''}`} 
-                                        onClick={() => toggleSubModules(module.name, false)} // Pasa false si NO tiene submódulos
-                                    >
-                                        <i className={`fa ${module.icon} mr-2`}></i> {/* Icono del módulo */}
-                                        <Link to={module.path}>{module.name}</Link>
-                                    </div>
-                                )}
-                            </li>
-                        ))}
+                        {modulos && renderModulos(modulos)}
                     </ul>
                 </div>
             </div>
@@ -111,20 +95,23 @@ const Main = () => {
                 <div className="navbar">
                     <span className='span_navbar'>Navbar - Título</span>
                     <div className="session">
-                        {userData ? (
-                            <span>Bienvenido, {userData.nombre_completo}</span>
+                        {user ? (
+                            <span>Bienvenido, {user.nombre_completo}</span>
                         ) : (
                             <span>Cargando usuario...</span>
                         )}
+                        <h3 onClick={logout}>Cerrar Session</h3>
                     </div>
                 </div>
                 <div className="content_Modules">
                     <Routes>
                         <Route path="/main" element={<Dashboard />} />
+                        <Route path="/AdminServices" element={<AdminServices titleModule={'Panel de Control'} />} />
                         <Route path="/categories" element={<Categories titleModule={'Categorias'} />} />
                         <Route path="/new_Services" element={<NewService titleModule={'Nuevos Servicios'} />} />
                         <Route path="/my_Services" element={<MyServices titleModule={'Mis Servicios'} />} />
-                        <Route path="/AdminServices" element={<AdminServices titleModule={'Panel de Control'} />} />
+                        <Route path="/roll_users" element={<UsuariosInternos titleModule={'Usuarios Internos'} />}/>
+                        <Route path="/rolls" element={<Roles titleModule={'Roles'} />}/>
                     </Routes>
                 </div>
             </div>

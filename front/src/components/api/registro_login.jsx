@@ -6,7 +6,7 @@ const tabla = "users"
 
 export const add_registro = async(formData) => {
     try {
-        const response = await fetch(`${config.API_URL}registros` ,  {
+        const response = await fetch(`${config.API_URL}auth/registro` ,  {
             method: "POST",
             headers: {
                 "Content-Type" : "application/json"
@@ -29,7 +29,7 @@ export const add_registro = async(formData) => {
 
 export const SelectLogin = async(formData) => {
     try {
-        const response = await fetch(`${config.API_URL}Login` , {
+        const response = await fetch(`${config.API_URL}auth/login` , {
             method: 'POST',
             headers: {
                 'Content-Type': "application/json"
@@ -59,7 +59,7 @@ export const SelectLogin = async(formData) => {
 export const ApiMain = async (token) => {
     try {
         // Llamada a la API del backend para verificar el token
-        const response = await fetch(`${config.API_URL}protected_main`, {
+        const response = await fetch(`${config.API_URL}api`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
