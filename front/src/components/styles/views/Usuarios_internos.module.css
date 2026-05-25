@@ -1,0 +1,89 @@
+.UsariosInternos-container{
+    background: rgb(143, 201, 224);
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+    .UsariosInternos-title{
+        margin-bottom: 5px;
+    }
+
+    .UsariosInternos-option{
+        display: flex;
+        justify-content: space-between;
+        background-color: antiquewhite;
+        padding: 5px;
+        margin-bottom: 5px;
+        /* align-items: center; */
+    }
+
+        .UsariosInternos-search{
+            padding: 5px;
+            background: rgb(179, 107, 13);
+        }
+
+        .UsariosInternos-btns{
+            display: block;
+            justify-content: center;
+            /* align-items: center; */
+            padding: 5px;
+            background: rgb(179, 107, 13);
+        }
+
+    .UsariosInternos-content{
+        padding: 10px;
+        background: antiquewhite;
+        /* display: flex;
+        justify-content: center; */
+    }
+
+    /* tds de Table */
+    .status-active {
+        color: green;
+        font-weight: bold;
+      }
+      
+      .status-inactive {
+        color: gray;
+        font-weight: bold;
+      }
+
+/* CSS de los modales (labes e inputs)*/
+.form_UsariosInternos{
+    background-color: #4CAF50;
+}
+
+/*  */
+
+/* Modal ADD */
+/* Modal EDIT */
+/* Modal DELETE */
+
+/* css tabla UsariosInternos (vista)*/
+.UsariosInternos-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+    .UsariosInternos-tabla th, .UsariosInternos-tabla td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    .UsariosInternos-tabla tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .UsariosInternos-tabla th {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    .btns_option_UsariosInternos{
+        display: flex;
+        flex-flow:wrap;
+        justify-content: space-around;
+        gap: 10px; /* Espacio entre los botones */
+    }

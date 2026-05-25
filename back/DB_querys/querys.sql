@@ -93,6 +93,8 @@ INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `ord
 
 INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES (NULL, 'Permisos', '/main/roll_permissions', 'fa-lock', '7', 'modulo', '3', current_timestamp());
 
+INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES (NULL, 'Roles', 'rolls', 'fa-address-card', '7', 'modulo', '4', current_timestamp());
+
 -- insersion de todos los permisos por modulo de Super Administrador
 INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '1', '1');
 INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '2', '1');
@@ -104,6 +106,7 @@ INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (N
 INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '8', '1');
 INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '9', '1');
 INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '10', '1');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '11', '1');
 
 INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '1', '2');
 INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '2', '2');
@@ -115,6 +118,7 @@ INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (N
 INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '8', '2');
 INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '9', '2');
 INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '10', '2');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '11', '2');
 
 INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '1', '3');
 INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '2', '3');
@@ -126,6 +130,7 @@ INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (N
 INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '8', '3');
 INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '9', '3');
 INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '10', '3');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '11', '3');
 
 INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '1', '4');
 INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '2', '4');
@@ -137,6 +142,7 @@ INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (N
 INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '8', '4');
 INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '9', '4');
 INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '10', '4');
+INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '11', '4');
 
 -- Tabla de Categorias --
 CREATE TABLE categories (

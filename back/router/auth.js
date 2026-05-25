@@ -250,13 +250,13 @@ Router.post("/login", async (req, res) => {
             }
         });
 
-        // console.log(permisos_roles);
+        // console.log(usuarioEncontrado.id);
         // return
 
         // Generamos JWT
         const token = jwt.sign(
             {
-                id: usuarioEncontrado.id_user,
+                id: usuarioEncontrado.id,
                 rol: usuarioEncontrado.rol,
             },
             SECRET_KEY,
@@ -267,6 +267,7 @@ Router.post("/login", async (req, res) => {
             success: true,
             message: "Login exitoso",
             usuario: {
+                        id: usuarioEncontrado.id, // 🔥 AGREGA ESTO
                         nombre_completo: `${usuarioEncontrado.nombre} ${usuarioEncontrado.apellido_paterno} ${usuarioEncontrado.apellido_materno}`,
                         email: usuarioEncontrado.email,
                         status: usuarioEncontrado.status,

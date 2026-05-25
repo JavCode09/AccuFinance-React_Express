@@ -10,11 +10,13 @@ import Categories from './modules/subModules/categories';
 import NewService from './modules/subModules/newService';
 import MyServices from './modules/subModules/myservices';
 import AdminServices from './modules/adminservices';
+import UsuariosInternos from './modules/subModules/usuarios_internos';
+import Roles from './modules/subModules/roles';
 
-// css estructura 
+// css estructura global
 import '../styles/dashboard/contenido.css';
 
-//Paginate style
+//Paginate style global
 import '../styles/common_style/paginate.css';
 
 
@@ -25,7 +27,7 @@ const Main = () => {
     const modulos = JSON.parse(localStorage.getItem("accesos"));
     const user = JSON.parse(localStorage.getItem("user"));
 
-    // console.log(modulos);
+    // console.log("user" , user); 
     
 
    const toggleSubModules = (id, hasSubmodules) => {
@@ -80,7 +82,7 @@ const Main = () => {
         <div className="main-container">
             <div className="sidebar">
                 <div className="title-sidebar">
-                    <img src="/logo_AccuFinace.png" alt="" />
+                    {/* <img src="/logo_AccuFinace.png" alt="" /> */}
                     <h3 className='title-sistem'>AccusFinance</h3>
                 </div>
                 <div className="modules-list">
@@ -108,6 +110,8 @@ const Main = () => {
                         <Route path="/categories" element={<Categories titleModule={'Categorias'} />} />
                         <Route path="/new_Services" element={<NewService titleModule={'Nuevos Servicios'} />} />
                         <Route path="/my_Services" element={<MyServices titleModule={'Mis Servicios'} />} />
+                        <Route path="/roll_users" element={<UsuariosInternos titleModule={'Usuarios Internos'} />}/>
+                        <Route path="/rolls" element={<Roles titleModule={'Roles'} />}/>
                     </Routes>
                 </div>
             </div>
