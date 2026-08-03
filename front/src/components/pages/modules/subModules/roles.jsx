@@ -4,6 +4,7 @@ import styles from "../../../styles/views/Roles.module.css"
 
 // BTNS
 import ButtonAdd from '../../../common/buttons/btn-add';
+import ButtonAddPage from '../../../common/buttons/btn-add-page';
 
 //Modales
 import ModalAdd from '../../modals/Roles/modal_add';
@@ -22,7 +23,7 @@ const Roles = ({titleModule}) => {
     },[])
 
     const getData_all = async() => {
-        console.log("Entro a la funcion");
+        // console.log("Entro a la funcion");
         try {
             const resultData = await  getDataAll();
             // console.log(resultData.data);
@@ -82,7 +83,15 @@ const Roles = ({titleModule}) => {
                             <tr key={dTable.id}>
                                 <td>{dTable.id}</td>
                                 <td>{dTable.nombre}</td>
-                                <td>Oppciones</td>
+                                <td>    
+                                    <ButtonAddPage
+                                        size={"sm"}
+                                        title={"Actualizar rol"}
+                                        value={"Actualizar"}
+                                        styleColor={"warning"}
+                                        page={`/main/rolls/roles_permisos/${dTable.id}`}
+                                    />
+                                </td>
                             </tr>
                         ))
 

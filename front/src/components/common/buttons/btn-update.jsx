@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { Button} from 'react-bootstrap';
 
+// category, getDataUpdate, updateInfo
+// category es mas para mandar informacion al hijo
+// getDataUpdate se mas para mandar informacion al padre
+// updateInfo es mas cuando solo queremos el aviso sin datos para actualizar o renderizar
+
 const ButtonUpdate = ({ModalCategoriesUpdate,category,getDataUpdate, size, title, value, updateInfo}) => {
 
     //hook de estado para abrir y cerrar modales

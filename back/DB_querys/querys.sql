@@ -38,6 +38,9 @@ CREATE TABLE roles (
     nombre VARCHAR(50) NOT NULL UNIQUE
 );
 
+-- Insercion de super admionistrador --
+INSERT INTO `roles` (`id`, `nombre`) VALUES ('1', 'Super Administradore');
+
 CREATE TABLE modulos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -57,6 +60,12 @@ CREATE TABLE permisos (
     nombre VARCHAR(50) NOT NULL UNIQUE
 );
 
+INSERT INTO `permisos` (`id`, `nombre`) VALUES (NULL, 'ver');
+INSERT INTO `permisos` (`id`, `nombre`) VALUES (NULL, 'crear');
+INSERT INTO `permisos` (`id`, `nombre`) VALUES (NULL, 'editar');
+INSERT INTO `permisos` (`id`, `nombre`) VALUES (NULL, 'eliminar');
+INSERT INTO `permisos` (`id`, `nombre`) VALUES (NULL, 'Sin permisos');
+
 CREATE TABLE rol_permisos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     rol_id INT NOT NULL,
@@ -70,6 +79,9 @@ CREATE TABLE rol_permisos (
     UNIQUE (rol_id, modulo_id, permiso_id)
 );
 
+-- Default cero para iniciar permisos de nuevos roles agregados
+ALTER TABLE `rol_permisos` CHANGE `permiso_id` `permiso_id` INT(11) NOT NULL DEFAULT '5';
+
 -- Insercion de modulos, roles y permisos ----
 INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES 
 (NULL, 'Inicio', '/main', 'fa-th-large', NULL, 'modulo', '1', current_timestamp());
@@ -80,20 +92,28 @@ INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `ord
 INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES 
 (NULL, 'Gestión de Servicios', null, 'fa-server', NULL, 'bloque', '3', current_timestamp());
 
-INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES (NULL, 'Categorías', '/main/categories', 'fa-handshake-o', '3', 'modulo', '1', current_timestamp());
-INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES (NULL, 'Nuevo Servicio', '/main/new_Services', 'fa-plus', '3', 'modulo', '2', current_timestamp());
+INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES 
+(NULL, 'Categorías', '/main/categories', 'fa-handshake-o', '3', 'modulo', '1', current_timestamp());
+INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES 
+(NULL, 'Nuevo Servicio', '/main/new_Services', 'fa-plus', '3', 'modulo', '2', current_timestamp());
 
-INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES (NULL, 'Mis Servicios', '/main/my_Services', 'fa-plus-square', NULL, 'modulo', '4', current_timestamp());
+INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES
+(NULL, 'Mis Servicios', '/main/my_Services', 'fa-plus-square', NULL, 'modulo', '4', current_timestamp());
 
-INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES (NULL, 'Administración de Usuarios', NULL, 'fa-users', NULL, 'bloque', '5', current_timestamp());
+INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES 
+(NULL, 'Administración de Usuarios', NULL, 'fa-users', NULL, 'bloque', '5', current_timestamp());
 
-INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES (NULL, 'Usuarios', '/main/users', 'fa-user', '7', 'modulo', '1', current_timestamp());
+INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES 
+(NULL, 'Usuarios', '/main/users', 'fa-user', '7', 'modulo', '1', current_timestamp());
 
-INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES (NULL, 'Usuarios Internos', '/main/roll_users', 'fa-user-secret', '7', 'modulo', '2', current_timestamp());
+INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES 
+(NULL, 'Usuarios Internos', '/main/roll_users', 'fa-user-secret', '7', 'modulo', '2', current_timestamp());
 
-INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES (NULL, 'Permisos', '/main/roll_permissions', 'fa-lock', '7', 'modulo', '3', current_timestamp());
+INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES 
+(NULL, 'Permisos', '/main/roll_permissions', 'fa-lock', '7', 'modulo', '3', current_timestamp());
 
-INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES (NULL, 'Roles', 'rolls', 'fa-address-card', '7', 'modulo', '4', current_timestamp());
+INSERT INTO `modulos` (`id`, `nombre`, `ruta`, `icon`, `parent_id`, `tipo`, `orden`, `created_at`) VALUES 
+(NULL, 'Roles', 'rolls', 'fa-address-card', '7', 'modulo', '4', current_timestamp());
 
 -- insersion de todos los permisos por modulo de Super Administrador
 INSERT INTO `rol_permisos` (`id`, `rol_id`, `modulo_id`, `permiso_id`) VALUES (NULL, '1', '1', '1');

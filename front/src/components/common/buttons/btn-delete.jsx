@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
 
+// category, getDataDelete, getData
+// category es mas para mandar informacion al hijo
+// getDataDelete se mas para mandar informacion al padre
+// getData es mas cuando solo queremos el aviso sin datos para actualizar o renderizar
 
 const ButtonDelete = ({ModalCategoriesDelete,category, getDataDelete,  size, styleColor, title, value, getData}) => {
 
