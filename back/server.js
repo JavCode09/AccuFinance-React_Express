@@ -20,7 +20,7 @@ app.use(express.json());
 const port = process.env.PORT;
 
 //middleware para requerimiento del registro y login (inicio see sesion)
-app.use("/auth" , require("./router/auth"));
+app.use("/auth", require("./router/auth"));
 
 // Rutas protegidas (aplicar verifyToken) Registro y Login
 app.use("/api", verifyToken,require("./router/main")); // Rutas protegidas

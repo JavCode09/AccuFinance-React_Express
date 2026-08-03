@@ -5,6 +5,7 @@ import config from "./config";
 // consultas invalidas y no mostrara nada nidejara hacer add y update (esto es solo si la ruta esta protegida)
 const token = localStorage.getItem("token"); // Asumiendo que guardas el token en localStorage
 
+// Insertar roles
 export const add_rol = async(nombre) => {
     try {
         const response = await fetch(`${config.API_URL}roles`, {
@@ -31,6 +32,7 @@ export const add_rol = async(nombre) => {
     }
 }
 
+// Leer todos los datos
 export const getDataAll = async() => {
     try {
         const response = await fetch(`${config.API_URL}roles`, {
@@ -53,5 +55,32 @@ export const getDataAll = async() => {
         console.error(error);
         throw error;
         
+    }
+}
+
+// Obtener permisos  
+export const getPermisos = async(id) => {
+    try {
+        const response = await fetch(`${config.API_URL}roles/${id}`,{
+            method:"POST",
+            headers:{
+                "Content-Type" :"application/json",
+                "Authorization": `Bearrer ${token}`
+            },
+            body: JSON.stringify({id})
+        });
+
+        if (!response) {
+            const errorData = await response.json();
+            const error = new Error(errorData.message || "Error en la solicitud a la API");
+            error.response = {status: response.status, data: errorData};
+            throw error;
+        }
+
+        return await response.json();
+
+    } catch (error) {
+        console.error();
+        throw error;
     }
 }

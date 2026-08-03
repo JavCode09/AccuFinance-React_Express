@@ -12,6 +12,7 @@ import MyServices from './modules/subModules/myservices';
 import AdminServices from './modules/adminservices';
 import UsuariosInternos from './modules/subModules/usuarios_internos';
 import Roles from './modules/subModules/roles';
+import RolesPermisos from './modules/subModules/rolesPermisos';
 
 // css estructura global
 import '../styles/dashboard/contenido.css';
@@ -24,7 +25,7 @@ const Main = () => {
     const {logout  } = useContext(UserContext);
     const [openModule, setOpenModule] = useState({});
 
-    const modulos = JSON.parse(localStorage.getItem("accesos"));
+    const modulos = JSON.parse(localStorage.getItem("accesos")); //pasamos a cadena de tecto
     const user = JSON.parse(localStorage.getItem("user"));
 
     // console.log("user" , user); 
@@ -39,6 +40,8 @@ const Main = () => {
             };
         });
     };
+    
+    // console.log("Módulos:", modulos);
     
     // Funcion para ordenar modulos sin importar el nivel
     const renderModulos = (modulos) => {
@@ -112,6 +115,7 @@ const Main = () => {
                         <Route path="/my_Services" element={<MyServices titleModule={'Mis Servicios'} />} />
                         <Route path="/roll_users" element={<UsuariosInternos titleModule={'Usuarios Internos'} />}/>
                         <Route path="/rolls" element={<Roles titleModule={'Roles'} />}/>
+                        <Route path="/rolls/roles_permisos/:id" element={<RolesPermisos titleModule={'Módulos'} />}/>
                     </Routes>
                 </div>
             </div>
