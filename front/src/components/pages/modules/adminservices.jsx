@@ -29,23 +29,24 @@ const initialPlanesPorMes = {
 const AdminServices = ({titleModule}) => {
 
     const [mesesUnicos, setMeses] = useState([]);
-    const [NombrePlan, setNombrePlan] =useState(null)
-    const [idpla, setIdplan] =useState(null)
+    const [NombrePlan, setNombrePlan] =useState(null);
+    const [idpla, setIdplan] =useState(null);
+    const [totalPlanes, setTotalPlanes] = useState(0);
 
     const getMesesYidplan = (meses,id_plan, nombrePlan) => {
         // console.log('Meses:', meses);
         // console.log('ID Plan:', id_plan);
         // console.log('nombrePlan:', nombrePlan);
         //pasamos al hook de cambio de meses
-        setMeses(meses)
-        setNombrePlan(nombrePlan)
-        setIdplan(id_plan)
+        setMeses(meses);
+        setNombrePlan(nombrePlan);
+        setIdplan(id_plan);
     }
    
     //hook de estado planes de pago optenidos por el mes
     const [planesPorMes, setPlanesPorMes] = useState(initialPlanesPorMes);
 
-    const [mesNumero, setmesNumero] = useState([])
+    const [mesNumero, setmesNumero] = useState([]);
     const [planes, setplanes] = useState({ //Aqui se pasa el id_plan y nombre_plan en los ocmponetes
         id_plan: null,
         nombre_plan: ''
@@ -159,37 +160,315 @@ const AdminServices = ({titleModule}) => {
     };
 
 
-    return ( 
-        <div className='containerPanel'>
+    return (
+
+        <div className="containerPanel">
+
+            {/* ================================================================
+                HEADER DEL PANEL
+                ================================================================ */}
+
             <div className="bodyHead">
+
+                {/* ------------------------------------------------------------
+                    TÍTULO
+                    ------------------------------------------------------------ */}
+
                 <div className="containerPanel-title">
-                    <h2>{titleModule}</h2>
+
+                    <div className="panel-title-icon">
+
+                        <i className="fa fa-sliders"></i>
+
+                    </div>
+
+                    <div className="panel-title-content">
+
+                        <h2>
+                            {titleModule}
+                        </h2>
+
+                        <span>
+                            Administración de planes y periodos financieros
+                        </span>
+
+                    </div>
+
                 </div>
+
+
+                {/* ------------------------------------------------------------
+                    ACCIONES
+                    ------------------------------------------------------------ */}
+
                 <div className="containerPanel_add">
-                    <ButtonAdd ModalComponent={AddNewPlan} value={'Nuevo Plan'} getData={getData} />
-                </div>
-            </div>
-            <div className="bodyPanelbox1">
-                <div className="myservicesAdmin">
-                    <Planes getMeses={getMesesYidplan} refresh={refreshPlanes} getData={getData} updateInfo={updateInfo}/>
-                </div>
-                <div className="bodyExtras">
-                    <MesesDePlanes meses={mesesUnicos} NombrePlan={NombrePlan} id_plan={idpla} 
-                                                        Getplanes_de_pago={Getplanes_de_pago} 
-                                                        getDataUpdate={getDataUpdate}
-                                                        getDataDelete={updateInfoMeses}
+
+                    <ButtonAdd
+                        ModalComponent={AddNewPlan}
+                        value="Nuevo Plan"
+                        getData={getData}
                     />
+
                 </div>
+
             </div>
-            <div className="bodyPanelbox2">
-                <PanelPrincipal planesPorMes={planesPorMes} mesNumero={mesNumero} planes={planes} 
-                                onRefreshOtro={onRefreshOtro} 
+
+
+            {/* ================================================================
+                SECCIÓN SUPERIOR
+                ================================================================ */}
+
+            <div className="bodyPanelbox1">
+
+
+                {/* ============================================================
+                    SECCIÓN: PLANES
+                    ============================================================ */}
+
+                <section className="panel-section planes-section">
+
+                    {/* --------------------------------------------------------
+                        HEADER DE LA SECCIÓN
+                        -------------------------------------------------------- */}
+
+                    <div className="panel-section-header">
+
+                        {/* --------------------------------------------------------
+                            TÍTULO DE LA SECCIÓN
+                            -------------------------------------------------------- */}
+
+                        <div className="panel-section-title">
+
+                            <div className="section-icon">
+
+                                <i className="fa fa-folder-open"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h3>
+                                    Planes
+                                </h3>
+
+                                <span>
+                                    Planes financieros registrados
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        {/* --------------------------------------------------------
+                            CONTADOR DE PLANES
+                            -------------------------------------------------------- */}
+
+                        <div className="planes-header-count">
+
+                            <span className="planes-count">
+                                {totalPlanes}
+                            </span>
+
+                            <span className="planes-count-label">
+
+                                {totalPlanes === 1
+                                    ? ' plan registrado'
+                                    : ' planes registrados'
+                                }
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    {/* --------------------------------------------------------
+                        CONTENIDO
+                        -------------------------------------------------------- */}
+
+                    <div className="panel-section-body">
+
+                        <div className="myservicesAdmin">
+
+                            <Planes
+                                getMeses={getMesesYidplan}
+                                refresh={refreshPlanes}
+                                getData={getData}
+                                updateInfo={updateInfo}
+                                setTotalPlanes={setTotalPlanes}
+                            />
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                {/* ============================================================
+                    SECCIÓN: MESES
+                    ============================================================ */}
+
+                <section className="panel-section meses-section">
+
+                    {/* --------------------------------------------------------
+                        HEADER DE LA SECCIÓN
+                        -------------------------------------------------------- */}
+
+                    <div className="panel-section-header">
+
+                        <div className="panel-section-title">
+
+                            <div className="section-icon">
+
+                                <i className="fa fa-calendar"></i>
+
+                            </div>
+
+                            <div>
+
+                                <h3>
+                                    Periodos
+                                </h3>
+
+                                <span>
+                                    Meses del plan seleccionado
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        {/* ----------------------------------------------------
+                            INFORMACIÓN DEL PLAN SELECCIONADO
+                            ---------------------------------------------------- */}
+
+                        {NombrePlan && (
+
+                            <div className="selected-plan">
+
+                                <span>
+                                    Plan
+                                </span>
+
+                                <strong>
+                                    {NombrePlan}
+                                </strong>
+
+                            </div>
+
+                        )}
+
+                    </div>
+
+
+                    {/* --------------------------------------------------------
+                        CONTENIDO
+                        -------------------------------------------------------- */}
+
+                    <div className="panel-section-body">
+
+                        <div className="bodyExtras">
+
+                            <MesesDePlanes
+                                meses={mesesUnicos}
+                                NombrePlan={NombrePlan}
+                                id_plan={idpla}
+                                Getplanes_de_pago={Getplanes_de_pago}
                                 getDataUpdate={getDataUpdate}
-                                getDataDelete={getDataDelete}
-                />
+                                getDataDelete={updateInfoMeses}
+                            />
+
+                        </div>
+
+                    </div>
+
+                </section>
+
             </div>
+
+
+            {/* ================================================================
+                SECCIÓN INFERIOR
+                ================================================================ */}
+
+            <section className="bodyPanelbox2">
+
+                {/* ------------------------------------------------------------
+                    HEADER DE PANEL PRINCIPAL
+                    ------------------------------------------------------------ */}
+
+                <div className="main-panel-header">
+
+                    <div className="panel-section-title">
+
+                        <div className="section-icon">
+
+                            <i className="fa fa-bar-chart"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Panel principal
+                            </h3>
+
+                            <span>
+                                Información financiera del periodo seleccionado
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    {/* --------------------------------------------------------
+                        CONTEXTO DEL PERIODO
+                        -------------------------------------------------------- */}
+
+                    {mesNumero && (
+
+                        <div className="period-badge">
+
+                            <i className="fa fa-calendar-o"></i>
+
+                            <span>
+                                Mes {mesNumero}
+                            </span>
+
+                        </div>
+
+                    )}
+
+                </div>
+
+
+                {/* ------------------------------------------------------------
+                    PANEL PRINCIPAL
+                    ------------------------------------------------------------ */}
+
+                <div className="main-panel-content">
+
+                    <PanelPrincipal
+                        planesPorMes={planesPorMes}
+                        mesNumero={mesNumero}
+                        planes={planes}
+                        onRefreshOtro={onRefreshOtro}
+                        getDataUpdate={getDataUpdate}
+                        getDataDelete={getDataDelete}
+                    />
+
+                </div>
+
+            </section>
+
         </div>
-     );
+
+    );
 }
  
 export default AdminServices;

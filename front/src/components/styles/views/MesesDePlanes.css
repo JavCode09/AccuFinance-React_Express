@@ -1,0 +1,393 @@
+
+/* ==========================================================================
+   NÚMERO
+   ========================================================================== */
+
+.mes-number {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 22px;
+
+    height: 22px;
+
+    border-radius: 5px;
+
+    background-color: #f3f5f7;
+
+    color: var(--text-secondary);
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+}
+
+
+/* ==========================================================================
+   NOMBRE DEL MES
+   ========================================================================== */
+
+.mes-name {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+}
+
+
+.mes-name strong {
+
+    font-size: 12px;
+
+    color: var(--text-primary);
+
+}
+
+
+/* ==========================================================================
+   ICONO DEL MES
+   ========================================================================== */
+
+.mes-calendar-icon {
+
+    width: 26px;
+
+    height: 26px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 6px;
+
+    background-color: #f2f6f8;
+
+    color: var(--primary);
+
+    font-size: 12px;
+
+}
+
+
+/* ==========================================================================
+   ESTADO
+   ========================================================================== */
+
+.mes-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 4px 7px;
+
+    border-radius: 5px;
+
+    background-color: #f3f5f7;
+
+    color: var(--text-secondary);
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+    white-space: nowrap;
+
+}
+
+
+/* ==========================================================================
+   PUNTO DEL ESTADO
+   ========================================================================== */
+
+.status-dot {
+
+    width: 6px;
+
+    height: 6px;
+
+    border-radius: 50%;
+
+    background-color: #aab4bb;
+
+}
+
+
+/* ==========================================================================
+   ESTADO ACTIVO
+   ========================================================================== */
+
+.mes-status.activo .status-dot,
+.mes-status.completado .status-dot {
+
+    background-color: #28a745;
+
+}
+
+
+/* ==========================================================================
+   ESTADO PENDIENTE
+   ========================================================================== */
+
+.mes-status.pendiente .status-dot {
+
+    background-color: #f0ad4e;
+
+}
+
+
+/* ==========================================================================
+   ESTADO CANCELADO
+   ========================================================================== */
+
+.mes-status.cancelado .status-dot {
+
+    background-color: #dc3545;
+
+}
+
+
+/* ==========================================================================
+   ESTADO SIN ESTADO
+   ========================================================================== */
+
+.mes-status.sin-estado {
+
+    color: #8b969d;
+
+}
+
+
+/* ==========================================================================
+   ACCIONES
+   ========================================================================== */
+
+.meses-column-actions {
+
+    text-align: center;
+
+}
+
+
+.buttonsstylesTableMeses {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 5px;
+
+}
+
+
+/* ==========================================================================
+   BOTÓN VER
+   ========================================================================== */
+
+.mes-action {
+
+    display: inline-flex !important;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 29px;
+
+    height: 29px;
+
+    padding: 0 !important;
+
+    border: 1px solid #d9e4eb !important;
+
+    border-radius: 6px !important;
+
+    background-color: #f4f8fa !important;
+
+    color: var(--primary) !important;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+
+}
+
+
+.mes-action:hover {
+
+    background-color: #e8f1f6 !important;
+
+    border-color: #c8dbe6 !important;
+
+    transform: translateY(-1px);
+
+}
+
+
+/* ==========================================================================
+   BOTÓN ACTIVO
+   ========================================================================== */
+
+.mes-action-active {
+
+    background-color: #e5f1f8 !important;
+
+    border-color: #b9d5e5 !important;
+
+}
+
+
+/* ==========================================================================
+   ESTADO VACÍO
+   ========================================================================== */
+
+.meses-empty {
+
+    min-height: 150px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+
+    text-align: center;
+
+    border: 1px dashed var(--border);
+
+    border-radius: 8px;
+
+    background-color: #fafbfc;
+
+}
+
+
+.meses-empty-icon {
+
+    width: 38px;
+
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-bottom: 8px;
+
+    border-radius: 50%;
+
+    background-color: #eef4f7;
+
+    color: var(--text-secondary);
+
+    font-size: 15px;
+
+}
+
+
+.meses-empty h4 {
+
+    margin: 0 0 5px 0;
+
+    font-size: 11px;
+
+    color: var(--text-primary);
+
+}
+
+
+.meses-empty p {
+
+    max-width: 250px;
+
+    margin: 0;
+
+    font-size: 11px;
+
+    line-height: 1.5;
+
+    color: var(--text-secondary);
+
+}
+
+
+/* ==========================================================================
+   SCROLL
+   ========================================================================== */
+
+.meses-table-container::-webkit-scrollbar {
+
+    width: 5px;
+
+    height: 5px;
+
+}
+
+
+.meses-table-container::-webkit-scrollbar-track {
+
+    background: transparent;
+
+}
+
+
+.meses-table-container::-webkit-scrollbar-thumb {
+
+    background-color: #cbd5dc;
+
+    border-radius: 10px;
+
+}
+
+
+.meses-table-container::-webkit-scrollbar-thumb:hover {
+
+    background-color: #aebdc7;
+
+}
+
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 768px) {
+
+    .meses-table-container {
+
+        max-height: 200px;
+
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .stylesTableMeses {
+
+        min-width: 390px;
+
+    }
+}

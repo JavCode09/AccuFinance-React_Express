@@ -28,7 +28,7 @@ const Categories = ({titleModule}) => {
     const [filteredData, setFilteredData] = useState([]); // Estado para datos filtrados (buscador)
     //Paginacion
     const [currentPage, setCurrentPage] = useState(0); // Página actual
-    const itemsPerPage = 10; // Elementos por página
+    const itemsPerPage = 8; // Elementos por página
 
     useEffect(() => {
         reloadCategories();
@@ -67,12 +67,22 @@ const Categories = ({titleModule}) => {
 
     //-------------------- Paginacion --------------------
     
-    const dataToDisplay = filteredData.length > 0 ? filteredData : DataCategories;
+    // const dataToDisplay = filteredData.length > 0 ? filteredData : DataCategories;
+    const dataToDisplay = filteredData;
     const offset = currentPage * itemsPerPage;
 
+    // const currentData = useMemo(() => {
+    //     return dataToDisplay.slice(offset, offset + itemsPerPage);
+    // }, [dataToDisplay, currentPage, itemsPerPage, offset]); 
+
     const currentData = useMemo(() => {
-        return dataToDisplay.slice(offset, offset + itemsPerPage);
-    }, [dataToDisplay, currentPage, itemsPerPage, offset]); // Agrega 'offset'
+
+        return dataToDisplay.slice(
+            offset,
+            offset + itemsPerPage
+        );
+
+    }, [dataToDisplay, offset]);
     
  
      // Manejador de cambio de página
@@ -96,83 +106,325 @@ const Categories = ({titleModule}) => {
        await reloadCategories();
     };
         
-    return ( 
+    return (
+
         <div className="Categorias-container">
-            <div className="Categorias-title">
-                <h2>{titleModule}</h2>
+
+            {/* =====================================================
+                HEADER DE LA SECCIÓN
+            ====================================================== */}
+
+            <div className="Categorias-header">
+
+                <div className="Categorias-header-title">
+
+                    <div className="Categorias-icon">
+
+                        <i className="fa fa-folder-open"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            {titleModule}
+                        </h3>
+
+                        <span>
+                            Clasificación de servicios y operaciones
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                {/* Contador */}
+
+                <div className="Categorias-count">
+
+                    <strong>
+                        {filteredData.length}
+                    </strong>
+
+                    <span>
+                        {filteredData.length === 1
+                            ? ' categoría'
+                            : ' categorías'
+                        }
+                    </span>
+
+                </div>
+
             </div>
-           <div className="Categorias-option">
+
+
+            {/* =====================================================
+                BARRA DE HERRAMIENTAS
+            ====================================================== */}
+
+            <div className="Categorias-toolbar">
 
                 <div className="Categorias-search">
-                  <SearchBar plaholderName="Categorias" onSearch={handleSearch} /> 
-                </div>
-                <div className="Categorias-btns">
-                    {/* componente */}
-                    <ButtonAdd ModalComponent = {ModalCategoriesAdd}
-                                getData={getData} value={'Agregar'}/>
-                </div>
-           
-           </div>
-           <div className="Categorias-content">
-                <table className='Categorias-tabla'>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre</th>
-                            <th>Descripcion</th>
-                            <th>Opciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {currentData.map((dataCate) => (
-                            <tr key={dataCate.id}>
-                                <td>{dataCate.id}</td>
-                                <td>{dataCate.nombre}</td>
-                                <td>{dataCate.descripcion}</td>
-                                <td>
-                                    <div className="btns_option_categories">
-                                        <ButtonUpdate
-                                            size= {'sm'}
-                                            ModalCategoriesUpdate = {ModalCategoriesUpdate}
-                                            category={dataCate}
-                                            getDataUpdate={getDataUpdate}
-                                            value={'Actualizar'}
-                                            />
 
-                                        <ButtonDelete 
-                                            size= {'sm'}
-                                            ModalCategoriesDelete={ModalCategoriesDelete} 
-                                            category={dataCate}
-                                            getDataDelete={getDataDelete} 
-                                            value={'Eliminar'}
-                                        />
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                <ReactPaginate
-                   previousLabel={"Anterior"}
-                   nextLabel={"Siguiente"}
-                   breakLabel={"..."}
-                   pageCount={Math.ceil(DataCategories.length / itemsPerPage)}
-                   marginPagesDisplayed={2}
-                   pageRangeDisplayed={3}
-                   onPageChange={handlePageClick}
-                   containerClassName={"pagination justify-content-center"} // Clase para el contenedor
-                   activeClassName={"active"} // Clase para la página activa
-                   previousClassName={"page-item previous"} // Clase para el contenedor de "Anterior"
-                   nextClassName={"page-item next"} // Clase para el contenedor de "Siguiente"
-                   pageClassName={"page-item"} // Clase para los contenedores de páginas numeradas
-                   pageLinkClassName={"page-link"} // Clase para los enlaces de las páginas numeradas
-                   previousLinkClassName={"page-link"} // Clase para el enlace de "Anterior"
-                   nextLinkClassName={"page-link"} // Clase para el enlace de "Siguiente"
-                   disabledClassName={"disabled"} // Clase para los botones deshabilitados
-                />
-           </div>
+                    <div className="Categorias-search-icon">
+
+                        <i className="fa fa-search"></i>
+
+                    </div>
+
+                    <SearchBar
+                        plaholderName="Categorías"
+                        onSearch={handleSearch}
+                    />
+
+                </div>
+
+
+                <div className="Categorias-btns">
+
+                    <ButtonAdd
+                        ModalComponent={ModalCategoriesAdd}
+                        getData={getData}
+                        value={
+                            <>
+                                <i className="fa fa-plus"></i>
+                                <span>Agregar categoría</span>
+                            </>
+                        }
+                    />
+
+                </div>
+
+            </div>
+
+
+            {/* =====================================================
+                CONTENIDO
+            ====================================================== */}
+
+            <div className="Categorias-content">
+
+                {currentData.length > 0 ? (
+
+                    <div className="Categorias-table-wrapper">
+
+                        <table className="Categorias-tabla">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th className="categoria-id">
+                                        ID
+                                    </th>
+
+                                    <th>
+                                        Nombre
+                                    </th>
+
+                                    <th>
+                                        Descripción
+                                    </th>
+
+                                    <th className="categoria-actions">
+                                        Acciones
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {currentData.map((dataCate) => (
+
+                                    <tr key={dataCate.id}>
+
+                                        <td className="categoria-id-cell">
+
+                                            <span className="categoria-id-badge">
+                                                {dataCate.id}
+                                            </span>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <div className="categoria-name">
+
+                                                <div className="categoria-name-icon">
+
+                                                    <i className="fa fa-folder"></i>
+
+                                                </div>
+
+                                                <strong>
+                                                    {dataCate.nombre}
+                                                </strong>
+
+                                            </div>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <span className="categoria-description">
+
+                                                {dataCate.descripcion ||
+                                                    'Sin descripción'
+                                                }
+
+                                            </span>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <div className="btns_option_categories">
+
+                                                <ButtonUpdate
+                                                    size="sm"
+                                                    ModalCategoriesUpdate={
+                                                        ModalCategoriesUpdate
+                                                    }
+                                                    category={dataCate}
+                                                    getDataUpdate={
+                                                        getDataUpdate
+                                                    }
+                                                    value={
+                                                        <>
+                                                            <i className="fa fa-pencil"></i>
+                                                            <span>Editar</span>
+                                                        </>
+                                                    }
+                                                />
+
+
+                                                <ButtonDelete
+                                                    size="sm"
+                                                    ModalCategoriesDelete={
+                                                        ModalCategoriesDelete
+                                                    }
+                                                    category={dataCate}
+                                                    getDataDelete={
+                                                        getDataDelete
+                                                    }
+                                                    value={
+                                                        <>
+                                                            <i className="fa fa-trash"></i>
+                                                            <span>Eliminar</span>
+                                                        </>
+                                                    }
+                                                />
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                ))}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                ) : (
+
+                    /* =================================================
+                    ESTADO VACÍO
+                    ================================================== */
+
+                    <div className="Categorias-empty">
+
+                        <div className="Categorias-empty-icon">
+
+                            <i className="fa fa-folder-open"></i>
+
+                        </div>
+
+                        <h4>
+                            No se encontraron categorías
+                        </h4>
+
+                        <p>
+                            {filteredData.length === 0 &&
+                            DataCategories.length > 0
+                                ? 'Intenta realizar otra búsqueda.'
+                                : 'Agrega una categoría para comenzar.'
+                            }
+                        </p>
+
+                    </div>
+
+                )}
+
+
+                {/* =================================================
+                    PAGINACIÓN
+                ================================================== */}
+
+                {filteredData.length > itemsPerPage && (
+
+                    <div className="Categorias-pagination">
+
+                        <ReactPaginate
+
+                            previousLabel="Anterior"
+
+                            nextLabel="Siguiente"
+
+                            breakLabel="..."
+
+                            pageCount={
+                                Math.ceil(
+                                    filteredData.length /
+                                    itemsPerPage
+                                )
+                            }
+
+                            marginPagesDisplayed={2}
+
+                            pageRangeDisplayed={3}
+
+                            onPageChange={handlePageClick}
+
+                            containerClassName="pagination"
+
+                            activeClassName="active"
+
+                            previousClassName="page-item"
+
+                            nextClassName="page-item"
+
+                            pageClassName="page-item"
+
+                            pageLinkClassName="page-link"
+
+                            previousLinkClassName="page-link"
+
+                            nextLinkClassName="page-link"
+
+                            disabledClassName="disabled"
+
+                        />
+
+                    </div>
+
+                )}
+
+            </div>
+
         </div>
-     );
+
+    );
 }
  
 export default Categories;

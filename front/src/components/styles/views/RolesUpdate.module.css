@@ -23,7 +23,7 @@
 
 .cardHeader h2{
     margin:0;
-    font-size:22px;
+    font-size:20px;
 }
 
 
@@ -73,6 +73,7 @@
 
 .moduleHeader h3{
     margin:0;
+    font-size:15px;
 }
 
 
@@ -96,8 +97,8 @@
 
 
 input[type="checkbox"]{
-    width:17px;
-    height:17px;
+    width:15px;
+    height:15px;
     cursor:pointer;
 }
 
@@ -134,4 +135,21 @@ input[type="checkbox"]{
     background:#2563eb;
     color:white;
     font-weight:bold;
+}
+
+.footerGrid {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.checkAll {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.footerGrid h3{
+    margin:0;
+    font-size:15px;
 }

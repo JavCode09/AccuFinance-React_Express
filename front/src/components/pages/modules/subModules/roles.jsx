@@ -4,10 +4,12 @@ import styles from "../../../styles/views/Roles.module.css"
 
 // BTNS
 import ButtonAdd from '../../../common/buttons/btn-add';
+import ButtonDelete from '../../../common/buttons/btn-delete';
 import ButtonAddPage from '../../../common/buttons/btn-add-page';
 
 //Modales
 import ModalAdd from '../../modals/Roles/modal_add';
+import DeleteRoles from '../../modals/Roles/modal_delete';
 
 //APIfront
 import { getDataAll } from '../../../api/roles';
@@ -33,8 +35,12 @@ const Roles = ({titleModule}) => {
             
 
         } catch (error) {
-            console.error(error);
-            
+            // console.error(error);
+            if (error.response?.status === 404) {
+                alert(error.response.data.message);
+            }else{
+                alert("Error inesperado");
+            }
         }
     }
 
@@ -42,7 +48,6 @@ const Roles = ({titleModule}) => {
     const getData = async() => {
         await getData_all();
     }
-
     
      return ( 
         <div className={styles["Roles-container"]}>
@@ -83,14 +88,26 @@ const Roles = ({titleModule}) => {
                             <tr key={dTable.id}>
                                 <td>{dTable.id}</td>
                                 <td>{dTable.nombre}</td>
-                                <td>    
-                                    <ButtonAddPage
-                                        size={"sm"}
-                                        title={"Actualizar rol"}
-                                        value={"Actualizar"}
-                                        styleColor={"warning"}
-                                        page={`/main/rolls/roles_permisos/${dTable.id}`}
-                                    />
+                                <td>
+                                    <div className={styles["btns_option_Roles"]}>
+                                        <ButtonAddPage
+                                            size={"sm"}
+                                            title={"Actualizar rol"}
+                                            value={"Actualizar"}
+                                            styleColor={"warning"}
+                                            page={`/main/rolls/roles_permisos/${dTable.id}`}
+                                        />
+
+                                        <ButtonDelete 
+                                            ModalCategoriesDelete = {DeleteRoles}
+                                            size={"sm"}
+                                            title={"Eliminar Rol"}
+                                            value={"Eliminar"}
+                                            category={dTable}
+                                            getData = {getData}
+                                            
+                                        />
+                                    </div>    
                                 </td>
                             </tr>
                         ))
