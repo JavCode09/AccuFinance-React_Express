@@ -12,11 +12,14 @@ import ButtonBack from '../../../common/buttons/btn-back';
 
 // APIs
 import { getPermisos } from '../../../api/roles';
+import { UpdatePermisosModulos } from '../../../api/roles';
+import { UpdatePermisosAll } from '../../../api/roles';
 
 const RolesPermisos = ({titleModule}) => {
     // Data del login tokenisado JWT (desifrado)
     const { userData, loading} = useContext(UserContext);
 
+    // Hook de estado para los permisos
     const [permisos, setPermisos] = useState([]);
 
     // Id de la ruta (id el registro)
@@ -31,7 +34,7 @@ const RolesPermisos = ({titleModule}) => {
 
     }, [id, userData]);
 
-    //  Esperamso a que carguen y se desifre el token y poderlo usar
+    //  Esperamos a que carguen y se desifre el token y poderlo usar
     if (loading) {
         return <div>Cargando...</div>;
     }
@@ -40,55 +43,183 @@ const RolesPermisos = ({titleModule}) => {
         return <div>No hay información del usuario.</div>;
     }
 
-    console.log("id:", userData.id);
-    console.log("rol:", userData.rol);
+    // console.log("id:", userData.id);
+    // console.log("rol:", userData.rol);
 
  
 
-    // Funcion modulos y permisos
+    // Funcion  get modulos y permisos
     const modulosYpermisos = async() =>{
-        console.log("Entro a la funcion");
+        // console.log("Entro a la funcion");
         
-        const get_roles = await getPermisos();
+        try {
+            const get_roles = await getPermisos(id);
+            // console.log(get_roles);
+            
+            setPermisos(get_roles.data);
+        } catch (error) {
+            console.error(error);
+            
+            if (error.response?.status === 404) {
+                alert(error.message);
+                return;
+            }if (error.response?.status === 500) {
+                alert(error.message);
+                return;
+            }
+
+            alert("Ocurrió un error.");
+        }
+    }
+
+    // Funcion para configurar de form aindividual cada permiso por modulo (individual)
+    const cambioIndividual = (moduloID, permisoID) => {
+        setPermisos((prevModulo) => {
+            return prevModulo.map((modulo)=>{
+                if (modulo.modulo_id !== moduloID) {
+                    return modulo;
+                }
+
+                return {
+                    ...modulo,
+                    permisos: modulo.permisos.map((permiso)=>{
+                        if (permiso.permiso_id !== permisoID) {
+                            return permiso;
+                        }
+
+                        const nuevoEstado = !permiso.activo;
+                        
+                        // console.log("modulo: ", moduloID);
+                        // console.log("Permisos: ", permiso);
+                        // console.log("Nuevo estado: ", nuevoEstado);
+                        
+                        return {
+                            ...permiso,
+                            activo: nuevoEstado
+                        }
+                    })
+                }
+            });
+        });
+    }
+
+    // Funcion para el chek de todos por modulo (poner a todos checked o no )
+    const todosChecked = (moduloID) => {
+        setPermisos((prevChecked) => {
+            return prevChecked.map((modulo) => {
+                if (modulo.modulo_id !== moduloID) {
+                    return modulo;
+                }
+
+                const activaTodos = !modulo.permisos.every((permiso)=> permiso.activo === true);
+
+                return{
+                    ...modulo,
+                    permisos: modulo.permisos.map((permiso) => ({
+                        ...permiso,
+                        activo: activaTodos
+                    }))
+                }
+            })
+        });
+    }
+
+    // Funcion para el check general de todos los permisos no importa el modulo
+    const todosModulosPermisos = (permisosTodos) => {
+        setPermisos((prevTodos) => {
+            
+            // Validamos si estan activos todos los estados de ls permisos
+            const todosActivos = prevTodos.every((modulo) => 
+                modulo.permisos.every((permiso) => permiso.activo === true)
+            )
+
+            // Pasamos a viseversa si es true sera false o false a true
+            const nuevoEstado = !todosActivos;
+
+            // Realizamos copia y sustitucion para nuevos estados 
+            return prevTodos.map((modulo) => {
+                
+                // Retornamos cada permiso de cad amodulo
+                return {
+                    ...modulo,
+                    permisos: modulo.permisos.map((permiso) => ({
+                        ...permiso,
+                        activo: nuevoEstado
+                    }))
+                }
+            })
+
+        });
+    }
+
+    // Botn de guardar por modulo
+    const btnGuardar = async(module) => {
+        // console.log(module.modulo_id);
+        // console.log(module.permisos);
+
+        // Validamos los camopos
+        if (!module) {
+            alert("No hay modulos y permisos relacionados");
+            return;
+        }
+
+        if (!id) {
+            alert("No se encontro el rol relacionado a los modulos y permisos");
+            return;
+        }
+
+
+        try {
+            // Mandamos la información al back 
+            const updatePermisos = await UpdatePermisosModulos(id, module.modulo_id, module.permisos);
+            console.log(updatePermisos);
+            
+            if (updatePermisos.success) {
+                alert(updatePermisos.message);
+            }
+            
+        } catch (error) {
+            console.error();
+            
+            if (error.response && error.response.status === 400) {
+                alert(error.response.message);
+            }else{
+                alert(error.response.message);
+            }
+        }
+
         
     }
 
-    const modules = [
-        {
-            name: "Usuarios",
-            permissions: [
-                "Ver",
-                "Insertar",
-                "Actualizar",
-                "Eliminar"
-            ]
-        },
-        {
-            name: "Roles",
-            permissions: [
-                "Ver",
-                "Insertar",
-                "Actualizar",
-                "Eliminar"
-            ]
-        },
-        {
-            name: "Reportes",
-            permissions: [
-                "Ver",
-                "Exportar",
-                "Descargar"
-            ]
+    // Boton para guardar todo 
+    const btnGuardarAll = async(permisos) => {
+        console.log(permisos);
+    
+        if (!permisos) {
+            alert("No hay permisos en este modulo");
+            return;
         }
-    ];
+        
+        if (!id) {
+            alert("No se encontro el rol relacionado a los modulos y permisos");
+            return;
+        }
 
+        try {
+            // Prosesamos datos 
+            const response = await UpdatePermisosAll(id, permisos);
+            // console.log('response: ' , response);
+            alert(response.message);
 
-    const users = [
-        "Juan Pérez",
-        "María López",
-        "Carlos García"
-    ];
-
+        } catch (error) {
+            console.error(error);
+            if (error.response && error.response.status === 400) {
+                alert(error.response.message);
+            }else{
+                alert(error.response.message);
+            }
+        }
+    }
 
     return (
 
@@ -122,8 +253,22 @@ const RolesPermisos = ({titleModule}) => {
 
 
                     <label className={style.checkAll}>
-                        <input type="checkbox"/>
+                        <input type="checkbox"
+                                checked = {
+                                    permisos.every((modulo) => modulo.permisos.every((permiso) => permiso.activo === true))
+                                }
+                                onChange={() => todosModulosPermisos()}
+                        />
                         Seleccionar todo
+                    </label>
+                    <label className={style.checkAll}>
+                        <button
+                            type='button'
+                            className='btn btn-warning'
+                            onClick={()=> btnGuardarAll(permisos)}
+                        >
+                            Actualizar Todos
+                        </button>
                     </label>
 
 
@@ -134,25 +279,27 @@ const RolesPermisos = ({titleModule}) => {
                 <div className={style.modulesGrid}>
 
 
-                    {modules.map((module,index)=>(
+                    {permisos.map((module)=>(
 
                         <div 
                             className={style.moduleCard}
-                            key={index}
+                            key={module.modulo_id}
                         >
 
 
                             <div className={style.moduleHeader}>
 
                                 <h3>
-                                    {module.name}
+                                    {module.nombre_modulo}
                                 </h3>
 
-
-                                <label>
-                                    <input type="checkbox"/>
-                                    Todos
-                                </label>
+                                <button
+                                    type="button"
+                                    className='btn btn-dark  btn-sm'
+                                    onClick={() => btnGuardar(module)}
+                                >
+                                    Guardar
+                                </button>
 
                             </div>
 
@@ -160,21 +307,41 @@ const RolesPermisos = ({titleModule}) => {
 
                             <div className={style.permissionsGrid}>
 
-                                {module.permissions.map((permission,i)=>(
+                                {module.permisos.map((permission)=>(
 
                                     <label 
-                                        key={i}
+                                        key={permission.permiso_id}
                                         className={style.permissionItem}
                                     >
 
-                                        <input type="checkbox"/>
+                                        <input type="checkbox"  
+                                                checked={permission.activo}
+                                                onChange={()=> 
+                                                    cambioIndividual(module.modulo_id, permission.permiso_id)
+                                                }
+                                                
+                                        />
 
-                                        {permission}
+                                        {permission.nombre_permiso}
 
                                     </label>
 
                                 ))}
 
+                            </div>
+
+                            <div className={style.footerGrid}>
+                                <label className={style.checkAll}>
+                                    <input
+                                        type="checkbox"
+                                        title="Todos"
+                                        checked={module.permisos.every(
+                                            (permiso) => permiso.activo === true
+                                        )}
+                                        onChange={() => todosChecked(module.modulo_id)}
+                                    />
+                                    <h3>Todos</h3>
+                                </label>
                             </div>
 
 
@@ -216,24 +383,7 @@ const RolesPermisos = ({titleModule}) => {
 
                 <div className={style.usersGrid}>
 
-                    {users.map((user,index)=>(
-
-                        <div 
-                            className={style.userCard}
-                            key={index}
-                        >
-
-                            <div className={style.avatar}>
-                                {user.charAt(0)}
-                            </div>
-
-                            <span>
-                                {user}
-                            </span>
-
-                        </div>
-
-                    ))}
+                
 
 
                 </div>

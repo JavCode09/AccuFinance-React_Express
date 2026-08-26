@@ -48,7 +48,8 @@ const PanelPrincipal = ({planesPorMes,mesNumero, planes, onRefreshOtro, getDataU
 
    
 
-    const showCampos = planesPorMes.pagos.length > 0;
+    // const showCampos = planesPorMes.pagos.length > 0;
+    const showCampos = Boolean(mesNumero);
 
     const filteredItems = pagos.filter((item) => 
         item.id_payment?.toString().includes(filterText.toLowerCase()) ||
@@ -149,85 +150,301 @@ const PanelPrincipal = ({planesPorMes,mesNumero, planes, onRefreshOtro, getDataU
             ),
         }
     ];
-    return ( 
+    
+    return (
+
         <div className="containerPanel1">
-            <div className="container-table">
-                <div className="titlePanelPrincipal">
-                    {pagos && pagos[0] ? `Servicios de ${nombreMes}, del Plan: ${pagos[0].nombre_plan}` : 'Selecciona un Mes'}
+
+            {/* =====================================================
+                HEADER DEL PANEL DE SERVICIOS
+            ====================================================== */}
+
+            <div className="panel-services-header">
+
+                <div className="panel-services-title">
+
+                    <div className="panel-services-icon">
+                        <i className="fa fa-credit-card"></i>
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            {pagos && pagos[0]
+                                ? `Servicios de ${nombreMes}`
+                                : 'Servicios del periodo'
+                            }
+                        </h3>
+
+                        <span>
+                            {pagos && pagos[0]
+                                ? `Plan: ${pagos[0].nombre_plan}`
+                                : 'Selecciona un mes para consultar sus servicios'
+                            }
+                        </span>
+
+                    </div>
+
                 </div>
+
                 {showCampos && (
-                    <div className="containerPanelPrincipalServices">
-                        <div className="infoPanelPrincipal">
-                            <div className="mb-3" id='Imensual'>
-                                <label htmlFor="" className='form-label label'>Ingreso Mensual</label>
-                                <input type="text"
-                                    className='form-control input' 
-                                    placeholder='Ingreso mensual'
-                                    id='Ingreso_mensual'
-                                    name='Ingreso_mensual'
-                                    value={ingresos?.monthly_income ?? ''}
-                                    onChange={() => {}}
-                                    readOnly
-                                />
-                            </div>     
+
+                    <div className="panel-services-count">
+
+                        <strong>
+                            {pagos.length}
+                        </strong>
+
+                        <span>
+                            {pagos.length === 1
+                                ? ' servicio'
+                                : ' servicios'
+                            }
+                        </span>
+
+                    </div>
+
+                )}
+
+            </div>
+
+
+            {/* =====================================================
+                INFORMACIÓN DEL PERIODO
+            ====================================================== */}
+
+            {showCampos && (
+
+                <div className="panel-services-info">
+
+                    {/* Ingreso mensual */}
+
+                    <div className="monthly-income">
+
+                        <div className="monthly-income-icon">
+                            <i className="fa fa-money"></i>
                         </div>
-                        <div className="btnNuevoServicioPanelPrincipal">
-                           
-                            <div className="mt-4" id='Imensual'>
-                            < ButtonAdd ModalComponent = {AddModalServiciosMes} 
-                                        category={{planes, mesNumero, planesPorMes}} 
-                                        size='sm' title={'Agregar Servicio'}
-                                        value={'Nuevo Servicio +'}
-                                        onRefreshOtro={onRefreshOtro}   // ✅ pasamos la prop
-                            />
-                            </div>
+
+                        <div>
+
+                            <span className="info-label">
+                                Ingreso mensual
+                            </span>
+
+                            <strong className="info-value">
+                                ${Number(
+                                    ingresos?.monthly_income ?? 0
+                                ).toLocaleString(
+                                    'es-MX',
+                                    {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                    }
+                                )}
+                            </strong>
+
                         </div>
 
                     </div>
-                )}
-            </div>
-            <div className="Myservices-tabla">
-                <DataTable
-                    columns={columnas}
-                    data={filteredItems}
-                    pagination
-                    paginationPerPage={5}
-                    paginationRowsPerPageOptions={[5, 10, 20]}
-                    highlightOnHover
-                    striped
-                    responsive
-                    subHeader
-                    subHeaderComponent={
-                        <div 
-                            style={{
-                                width: "100%",
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center"
+
+
+                    {/* Nuevo servicio */}
+
+                    <div className="panel-new-service">
+
+                        <ButtonAdd
+                            ModalComponent={AddModalServiciosMes}
+                            category={{
+                                planes,
+                                mesNumero,
+                                planesPorMes
                             }}
-                        >
-                        
-                            {/* Totales */}
-                            <div style={{ display: "flex", gap: "20px" }}>
-                                <div><strong>1ra 15na:</strong> ${totalQ15na1.toFixed(2)}</div>
-                                <div><strong>2da 15na:</strong> ${totalQ15na2.toFixed(2)}</div>
-                                <div><strong>Mes:</strong> ${totalMonto.toFixed(2)}</div>
+                            size="sm"
+                            title="Agregar Servicio"
+                            value={
+                                <>
+                                    <i className="fa fa-plus"></i>
+                                    <span>Nuevo Servicio</span>
+                                </>
+                            }
+                            onRefreshOtro={onRefreshOtro}
+                        />
+
+                    </div>
+
+                </div>
+
+            )}
+
+
+            {/* =====================================================
+                RESUMEN FINANCIERO
+            ====================================================== */}
+
+            {showCampos && (
+
+                <div className="financial-summary">
+
+                    {/* Primera quincena */}
+
+                    <div className="summary-card">
+
+                        <div className="summary-icon">
+                            <i className="fa fa-calendar"></i>
+                        </div>
+
+                        <div className="summary-content">
+
+                            <span>
+                                1ª quincena
+                            </span>
+
+                            <strong>
+                                ${totalQ15na1.toLocaleString(
+                                    'es-MX',
+                                    {
+                                        minimumFractionDigits: 2
+                                    }
+                                )}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    {/* Segunda quincena */}
+
+                    <div className="summary-card">
+
+                        <div className="summary-icon">
+                            <i className="fa fa-calendar"></i>
+                        </div>
+
+                        <div className="summary-content">
+
+                            <span>
+                                2ª quincena
+                            </span>
+
+                            <strong>
+                                ${totalQ15na2.toLocaleString(
+                                    'es-MX',
+                                    {
+                                        minimumFractionDigits: 2
+                                    }
+                                )}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    {/* Total mensual */}
+
+                    <div className="summary-card summary-card-total">
+
+                        <div className="summary-icon">
+                            <i className="fa fa-line-chart"></i>
+                        </div>
+
+                        <div className="summary-content">
+
+                            <span>
+                                Total del mes
+                            </span>
+
+                            <strong>
+                                ${totalMonto.toLocaleString(
+                                    'es-MX',
+                                    {
+                                        minimumFractionDigits: 2
+                                    }
+                                )}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            )}
+
+
+            {/* =====================================================
+                TABLA DE SERVICIOS
+            ====================================================== */}
+
+            <div className="Myservices-tabla">
+
+                <DataTable
+
+                    columns={columnas}
+
+                    data={filteredItems}
+
+                    pagination
+
+                    paginationPerPage={5}
+
+                    paginationRowsPerPageOptions={[
+                        5,
+                        10,
+                        20
+                    ]}
+
+                    highlightOnHover
+
+                    striped
+
+                    responsive
+
+                    subHeader
+
+                    subHeaderComponent={
+
+                        <div className="services-table-toolbar">
+
+                            <div className="services-table-title">
+
+                                <i className="fa fa-list"></i>
+
+                                <span>
+                                    Servicios registrados
+                                </span>
+
                             </div>
 
-                            <input
-                                type="text"
-                                className="form-control"
-                                style={{ width: "250px" }}
-                                placeholder="Buscar..."
-                                value={filterText}
-                                onChange={(e) => setFilterText(e.target.value)}
-                            />
+
+                            <div className="services-search">
+
+                                <i className="fa fa-search"></i>
+
+                                <input
+                                    type="text"
+                                    placeholder="Buscar servicio..."
+                                    value={filterText}
+                                    onChange={(e) =>
+                                        setFilterText(
+                                            e.target.value
+                                        )
+                                    }
+                                />
+
+                            </div>
+
                         </div>
                     }
+
                 />
+
             </div>
+
         </div>
-     );
+
+    );
 }
  
 export default PanelPrincipal;

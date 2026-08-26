@@ -1,10 +1,12 @@
 // components/pages/Dashboard.js
 import React from 'react';
 
-const Dashboard = () => {
+const Dashboard = ({titleModule}) => {
     return (
         <div className="dashboard-container">
-            <h1>Bienvenido al Dashboard</h1>
+          <div className="containerPanel-title">
+                    <h2>{titleModule}</h2>
+                </div>
         </div>
     );
 };

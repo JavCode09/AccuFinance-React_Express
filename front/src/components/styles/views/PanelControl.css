@@ -1,190 +1,987 @@
-.containerPanel{
-    background-color: rgb(218, 144, 144);
-    padding: 5px;
+/* ==========================================================================
+   PANEL DE CONTROL
+   Diseño: Financial / Enterprise
+   ========================================================================== */
+
+
+/* ==========================================================================
+   CONTENEDOR PRINCIPAL
+   ========================================================================== */
+
+.containerPanel {
+
+    width: 100%;
+
     display: flex;
+
     flex-direction: column;
+
+    gap: 16px;
+
+    color: var(--text-primary);
+
 }
 
-.containerPanel-title{
- margin-bottom: 5px;
-}
 
-.bodyHead{
-    /* background-color: aqua; */
+/* ==========================================================================
+   HEADER DEL PANEL
+   ========================================================================== */
+
+.bodyHead {
+
+    width: 100%;
+
+    min-height: 70px;
+
     display: flex;
+
+    align-items: center;
+
     justify-content: space-between;
-    padding: 5px;
-     margin-bottom: 5px;
+
+    padding: 16px 20px;
+
+    background-color: #ffffff;
+
+    border: 1px solid var(--border);
+
+    border-radius: 12px;
+
+    box-shadow: var(--shadow-sm);
+
 }
 
-.bodyPanelbox1{
-    background-color: aqua;
+
+/* ==========================================================================
+   TÍTULO
+   ========================================================================== */
+
+.containerPanel-title {
+
     display: flex;
-    justify-content: space-around;
-    margin-bottom: 5px;
-}
-    .myservicesAdmin, .bodyExtras{
-        background-color: rgb(155, 135, 173);
-        padding: 5px;
-        margin: 5px;
-        width: 100%;
-    }
 
-.bodyPanelbox2{
-    background-color: rgb(238, 255, 0);
-    padding: 5px;
-    margin-bottom: 5px;
-}
-    
-    
+    align-items: center;
 
-/* Modales */
-.form_NewPanel{
-    background-color: #4CAF50;
+    gap: 13px;
+
+    margin: 0;
+
 }
 
-/* Modal ADD */
-.custom-modal {
-    max-width: 70% !important; /* ajusta a tu gusto */
-    margin: auto;
+
+/* ==========================================================================
+   ICONO DEL TÍTULO
+   ========================================================================== */
+
+.panel-title-icon {
+
+    width: 42px;
+    height: 42px;
+
+    min-width: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background-color: #eaf3f8;
+
+    color: var(--primary);
+
+    font-size: 16px;
+
 }
 
-/* Tablas años y meses con scroll */
 
-/* Años */
+/* ==========================================================================
+   CONTENIDO DEL TÍTULO
+   ========================================================================== */
 
-/* Estilo general */
+.panel-title-content {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+}
+
+
+.panel-title-content h2 {
+
+    margin: 0;
+
+    font-size: 19px;
+
+    font-weight: bold;
+
+    color: var(--text-primary);
+
+}
+
+
+.panel-title-content span {
+
+    font-size: 12px;
+
+    color: var(--text-secondary);
+
+}
+
+/* ==========================================================================
+   CONTADOR DE PLANES EN HEADER
+   ========================================================================== */
+
+.planes-header-count {
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+    white-space: nowrap;
+}
+
+
+/* Número */
+
+.planes-count {
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+
+/* Texto */
+
+.planes-count-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* ==========================================================================
+   BOTÓN NUEVO PLAN
+   ========================================================================== */
+
+.containerPanel_add {
+
+    display: flex;
+
+    align-items: center;
+
+}
+
+
+/* ==========================================================================
+   SECCIÓN SUPERIOR
+   ========================================================================== */
+
+.bodyPanelbox1 {
+
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+
+    gap: 16px;
+
+}
+
+
+/* ==========================================================================
+   TARJETAS DE SECCIÓN
+   ========================================================================== */
+
+.panel-section {
+
+    min-width: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    background-color: #ffffff;
+
+    border: 1px solid var(--border);
+
+    border-radius: 12px;
+
+    box-shadow: var(--shadow-sm);
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================================
+   HEADER DE CADA SECCIÓN
+   ========================================================================== */
+
+.panel-section-header {
+
+    min-height: 65px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 12px 16px;
+
+    border-bottom: 1px solid var(--border);
+
+    background-color: #ffffff;
+
+}
+
+
+/* ==========================================================================
+   TÍTULO DE SECCIÓN
+   ========================================================================== */
+
+.panel-section-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    min-width: 0;
+
+}
+
+
+/* ==========================================================================
+   ICONO DE SECCIÓN
+   ========================================================================== */
+
+.section-icon {
+
+    width: 34px;
+    height: 34px;
+
+    min-width: 34px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 8px;
+
+    background-color: #f0f5f8;
+
+    color: var(--primary);
+
+    font-size: 13px;
+
+}
+
+
+/* ==========================================================================
+   TEXTO DE SECCIÓN
+   ========================================================================== */
+
+.panel-section-title > div:last-child {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+}
+
+
+.panel-section-title h3 {
+
+    margin: 0;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    color: var(--text-primary);
+
+}
+
+
+.panel-section-title span {
+
+    font-size: 12px;
+
+    color: var(--text-secondary);
+
+}
+
+
+/* ==========================================================================
+   CUERPO DE SECCIÓN
+   ========================================================================== */
+
+.panel-section-body {
+
+    flex: 1;
+
+    min-width: 0;
+
+    padding: 12px;
+
+}
+
+
+/* ==========================================================================
+   PLANES
+   ========================================================================== */
+
+.myservicesAdmin {
+
+    width: 100%;
+
+    min-width: 0;
+
+}
+
+
+/* ==========================================================================
+   MESES
+   ========================================================================== */
+
+.bodyExtras {
+
+    width: 100%;
+
+    min-width: 0;
+
+}
+
+
+/* ==========================================================================
+   PLAN SELECCIONADO
+   ========================================================================== */
+
+.selected-plan {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-end;
+
+    gap: 2px;
+
+    padding-left: 12px;
+
+    border-left: 1px solid var(--border);
+
+}
+
+
+.selected-plan span {
+
+    font-size: 8px;
+
+    color: var(--text-light);
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.6px;
+
+}
+
+
+.selected-plan strong {
+
+    max-width: 150px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    font-size: 10px;
+
+    color: var(--primary);
+
+}
+
+
+/* ==========================================================================
+   PANEL PRINCIPAL
+   ========================================================================== */
+
+.bodyPanelbox2 {
+
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: column;
+
+    background-color: #ffffff;
+
+    border: 1px solid var(--border);
+
+    border-radius: 12px;
+
+    box-shadow: var(--shadow-sm);
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================================
+   HEADER DEL PANEL PRINCIPAL
+   ========================================================================== */
+
+.main-panel-header {
+
+    min-height: 65px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 12px 16px;
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+
+/* ==========================================================================
+   CONTENIDO DEL PANEL PRINCIPAL
+   ========================================================================== */
+
+.main-panel-content {
+
+    width: 100%;
+
+    min-width: 0;
+
+    padding: 15px;
+
+}
+
+
+/* ==========================================================================
+   INDICADOR DEL MES
+   ========================================================================== */
+
+.period-badge {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 7px 11px;
+
+    border-radius: 7px;
+
+    background-color: #edf7f3;
+
+    color: var(--success);
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+}
+
+
+.period-badge i {
+
+    font-size: 12px;
+
+}
+
+
+/* ==========================================================================
+   TABLAS DE AÑOS
+   ========================================================================== */
+
 .stylesTableAños {
+
+    width: 100%;
+
     border-collapse: collapse;
-    width: 100%;
+
 }
 
-/* Encabezado fijo */
+
 .stylesTableAños thead {
+
     display: table;
+
     width: 100%;
+
     table-layout: fixed;
+
 }
 
-/* Scroll vertical solo al tbody */
+
 .stylesTableAños tbody {
+
     display: block;
-    max-height: 150px;
+
+    width: 100%;
+
+    max-height: 180px;
+
     overflow-y: auto;
-    width: 100%;
+
 }
 
-/* Fila dentro de tbody también como tabla para conservar alineación */
+
 .stylesTableAños tbody tr {
+
     display: table;
+
     width: 100%;
+
     table-layout: fixed;
+
 }
 
-/* Ancho de columnas */
+
 .stylesTableAños th,
 .stylesTableAños td {
-    width: 100%; /* Ajusta según tus columnas */
+
+    padding: 9px 8px;
+
     text-align: center;
+
     vertical-align: middle;
-    padding: 8px;
+
     box-sizing: border-box;
+
 }
 
-.buttonsstylesTableAños{
+
+.stylesTableAños th {
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+    color: var(--text-secondary);
+
+    background-color: #f7f9fb;
+
+}
+
+
+.stylesTableAños td {
+
+    font-size: 11px;
+
+    color: var(--text-primary);
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+
+/* ==========================================================================
+   BOTONES TABLA AÑOS
+   ========================================================================== */
+
+.buttonsstylesTableAños {
+
+    width: 100%;
+
     display: flex;
-    /* background-color: #4CAF50; */
-    width: 100%;
+
     justify-content: center;
+
+    align-items: center;
+
     gap: 5px;
+
 }
 
 
-/* Meses */
+/* ==========================================================================
+   TABLA MESES
+   ========================================================================== */
 
-/* Estilo general */
 .stylesTableMeses {
+
+    width: 100%;
+
     border-collapse: collapse;
-    width: 100%;
+
 }
 
-/* Encabezado fijo */
+
 .stylesTableMeses thead {
+
     display: table;
+
     width: 100%;
+
     table-layout: fixed;
+
 }
 
-/* Scroll vertical solo al tbody */
+
 .stylesTableMeses tbody {
+
     display: block;
-    max-height: 150px;
+
+    width: 100%;
+
+    max-height: 180px;
+
     overflow-y: auto;
-    width: 100%;
+
 }
 
-/* Fila dentro de tbody también como tabla para conservar alineación */
+
 .stylesTableMeses tbody tr {
+
     display: table;
+
     width: 100%;
+
     table-layout: fixed;
+
 }
 
-/* Ancho de columnas */
+
 .stylesTableMeses th,
 .stylesTableMeses td {
-    width: 100%; /* Ajusta según tus columnas */
+
+    padding: 9px 8px;
+
     text-align: center;
+
     vertical-align: middle;
-    padding: 8px;
+
     box-sizing: border-box;
+
 }
 
-.buttonsstylesTableMeses{
-    display: flex;
-    /* background-color: #4CAF50; */
+
+.stylesTableMeses th {
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+    color: var(--text-secondary);
+
+    background-color: #f7f9fb;
+
+}
+
+
+.stylesTableMeses td {
+
+    font-size: 11px;
+
+    color: var(--text-primary);
+
+    border-bottom: 1px solid var(--border);
+
+}
+
+
+/* ==========================================================================
+   BOTONES TABLA MESES
+   ========================================================================== */
+
+.buttonsstylesTableMeses {
+
     width: 100%;
+
+    display: flex;
+
     justify-content: center;
+
+    align-items: center;
+
     gap: 5px;
+
 }
 
-/* Seervicios */
 
-.container-table{
+/* ==========================================================================
+   CONTENEDOR DE TABLA
+   ========================================================================== */
+
+.container-table {
+
     display: block;
-    padding: 5;
+
+    width: 100%;
+
+    padding: 0;
+
 }
 
-.titlePanelPrincipal{
+
+/* ==========================================================================
+   PANEL PRINCIPAL - TÍTULO
+   ========================================================================== */
+
+.titlePanelPrincipal {
+
     display: flex;
+
     justify-content: center;
-    /* background-color: #4CAF50; */
+
+    align-items: center;
+
 }
 
-.containerPanelPrincipalServices{
+
+/* ==========================================================================
+   SERVICIOS DEL PANEL PRINCIPAL
+   ========================================================================== */
+
+.containerPanelPrincipalServices {
+
+    width: 100%;
+
     display: flex;
+
     justify-content: space-between;
+
+    gap: 15px;
+
 }
 
-    /* Inputs */
-    /* En tu CSS, por ejemplo DeleteServicesPlanes.css o un archivo general */
-    .infoPanelPrincipal .input {
-        width: 150px;      /* Ajusta el ancho como quieras */
-        padding: 4px 8px;  /* Reduce el padding interno */
-        font-size: 0.9rem; /* Tamaño de fuente más pequeño */
+
+/* ==========================================================================
+   INFORMACIÓN DEL PANEL PRINCIPAL
+   ========================================================================== */
+
+.infoPanelPrincipal {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    gap: 8px;
+
+}
+
+
+.infoPanelPrincipal .mb-3 {
+
+    margin-bottom: 0 !important;
+
+}
+
+
+.infoPanelPrincipal .input {
+
+    width: 150px;
+
+    padding: 6px 9px;
+
+    font-size: 0.85rem;
+
+}
+
+
+.infoPanelPrincipal .label {
+
+    margin-bottom: 3px;
+
+    font-size: 0.75rem;
+
+    color: var(--text-secondary);
+
+}
+
+
+/* ==========================================================================
+   MODAL
+   ========================================================================== */
+
+.form_NewPanel {
+
+    background-color: #ffffff;
+
+}
+
+
+.custom-modal {
+
+    width: 70% !important;
+
+    max-width: 70% !important;
+
+    margin: auto;
+
+}
+
+
+/* ==========================================================================
+   RESPONSIVE - TABLET
+   ========================================================================== */
+
+@media (max-width: 992px) {
+
+    .bodyPanelbox1 {
+
+        grid-template-columns: 1fr;
+
     }
+
+}
+
+
+/* ==========================================================================
+   RESPONSIVE - MÓVIL
+   ========================================================================== */
+
+@media (max-width: 768px) {
+
+    .bodyHead {
+
+        align-items: flex-start;
+
+        gap: 15px;
+
+        padding: 15px;
+
+    }
+
+
+    .containerPanel-title {
+
+        min-width: 0;
+
+    }
+
+
+    .panel-title-content h2 {
+
+        font-size: 16px;
+
+    }
+
+
+    .panel-title-content span {
+
+        display: none;
+
+    }
+
+
+    .panel-section-header {
+
+        align-items: flex-start;
+
+    }
+
+
+    .selected-plan {
+
+        max-width: 120px;
+
+    }
+
+
+    .main-panel-header {
+
+        align-items: flex-start;
+
+        gap: 10px;
+
+    }
+
+
+    .containerPanelPrincipalServices {
+
+        flex-direction: column;
+
+    }
+
 
     .infoPanelPrincipal {
-        display: flex;
-        gap: 5px; /* separación entre inputs */
-        align-items: flex-end; /* para que labels e inputs se alineen bien */
+
+        flex-wrap: wrap;
+
     }
 
-    .infoPanelPrincipal .mb-3 {
-        margin-bottom: 0; /* elimina el margen inferior para compactar */
+
+    .custom-modal {
+
+        width: 95% !important;
+
+        max-width: 95% !important;
+
     }
 
-    .infoPanelPrincipal .label {
-        font-size: 0.85rem;
-        margin-bottom: 2px;
+}
+
+
+/* ==========================================================================
+   MÓVIL PEQUEÑO
+   ========================================================================== */
+
+@media (max-width: 480px) {
+
+    .bodyHead {
+
+        flex-direction: column;
+
     }
+
+
+    .containerPanel_add {
+
+        width: 100%;
+
+    }
+
+
+    .panel-section-header {
+
+        flex-direction: column;
+
+    }
+
+
+    .selected-plan {
+
+        width: 100%;
+
+        align-items: flex-start;
+
+        padding-left: 0;
+
+        padding-top: 8px;
+
+        border-left: none;
+
+        border-top: 1px solid var(--border);
+
+    }
+
+
+    .main-panel-header {
+
+        flex-direction: column;
+
+    }
+
+}
