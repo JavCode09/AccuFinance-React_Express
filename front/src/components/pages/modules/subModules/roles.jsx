@@ -49,77 +49,262 @@ const Roles = ({titleModule}) => {
         await getData_all();
     }
     
-     return ( 
+    return (
+
         <div className={styles["Roles-container"]}>
-    
-            <div className={styles["Roles-title"]}>
-                <h2>{titleModule}</h2>
+
+            {/* =====================================================
+                HEADER
+            ====================================================== */}
+
+            <div className={styles["Roles-header"]}>
+
+                <div className={styles["Roles-header-title"]}>
+
+                    <div className={styles["Roles-icon"]}>
+
+                        <i className="fa fa-users"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            {titleModule}
+                        </h3>
+
+                        <span>
+                            Administración de roles y permisos del sistema
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                {/* Contador */}
+
+                <div className={styles["Roles-count"]}>
+
+                    <strong>
+                        {dataTable.length}
+                    </strong>
+
+                    <span>
+
+                        {dataTable.length === 1
+                            ? ' rol'
+                            : ' roles'
+                        }
+
+                    </span>
+
+                </div>
+
             </div>
 
-            <div className={styles["Roles-option"]}>
-                
+
+            {/* =====================================================
+                TOOLBAR
+            ====================================================== */}
+
+            <div className={styles["Roles-toolbar"]}>
+
                 <div className={styles["Roles-search"]}>
                 </div>
 
+
                 <div className={styles["Roles-btns"]}>
-                    <ButtonAdd 
-                            ModalComponent={ModalAdd}
-                            size={"sm"}  
-                            value={"Nuevo Rol"} 
-                            title={"Agregar Rol"}
-                            getData={getData}
+
+                    <ButtonAdd
+
+                        ModalComponent={ModalAdd}
+
+                        size="sm"
+
+                        value={
+                            <>
+                                <i className="fa fa-plus"></i>
+                                <span>Nuevo rol</span>
+                            </>
+                        }
+
+                        title="Agregar Rol"
+
+                        getData={getData}
+
                     />
+
                 </div>
 
             </div>
 
+
+            {/* =====================================================
+                CONTENIDO
+            ====================================================== */}
+
             <div className={styles["Roles-content"]}>
-        
-                <table className={styles["Roles-tabla"]}>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Rol</th>
-                            <th>Opciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {dataTable.map((dTable)=> (
-                            <tr key={dTable.id}>
-                                <td>{dTable.id}</td>
-                                <td>{dTable.nombre}</td>
-                                <td>
-                                    <div className={styles["btns_option_Roles"]}>
-                                        <ButtonAddPage
-                                            size={"sm"}
-                                            title={"Actualizar rol"}
-                                            value={"Actualizar"}
-                                            styleColor={"warning"}
-                                            page={`/main/rolls/roles_permisos/${dTable.id}`}
-                                        />
 
-                                        <ButtonDelete 
-                                            ModalCategoriesDelete = {DeleteRoles}
-                                            size={"sm"}
-                                            title={"Eliminar Rol"}
-                                            value={"Eliminar"}
-                                            category={dTable}
-                                            getData = {getData}
-                                            
-                                        />
-                                    </div>    
-                                </td>
-                            </tr>
-                        ))
+                {dataTable.length > 0 ? (
 
-                        }
-                
-                    </tbody>
-                </table>
-   
+                    <div className={styles["Roles-table-wrapper"]}>
+
+                        <table className={styles["Roles-tabla"]}>
+
+                            <thead>
+
+                                <tr>
+
+                                    <th className={styles["rol-id"]}>
+                                        ID
+                                    </th>
+
+                                    <th>
+                                        Rol
+                                    </th>
+
+                                    <th className={styles["rol-actions"]}>
+                                        Acciones
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {dataTable.map((dTable) => (
+
+                                    <tr key={dTable.id}>
+
+
+                                        {/* ID */}
+
+                                        <td className={styles["rol-id-cell"]}>
+
+                                            <span className={styles["rol-id-badge"]}>
+
+                                                {dTable.id}
+
+                                            </span>
+
+                                        </td>
+
+
+                                        {/* ROL */}
+
+                                        <td>
+
+                                            <div className={styles["rol-name"]}>
+
+                                                <div className={styles["rol-name-icon"]}>
+
+                                                    <i className="fa fa-user"></i>
+
+                                                </div>
+
+                                                <strong>
+                                                    {dTable.nombre}
+                                                </strong>
+
+                                            </div>
+
+                                        </td>
+
+
+                                        {/* ACCIONES */}
+
+                                        <td>
+
+                                            <div className={styles["btns_option_Roles"]}>
+
+                                                <ButtonAddPage
+
+                                                    size="sm"
+
+                                                    title="Actualizar rol"
+
+                                                    value={
+                                                        <>
+                                                            <i className="fa fa-pencil"></i>
+                                                            <span>Editar</span>
+                                                        </>
+                                                    }
+
+                                                    styleColor="warning"
+
+                                                    page={`/main/rolls/roles_permisos/${dTable.id}`}
+
+                                                />
+
+
+                                                <ButtonDelete
+
+                                                    ModalCategoriesDelete={DeleteRoles}
+
+                                                    size="sm"
+
+                                                    title="Eliminar Rol"
+
+                                                    value={
+                                                        <>
+                                                            <i className="fa fa-trash"></i>
+                                                            <span>Eliminar</span>
+                                                        </>
+                                                    }
+
+                                                    category={dTable}
+
+                                                    getData={getData}
+
+                                                />
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                ))}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                ) : (
+
+                    /* =================================================
+                    ESTADO VACÍO
+                    ================================================== */
+
+                    <div className={styles["Roles-empty"]}>
+
+                        <div className={styles["Roles-empty-icon"]}>
+
+                            <i className="fa fa-users"></i>
+
+                        </div>
+
+                        <h4>
+                            No se encontraron roles
+                        </h4>
+
+                        <p>
+                            Agrega un rol para comenzar.
+                        </p>
+
+                    </div>
+
+                )}
+
             </div>
+
         </div>
-     );
+    );
 }
  
 export default Roles;

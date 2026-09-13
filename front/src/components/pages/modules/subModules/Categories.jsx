@@ -10,6 +10,7 @@ import ButtonAdd from '../../../common/buttons/btn-add'; //bootn add
 import ButtonUpdate from '../../../common/buttons/btn-update'; //boton update
 import ButtonDelete from '../../../common/buttons/btn-delete';//boton eliminar
 
+
 // Modales
 import ModalCategoriesAdd from '../../modals/categories/modal_add'; //modal add
 import ModalCategoriesUpdate from '../../modals/categories/modal_update'; //modal_update
@@ -42,7 +43,7 @@ const Categories = ({titleModule}) => {
             setFilteredData(getDataCategories);
             setCurrentPage(0); // Reiniciar la paginación
         } catch (error) {
-            console.error("Error al recargar categorías:", error);
+            console.error("Error al recargar categorías: ", error);
         }
     };
 
