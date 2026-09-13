@@ -1,167 +1,1484 @@
+/* ==========================================================================
+   ACCUS FINANCE
+   Estructura principal del sistema
+   Diseño: Financial SaaS / Enterprise
+   ========================================================================== */
+
+
+/* ==========================================================================
+   FUENTE
+   ========================================================================== */
+
 @font-face {
+
     font-family: 'Montserrat-Medium';
-    src: url('../../../assets/fonts/Montserrat-Medium.ttf') format('truetype');
-    font-weight: 200; /* Peso extra ligero */
+
+    src: url('../../../assets/fonts/Montserrat-Medium.ttf')
+        format('truetype');
+
+    font-weight: 500;
+
     font-style: normal;
-  }
-
-
-.main-container{
-    font-family: 'Montserrat-Medium', sans-serif;
-    /* background:  #cdb4db; */
-    min-height: 100vh;
-    display: flex;
-    padding: 0px;
-    overflow: hidden; /* Oculta cualquier contenido desbordado */
 }
 
-    .sidebar {
-        width: 280px !important;
-        min-width: 280px !important;
-        max-width: 280px !important;
-        background-color: #0A4578; /* Puedes ajustar el color de fondo del sidebar */
-        color: white;
-        padding: 10px;
-        display: flex;
-        flex-direction: column;
-        /* position: fixed; Fija el sidebar en su lugar */
-        top: 0; /* Asegura que esté alineado con la parte superior */
-        left: 0; /* Asegura que esté alineado con el borde izquierdo */
-        border-right: 3px solid rgba(83, 137, 184, 0.9); /* Borde sutil con opacidad */
-    }
 
-    /* Estilos generales para los módulos */
-    .module {
-        padding: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease, color 0.3s ease;
-        display: flex;
-        align-items: center; /* Asegura que el icono y el texto estén alineados verticalmente */
-        margin: 0px 0px 5px 2px;
-    }
+/* ==========================================================================
+   VARIABLES GLOBALES
+   ========================================================================== */
 
-    /* Enlaces dentro de los módulos */
-    .module a {
-        text-decoration: none;
-        color: inherit;
-        list-style: none;
-    }
+:root {
 
-    /* Efecto al pasar el mouse sobre un módulo */
-    .module:hover {
-        background-color: #1777d8;
-        color: white;
-        border-radius: 10px;
-    }
+    /* Colores principales */
 
-    /* Módulo activo (cuando el usuario está en esa sección) */
-    .module.active {
-        background-color: #fc284f;
-        color: white;
-        border-radius: 8px;
-    }
+    --primary: #0b3a5b;
+    --primary-dark: #082c45;
+    --primary-light: #155d87;
 
-    /* Módulo abierto (cuando tiene submódulos desplegados) */
-    .module.open {
-        background-color: #0056b3;
-        color: white;
-        border-radius: 10px;
-    }
-    
-    /* Mopdulos padrees sin * del li */
-    .liModulos{
-        list-style: none;
-    }
+    /* Estados */
 
-    .module i {
-        margin-right: 10px; /* Esto separa el ícono del texto */
-    }
+    --success: #16835b;
+    --danger: #d64545;
+    --warning: #c68a18;
 
-    /* --- Estilos para los submódulos con animación --- */
-    .submodule-list {
-        list-style: none;
-        padding-left: 20px;
-        max-height: 0; /* Ocultar submódulos por defecto */
-        overflow: hidden;
-        opacity: 0; /* Hacer que los submódulos sean invisibles */
-    }
+    /* Fondos */
 
-    /* Cuando el módulo está abierto, mostrar los submódulos con animación */
-    .module.open + .submodule-list {
-        max-height: 500px; /* Ajusta este valor según la cantidad de submódulos */
-        opacity: 1;
-        transform: translateY(0);
-    }
+    --background: #f4f7fa;
+    --surface: #ffffff;
+    --surface-hover: #f5f8fb;
+
+    /* Texto */
+
+    --text-primary: #17212b;
+    --text-secondary: #6b7785;
+    --text-light: #98a3af;
+
+    /* Bordes */
+
+    --border: #e4e9ee;
+
+    /* Sidebar */
+
+    --sidebar-width: 270px;
+    --sidebar-collapsed-width: 78px;
+
+    /* Navbar */
+
+    --navbar-height: 72px;
+
+    /* Sombras */
+
+    --shadow-sm:
+        0 1px 3px rgba(15, 35, 50, 0.05);
+
+    --shadow-md:
+        0 4px 15px rgba(15, 35, 50, 0.07);
+
+}
 
 
-    /* Contenedor de todo el sistema*/
-    .content {
-        flex-grow: 1; /* Hace que el contenido ocupe el espacio restante */
-        padding: 5px;
-        background-color: #e0e1dd; /* Puedes cambiar el color de fondo del contenido */
-        /* Otros estilos que desees para el contenido */
-        top: 0; /* Asegura que esté alineado con la parte superior */
-        left: 0; /* Asegura que esté alineado con el borde izquierdo */
-    }
-        
+/* ==========================================================================
+   RESET BÁSICO
+   ========================================================================== */
 
-    /* Estilos para el navbar */
-    .navbar {
-        width: 100%; /* Asegura que el navbar ocupe todo el ancho disponible */
-        background-color: #ffffff; /* Color de fondo del navbar */
-        color: rgb(39, 33, 33);
-        padding: 10px;
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 10px; /* Espacio entre el navbar y el content_Modules */
-    }
-        .span_navbar{
-            padding: 5px;
-            margin-left: 5px;
-            background: rebeccapurple;
-        }
-        
-    /* Estilos para el content_Modules (Contenido de los modulos) */
-    .content_Modules {
-        flex-grow: 1; /* Hace que el content_Modules ocupe el espacio restante */
-        background-color: #e0e1dd; /* Cambia el fondo de los módulos si es necesario */
-        padding: 5px;
-        overflow-y: auto; /* Permite el desplazamiento interno si el contenido es largo */
-        padding: 10px; /* Ajuste de padding en los módulos */
-        box-sizing: border-box;
-       
-    }
+* {
+    box-sizing: border-box;
+}
 
-/* /////////////////////////////////////////////////// */
 
-/* Titulo */
+html,
+body,
+#root {
 
-.title-sidebar{
-    /* background: rgb(100, 37, 37); */
-    font-size: 2rem;
-    text-align: center;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+
+}
+
+
+body {
+
+    font-family: 'Montserrat-Medium', sans-serif;
+
+    background-color: var(--background);
+
+    color: var(--text-primary);
+
+}
+
+
+/* ==========================================================================
+   CONTENEDOR PRINCIPAL
+   ========================================================================== */
+
+.main-container {
+
+    width: 100%;
+    height: 100vh;
+
+    display: flex;
+
+    overflow: hidden;
+
+    background-color: var(--background);
+
+}
+
+
+/* ==========================================================================
+   SIDEBAR
+   ========================================================================== */
+
+.sidebar {
+
+    width: var(--sidebar-width);
+
+    min-width: var(--sidebar-width);
+    max-width: var(--sidebar-width);
+
+    height: 100vh;
+
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Alinea el contenido horizontalmente */
-    align-items: center; /* Alinea el contenido verticalmente */
+
+    background:
+        linear-gradient(
+            180deg,
+            #0b3a5b 0%,
+            #082f4d 100%
+        );
+
+    color: #ffffff;
+
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+
+    transition:
+        width 0.25s ease,
+        min-width 0.25s ease,
+        max-width 0.25s ease;
+
+    overflow: hidden;
+
+    position: relative;
+
+    z-index: 1000;
+
 }
 
-.title-sidebar img {
-    max-width: 100%;    /* La imagen no será más grande que el ancho del contenedor */
-    max-height: 100%;   
-    object-fit: contain; /* La imagen mantendrá su proporción sin deformarse */
-    margin-bottom: -40px;
-    margin-top: -40px;
-    /* background-color: #f8f8f8; */
+
+/* ==========================================================================
+   SIDEBAR HEADER
+   ========================================================================== */
+
+.sidebar-header {
+
+    min-height: 76px;
+
+    padding: 0 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
 }
 
-.title-sistem{
+
+/* ==========================================================================
+   MARCA / LOGO
+   ========================================================================== */
+
+.brand {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    min-width: 0;
+
+}
+
+
+.brand-icon {
+
+    width: 38px;
+    height: 38px;
+
+    min-width: 38px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background-color: rgba(255, 255, 255, 0.12);
+
+    color: #ffffff;
+
+    font-size: 16px;
+
+}
+
+
+.brand-text {
+
+    display: flex;
+
+    align-items: baseline;
+
+    gap: 3px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+}
+
+
+.brand-name {
+
+    font-size: 19px;
+
     font-weight: bold;
-    letter-spacing: 0.3px;
+
+    letter-spacing: -0.5px;
+
 }
 
-.modules-list{
-    /* background: rgb(124, 52, 52); */
-    margin-top: 5px;
-    padding: 5px;
+
+.brand-name-light {
+
+    font-size: 19px;
+
+    font-weight: 500;
+
+    color: #a9cbe1;
+
+}
+
+
+/* ==========================================================================
+   BOTÓN COLAPSAR SIDEBAR
+   ========================================================================== */
+
+.sidebar-toggle {
+
+    width: 34px;
+    height: 34px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: transparent;
+
+    color: rgba(255, 255, 255, 0.75);
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+
+}
+
+
+.sidebar-toggle:hover {
+
+    background-color: rgba(255, 255, 255, 0.1);
+
+    color: #ffffff;
+
+}
+
+
+/* ==========================================================================
+   DIVISOR
+   ========================================================================== */
+
+.sidebar-divider {
+
+    height: 1px;
+
+    margin: 0 18px;
+
+    background-color: rgba(255, 255, 255, 0.08);
+
+}
+
+
+/* ==========================================================================
+   TÍTULO DEL MENÚ
+   ========================================================================== */
+
+.menu-title {
+
+    padding:
+
+        20px 20px 9px 20px;
+
+}
+
+
+.menu-title span {
+
+    font-size: 10px;
+
+    font-weight: bold;
+
+    letter-spacing: 1.2px;
+
+    color: rgba(255, 255, 255, 0.42);
+
+}
+
+
+/* ==========================================================================
+   LISTA DE MÓDULOS
+   ========================================================================== */
+
+/*
+   MUY IMPORTANTE:
+
+   Este elemento tiene el scroll.
+
+   De esta manera el sidebar puede tener 5, 20 o 100 módulos
+   sin aumentar la altura de la página.
+*/
+
+.modules-list {
+
+    flex: 1;
+
+    min-height: 0;
+
+    padding: 4px 10px 10px 10px;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+}
+
+
+/* Scroll del sidebar */
+
+.modules-list::-webkit-scrollbar {
+
+    width: 5px;
+
+}
+
+
+.modules-list::-webkit-scrollbar-track {
+
+    background: transparent;
+
+}
+
+
+.modules-list::-webkit-scrollbar-thumb {
+
+    background-color: rgba(255, 255, 255, 0.15);
+
+    border-radius: 10px;
+
+}
+
+
+.modules-list::-webkit-scrollbar-thumb:hover {
+
+    background-color: rgba(255, 255, 255, 0.25);
+
+}
+
+
+.module-list {
+
+    margin: 0;
+
+    padding: 0;
+
+    list-style: none;
+
+}
+
+
+/* ==========================================================================
+   ELEMENTO DEL MÓDULO
+   ========================================================================== */
+
+.module-item {
+
+    margin-bottom: 3px;
+
+    list-style: none;
+
+}
+
+
+/* ==========================================================================
+   MÓDULO
+   ========================================================================== */
+
+.module {
+
+    min-height: 44px;
+
+    width: 100%;
+
+    padding: 0 11px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    position: relative;
+
+    border-radius: 9px;
+
+    cursor: pointer;
+
+    color: rgba(255, 255, 255, 0.72);
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+
+}
+
+
+/* Hover */
+
+.module:hover {
+
+    background-color: rgba(255, 255, 255, 0.08);
+
+    color: #ffffff;
+
+}
+
+
+/* ==========================================================================
+   MÓDULO ACTIVO
+   ========================================================================== */
+
+.module.active {
+
+    background-color: rgba(255, 255, 255, 0.13);
+
+    color: #ffffff;
+
+}
+
+
+/*
+   Línea lateral que identifica el módulo activo.
+*/
+
+.module.active::before {
+
+    content: '';
+
+    position: absolute;
+
+    left: 0;
+
+    top: 9px;
+
+    bottom: 9px;
+
+    width: 3px;
+
+    border-radius: 0 4px 4px 0;
+
+    background-color: #6ec1ed;
+
+}
+
+
+/* ==========================================================================
+   ICONO
+   ========================================================================== */
+
+.module-icon {
+
+    width: 28px;
+    min-width: 28px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 14px;
+
+    color: rgba(255, 255, 255, 0.62);
+
+}
+
+
+.module.active .module-icon {
+
+    color: #ffffff;
+
+}
+
+
+/* ==========================================================================
+   LINK DEL MÓDULO
+   ========================================================================== */
+
+.module-link {
+
+    flex: 1;
+
+    min-width: 0;
+
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    color: inherit;
+
+    text-decoration: none;
+
+}
+
+
+.module-name {
+
+    font-size: 13px;
+
+    font-weight: 500;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+}
+
+
+/* ==========================================================================
+   FLECHA
+   ========================================================================== */
+
+.module-arrow {
+
+    width: 18px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    color: rgba(255, 255, 255, 0.45);
+
+}
+
+
+.module-arrow i {
+
+    font-size: 9px;
+
+    transition:
+        transform 0.25s ease;
+
+}
+
+
+.module-arrow i.rotated {
+
+    transform: rotate(180deg);
+
+}
+
+
+/* ==========================================================================
+   SUBMÓDULOS
+   ========================================================================== */
+
+.submodule-container {
+
+    display: grid;
+
+    grid-template-rows: 0fr;
+
+    transition:
+        grid-template-rows 0.25s ease;
+
+}
+
+
+.submodule-container.expanded {
+
+    grid-template-rows: 1fr;
+
+}
+
+
+.submodule-container > .submodule-list {
+
+    min-height: 0;
+
+    overflow: hidden;
+
+}
+
+
+/* ==========================================================================
+   LISTA DE SUBMÓDULOS
+   ========================================================================== */
+
+.submodule-list {
+
+    margin: 2px 0 4px 0;
+
+    padding: 0 0 0 20px;
+
+    list-style: none;
+
+    border-left: 1px solid rgba(255, 255, 255, 0.10);
+
+}
+
+
+/*
+   Los hijos tienen un poco menos de presencia visual.
+*/
+
+.submodule-list .module {
+
+    min-height: 39px;
+
+    border-radius: 7px;
+
+}
+
+
+.submodule-list .module-name {
+
+    font-size: 12px;
+
+}
+
+
+.submodule-list .module-icon {
+
+    font-size: 12px;
+
+}
+
+
+/* ==========================================================================
+   FOOTER DEL SIDEBAR
+   ========================================================================== */
+
+.sidebar-footer {
+
+    padding: 12px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+    background-color: rgba(0, 0, 0, 0.08);
+
+}
+
+
+/* ==========================================================================
+   USUARIO DEL SIDEBAR
+   ========================================================================== */
+
+.sidebar-user {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 7px;
+
+    margin-bottom: 8px;
+
+}
+
+
+.user-avatar {
+
+    width: 34px;
+    height: 34px;
+
+    min-width: 34px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background-color: rgba(255, 255, 255, 0.14);
+
+    color: #ffffff;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+}
+
+
+.user-info {
+
+    display: flex;
+
+    flex-direction: column;
+
+    min-width: 0;
+
+}
+
+
+.user-name {
+
+    font-size: 11px;
+
+    color: #ffffff;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+}
+
+
+.user-role {
+
+    margin-top: 3px;
+
+    font-size: 9px;
+
+    color: rgba(255, 255, 255, 0.45);
+
+}
+
+
+/* ==========================================================================
+   CERRAR SESIÓN
+   ========================================================================== */
+
+.logout-button {
+
+    width: 100%;
+
+    min-height: 39px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 0 10px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background-color: transparent;
+
+    color: rgba(255, 255, 255, 0.60);
+
+    font-family: inherit;
+
+    font-size: 11px;
+
+    cursor: pointer;
+
+    text-align: left;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+
+}
+
+
+.logout-button:hover {
+
+    background-color: rgba(214, 69, 69, 0.15);
+
+    color: #ffb0b0;
+
+}
+
+
+.logout-button i {
+
+    width: 20px;
+
+    text-align: center;
+
+}
+
+
+/* ==========================================================================
+   SIDEBAR COLAPSADO
+   ========================================================================== */
+
+.sidebar-collapsed .sidebar {
+
+    width: var(--sidebar-collapsed-width);
+
+    min-width: var(--sidebar-collapsed-width);
+
+    max-width: var(--sidebar-collapsed-width);
+
+}
+
+
+/*
+   Ocultar textos.
+*/
+
+.sidebar-collapsed .brand-text,
+.sidebar-collapsed .menu-title,
+.sidebar-collapsed .module-name,
+.sidebar-collapsed .module-arrow,
+.sidebar-collapsed .user-info,
+.sidebar-collapsed .logout-button span {
+
+    display: none;
+
+}
+
+
+/*
+   Centrar elementos.
+*/
+
+.sidebar-collapsed .sidebar-header {
+
+    justify-content: center;
+
+    padding: 0 10px;
+
+}
+
+
+.sidebar-collapsed .brand {
+
+    justify-content: center;
+
+}
+
+
+.sidebar-collapsed .sidebar-toggle {
+
+    position: absolute;
+
+    right: 5px;
+
+    top: 21px;
+
+}
+
+
+.sidebar-collapsed .modules-list {
+
+    padding-left: 10px;
+
+    padding-right: 10px;
+
+}
+
+
+.sidebar-collapsed .module {
+
+    justify-content: center;
+
+    padding: 0;
+
+}
+
+
+.sidebar-collapsed .module-icon {
+
+    width: 100%;
+
+    font-size: 15px;
+
+}
+
+
+.sidebar-collapsed .sidebar-user {
+
+    justify-content: center;
+
+}
+
+
+.sidebar-collapsed .logout-button {
+
+    justify-content: center;
+
+}
+
+
+.sidebar-collapsed .submodule-container {
+
+    display: none;
+
+}
+
+
+/* ==========================================================================
+   CONTENIDO PRINCIPAL
+   ========================================================================== */
+
+.content {
+
+    flex: 1;
+
+    min-width: 0;
+
+    height: 100vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    overflow: hidden;
+
+    background-color: var(--background);
+
+}
+
+
+/* ==========================================================================
+   NAVBAR
+   ========================================================================== */
+
+.navbar {
+    width: 100%;
+    min-height: var(--navbar-height);
+    padding: 0 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--surface);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    z-index: 100;
+}
+
+
+/* ==========================================================================
+   BOTÓN MENÚ MÓVIL
+   ========================================================================== */
+
+.mobile-menu-button {
+
+    display: none;
+
+    width: 38px;
+    height: 38px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background-color: var(--background);
+
+    color: var(--text-primary);
+
+    cursor: pointer;
+
+}
+
+
+/* ==========================================================================
+   TÍTULO NAVBAR
+   ========================================================================== */
+
+.navbar-title {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+
+.navbar-title-main {
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+
+.navbar-title-sub {
+    font-size: 10px;
+    color: var(--text-secondary);
+    line-height: 1.2;
+}
+
+
+/* ==========================================================================
+   ACCIONES NAVBAR
+   ========================================================================== */
+
+.navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+
+/* ==========================================================================
+   ESTADO DEL SISTEMA
+   ========================================================================== */
+
+.system-status {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    font-size: 10px;
+
+    color: var(--text-secondary);
+
+}
+
+
+.status-dot {
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background-color: var(--success);
+
+    box-shadow:
+        0 0 0 3px rgba(22, 131, 91, 0.10);
+
+}
+
+
+/* ==========================================================================
+   USUARIO NAVBAR
+   ========================================================================== */
+
+.navbar-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* padding-left: 12px; */
+    padding-right: 15px;
+}
+
+
+.navbar-avatar {
+
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background-color: #e8f1f7;
+
+    color: var(--primary);
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+}
+
+
+.navbar-user-info {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 2px;
+
+}
+
+
+.navbar-user-name {
+
+    max-width: 180px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    font-size: 11px;
+
+    font-weight: bold;
+
+    color: var(--text-primary);
+
+}
+
+
+.navbar-user-label {
+
+    font-size: 9px;
+
+    color: var(--text-light);
+
+}
+
+
+/* ==========================================================================
+   CONTENIDO DE LOS MÓDULOS
+   ========================================================================== */
+
+.content_Modules {
+
+    flex: 1;
+
+    min-height: 0;
+
+    width: 100%;
+
+    padding: 20px;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+    background-color: var(--background);
+
+}
+
+
+/* Scroll */
+
+.content_Modules::-webkit-scrollbar {
+
+    width: 7px;
+
+}
+
+
+.content_Modules::-webkit-scrollbar-track {
+
+    background: transparent;
+
+}
+
+
+.content_Modules::-webkit-scrollbar-thumb {
+
+    background-color: #cbd4dc;
+
+    border-radius: 10px;
+
+}
+
+
+.content_Modules::-webkit-scrollbar-thumb:hover {
+
+    background-color: #aebbc7;
+
+}
+
+
+/* ==========================================================================
+   RESPONSIVE - TABLET
+   ========================================================================== */
+
+@media (max-width: 992px) {
+
+    .sidebar {
+
+        width: 230px;
+
+        min-width: 230px;
+
+        max-width: 230px;
+
+    }
+
+
+    .navbar {
+
+        padding: 0 18px;
+
+    }
+
+
+    .navbar-actions {
+
+        gap: 12px;
+
+    }
+
+
+    .system-status {
+
+        display: none;
+
+    }
+
+}
+
+
+/* ==========================================================================
+   RESPONSIVE - MÓVIL
+   ========================================================================== */
+
+@media (max-width: 768px) {
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Sidebar como menú lateral
+    |--------------------------------------------------------------------------
+    */
+
+    .sidebar {
+
+        position: fixed;
+
+        left: 0;
+        top: 0;
+
+        width: 270px;
+
+        min-width: 270px;
+
+        max-width: 270px;
+
+        height: 100vh;
+
+        transform: translateX(0);
+
+        box-shadow:
+            8px 0 25px rgba(0, 0, 0, 0.12);
+
+        transition:
+            transform 0.25s ease;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cuando está colapsado, sale de la pantalla.
+    |--------------------------------------------------------------------------
+    */
+
+    .sidebar-collapsed .sidebar {
+
+        width: 270px;
+
+        min-width: 270px;
+
+        max-width: 270px;
+
+        transform: translateX(-100%);
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | En móvil siempre mostramos el texto.
+    |--------------------------------------------------------------------------
+    */
+
+    .sidebar-collapsed .brand-text,
+    .sidebar-collapsed .menu-title,
+    .sidebar-collapsed .module-name,
+    .sidebar-collapsed .module-arrow,
+    .sidebar-collapsed .user-info,
+    .sidebar-collapsed .logout-button span {
+
+        display: block;
+
+    }
+
+
+    .sidebar-collapsed .sidebar-header {
+
+        justify-content: space-between;
+
+        padding: 0 18px;
+
+    }
+
+
+    .sidebar-collapsed .module {
+
+        justify-content: flex-start;
+
+        padding: 0 11px;
+
+    }
+
+
+    .sidebar-collapsed .module-icon {
+
+        width: 28px;
+
+    }
+
+
+    .sidebar-collapsed .sidebar-user {
+
+        justify-content: flex-start;
+
+    }
+
+
+    .sidebar-collapsed .logout-button {
+
+        justify-content: flex-start;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Contenido
+    |--------------------------------------------------------------------------
+    */
+
+    .content {
+
+        width: 100%;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Mostrar botón móvil
+    |--------------------------------------------------------------------------
+    */
+
+    .mobile-menu-button {
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        margin-right: 12px;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Navbar
+    |--------------------------------------------------------------------------
+    */
+
+    .navbar {
+
+        min-height: 64px;
+
+        padding: 0 14px;
+
+    }
+
+
+    .navbar-title-sub {
+
+        display: none;
+
+    }
+
+
+    .navbar-user-info {
+
+        display: none;
+
+    }
+
+
+    .navbar-avatar {
+
+        width: 34px;
+        height: 34px;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Contenido
+    |--------------------------------------------------------------------------
+    */
+
+    .content_Modules {
+
+        padding: 14px;
+
+    }
+
+}
+
+
+/* ==========================================================================
+   RESPONSIVE - MÓVIL PEQUEÑO
+   ========================================================================== */
+
+@media (max-width: 480px) {
+
+    .navbar-title-main {
+
+        font-size: 12px;
+
+    }
+
+
+    .content_Modules {
+
+        padding: 10px;
+
+    }
+
 }

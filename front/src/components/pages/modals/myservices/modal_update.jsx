@@ -31,7 +31,7 @@ const ModalUpdateMyServices = ({showModal_Update,closeModal_update, category,get
             try {
                 //llamada a la api
                 const DataInformation = await getMyServices(category);
-                console.log(DataInformation);
+                // console.log(DataInformation);
                 
                 if (DataInformation.data &&  DataInformation.data.length > 0) {
                     setDataUpdate({

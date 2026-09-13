@@ -1,115 +1,457 @@
 import { useContext, useEffect, useState } from 'react';
-import {Button} from 'react-bootstrap';
 
-import { Table } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 
-import '../../../styles/views/Planes.css'
+import '../../../styles/views/Planes.css';
 
-//Informacion de session
+// ================================================================
+// INFORMACIÓN DE SESIÓN
+// ================================================================
+
 import { UserContext } from '../../../../contexts/UserContext';
 
-//Buttons
+// ================================================================
+// BUTTONS
+// ================================================================
+
 import ButtonUpdate from '../../../common/buttons/btn-update';
 import ButtonDelete from '../../../common/buttons/btn-delete';
 
-//Modals
+// ================================================================
+// MODALES
+// ================================================================
+
 import UpdateModalPlanes from '../../modals/panelcenter/modal_update';
 import ModalDeletePlanAnual from '../../modals/panelcenter/modal_delete';
 
-//API
+// ================================================================
+// API
+// ================================================================
+
 import { API_selectPlanes } from '../../../api/newSystemCpanle';
 
-const Planes = ({getMeses, refresh, getData, updateInfo}) => {
-    //Informacion del logeado o sesion
-    const {userData} = useContext(UserContext);
+
+const Planes = ({
+    getMeses,
+    refresh,
+    getData,
+    updateInfo,
+    setTotalPlanes
+}) => {
 
 
-    //Estado de planes
+    // ================================================================
+    // INFORMACIÓN DEL USUARIO
+    // ================================================================
+
+    const { userData } = useContext(UserContext);
+
+
+    // ================================================================
+    // ESTADO DE PLANES
+    // ================================================================
+
     const [planes, setPlanes] = useState([]);
 
-    useEffect(()=> {
-        //Obtenemos el id de usuario
+
+    // ================================================================
+    // PLAN SELECCIONADO
+    //
+    // Lo utilizamos únicamente para darle feedback visual al usuario.
+    // ================================================================
+
+    const [planSeleccionado, setPlanSeleccionado] = useState(null);
+
+    
+    // ================================================================
+    // OBTENER PLANES
+    // ================================================================
+
+    useEffect(() => {
+
         if (userData?.id) {
-            const idUsuario = userData?.id;
+
+            const idUsuario = userData.id;
+
             APIselectPlanes(idUsuario);
+
         }
 
-    },[userData?.id, refresh])
+    }, [userData?.id, refresh]);
 
-    const APIselectPlanes = async(idUsuario) => {
+
+    // ================================================================
+    // CONSULTAR PLANES
+    // ================================================================
+
+    const APIselectPlanes = async (idUsuario) => {
+
         try {
-            const resultPlanes = await API_selectPlanes(idUsuario);
-            // console.log(resultPlanes.data);
-            
-            //Integramos info al estado
-            setPlanes(resultPlanes.data)
-            // console.log(resultPlanes.data);
-            
-        } catch (error) {
-            console.error("Error en la funcion: " , error);
-            throw error;
-        }
-    }
 
-    // Renderizados
-    const getDataUpdate = () => {
-        if (userData?.id) {
-            // console.log("Si llego");
-            APIselectPlanes(userData.id);
+            const resultPlanes = await API_selectPlanes(idUsuario);
+
+            setPlanes(resultPlanes.data);
+            setTotalPlanes(resultPlanes.data.length);
+
+        } catch (error) {
+
+            console.error(
+                "Error en la función:",
+                error
+            );
+
         }
+
     };
 
-    const getDataDelete = () => {
+
+    // ================================================================
+    // ACTUALIZAR PLANES
+    // ================================================================
+
+    const getDataUpdate = () => {
+
         if (userData?.id) {
+
             APIselectPlanes(userData.id);
+
         }
-    }
-    return ( 
-       <Table responsive className='stylesTableAños' hover>
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Nombre</th>
-                    <th>Año</th>
-                    <th>Accion</th>
-                </tr>
-            </thead>
-            <tbody>
-                 {planes.map((dataPlanes) => (
-                    <tr key={dataPlanes.id_plan}>
-                        <td className=''>{dataPlanes.id_plan}</td>
-                        <td className=''>{dataPlanes.nombre_plan}</td>
-                        <td className=''>{dataPlanes.año}</td>
-                        <td className=''> 
-                            <div className="planes-divcss">
-                                <Button size="sm" title='Ver Meses' onClick={
-                                                () => getMeses(dataPlanes.meses , dataPlanes.id_plan, dataPlanes.nombre_plan)
-                                                }
+
+    };
+
+
+    // ================================================================
+    // ELIMINAR PLAN
+    // ================================================================
+
+    const getDataDelete = () => {
+
+        if (userData?.id) {
+
+            APIselectPlanes(userData.id);
+
+        }
+
+    };
+
+
+    // ================================================================
+    // SELECCIONAR PLAN
+    // ================================================================
+
+    const seleccionarPlan = (
+        meses,
+        id_plan,
+        nombre_plan
+    ) => {
+
+        setPlanSeleccionado(id_plan);
+
+        getMeses(
+            meses,
+            id_plan,
+            nombre_plan
+        );
+
+    };
+
+
+    // ================================================================
+    // RENDER
+    // ================================================================
+
+    return (
+
+        <div className="planes-container">
+            {/* ========================================================
+                HEADER INTERNO
+                ======================================================== */}
+            {/* <div className="planes-header">
+
+                <div>
+
+                    <span className="planes-count">
+
+                        {planes.length}
+
+                    </span>
+
+                    <span className="planes-count-label">
+
+                        {planes.length === 1
+                            ? ' plan registrado'
+                            : ' planes registrados'
+                        }
+
+                    </span>
+
+                </div>
+
+            </div> */}
+
+
+            {/* ========================================================
+                ESTADO VACÍO
+                ======================================================== */}
+
+            {planes.length === 0 ? (
+
+                <div className="planes-empty">
+
+                    <div className="planes-empty-icon">
+
+                        <i className="fa fa-folder-open-o"></i>
+
+                    </div>
+
+                    <h4>
+                        No hay planes registrados
+                    </h4>
+
+                    <p>
+                        Crea un nuevo plan para comenzar
+                        a administrar tus periodos financieros.
+                    </p>
+
+                </div>
+
+            ) : (
+
+
+                /* ====================================================
+                   TABLA
+                   ==================================================== */
+
+                <div className="planes-table-container">
+
+                    <Table
+                        responsive
+                        className="stylesTableAños"
+                        hover
+                    >
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Plan
+                                </th>
+
+                                <th>
+                                    Año
+                                </th>
+
+                                <th className="column-actions">
+                                    Acciones
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {planes.map((dataPlanes) => (
+
+                                <tr
+                                    key={dataPlanes.id_plan}
+                                    className={
+                                        planSeleccionado === dataPlanes.id_plan
+                                            ? 'plan-selected'
+                                            : ''
+                                    }
                                 >
-                                <i className="fa fa-eye" aria-hidden="true"></i>
-                                </Button>
-                                <ButtonUpdate size="sm" title={'Agregar Nuevo Mes'}
-                                                value={<i className="fa fa-pencil" aria-hidden="true"></i>} 
-                                                ModalCategoriesUpdate={UpdateModalPlanes} 
-                                                category={dataPlanes.id_plan} 
-                                                getDataUpdate={getDataUpdate}
-                                                updateInfo={updateInfo}
-                                                />
+
+
+                                    {/* =================================================
+                                        NOMBRE
+                                        ================================================= */}
+
+                                    <td>
+
+                                        <div className="plan-name">
+
+                                            <div className="plan-icon">
+
+                                                {/* <i className="fa fa-file-text-o"></i> */}
+
+                                            </div>
+
+                                            <div className="plan-name-text">
+
+                                                <strong>
+
+                                                    {dataPlanes.nombre_plan}
+
+                                                </strong> 
+                                                <br />
+                                                <span>
+                                                    Plan financiero
+                                                </span>
+
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+
+                                    {/* =================================================
+                                        AÑO
+                                        ================================================= */}
+
+                                    <td>
+
+                                        <span className="plan-year">
+
+                                            {dataPlanes.año}
+
+                                        </span>
+
+                                    </td>
+
+
+                                    {/* =================================================
+                                        ACCIONES
+                                        ================================================= */}
+
+                                    <td>
+
+                                        <div className="planes-divcss">
+
+
+                                            {/* =========================================
+                                                VER MESES
+                                                ========================================= */}
+
+                                            <Button
+
+                                                size="sm"
+                                                title="Ver meses"
+                                                className={
+                                                    planSeleccionado === dataPlanes.id_plan
+                                                        ? 'plan-action plan-action-active'
+                                                        : 'plan-action'
+                                                }
+
+                                                onClick={() =>
+                                                    seleccionarPlan(
+                                                        dataPlanes.meses,
+                                                        dataPlanes.id_plan,
+                                                        dataPlanes.nombre_plan
+                                                    )
+                                                }
+
+                                                value={
+                                                    <i
+                                                        className="fa fa-calendar"
+                                                        aria-hidden="true"
+                                                    />
+                                                }
+                                            >
                                                 
-                                <ButtonDelete size="sm" title={'Eliminar Plan'}
-                                            value={<i className="fa fa-trash" aria-hidden="true"></i>} 
-                                            ModalCategoriesDelete = {ModalDeletePlanAnual}
-                                            category={dataPlanes}
-                                            getDataDelete = {getDataDelete}
-                                            getData={getData}  // 👈 PASAMOS ESTA PROP 
-                                        />
-                            </div>
-                        </td>
-                    </tr>
-                 ))}
-            </tbody>
-       </Table>
-     );
-}
- 
+                                                <i
+                                                    className="fa fa-calendar"
+                                                    aria-hidden="true"
+                                                />
+
+                                            </Button>
+
+
+                                            {/* =========================================
+                                                EDITAR
+                                                ========================================= */}
+
+                                            <ButtonUpdate
+
+                                                size="sm"
+
+                                                title="Agregar o modificar meses"
+
+                                                value={
+                                                    <i
+                                                        className="fa fa-pencil"
+                                                        aria-hidden="true"
+                                                    />
+                                                }
+
+                                                ModalCategoriesUpdate={
+                                                    UpdateModalPlanes
+                                                }
+
+                                                category={
+                                                    dataPlanes.id_plan
+                                                }
+
+                                                getDataUpdate={
+                                                    getDataUpdate
+                                                }
+
+                                                updateInfo={
+                                                    updateInfo
+                                                }
+
+                                            />
+
+
+                                            {/* =========================================
+                                                ELIMINAR
+                                                ========================================= */}
+
+                                            <ButtonDelete
+
+                                                size="sm"
+
+                                                title="Eliminar plan"
+
+                                                value={
+                                                    <i
+                                                        className="fa fa-trash"
+                                                        aria-hidden="true"
+                                                    />
+                                                }
+
+                                                ModalCategoriesDelete={
+                                                    ModalDeletePlanAnual
+                                                }
+
+                                                category={
+                                                    dataPlanes
+                                                }
+
+                                                getDataDelete={
+                                                    getDataDelete
+                                                }
+
+                                                getData={
+                                                    getData
+                                                }
+
+                                            />
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            ))}
+
+                        </tbody>
+
+                    </Table>
+
+                </div>
+
+            )}
+
+        </div>
+
+    );
+
+};
+
+
 export default Planes;

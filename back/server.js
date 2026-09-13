@@ -20,13 +20,11 @@ app.use(express.json());
 const port = process.env.PORT;
 
 //middleware para requerimiento del registro y login (inicio see sesion)
-app.use("/auth" , require("./router/auth"));
+app.use("/auth", require("./router/auth"));
 
 // Rutas protegidas (aplicar verifyToken) Registro y Login
 app.use("/api", verifyToken,require("./router/main")); // Rutas protegidas
 
-// Ruta protegida con token para roles
-app.use("/roles",require("./router/roles"));
 
 // Modulos ------> 
 app.use("/categories", verifyToken, require("./router/categories"));
@@ -35,7 +33,12 @@ app.use("/services",verifyToken, require("./router/services"));
 
 app.use("/myServices",verifyToken , require("./router/myServices"));
 
-app.use("/myServicesPanle", require("./router/myServicesPanle"));
+app.use("/myServicesPanle", verifyToken, require("./router/myServicesPanle"));
+
+app.use("/roles",require("./router/roles"));
+
+app.use("/permisos",require("./router/permisos"));
+
 
 //Buscador de modulos simple
 app.use("/search",verifyToken, require("./router/search"));

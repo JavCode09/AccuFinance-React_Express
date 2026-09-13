@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { Button} from 'react-bootstrap';
 
-const ButtonUpdate = ({ModalCategoriesUpdate,category,getDataUpdate, size, title, value, updateInfo}) => {
+// category, getDataUpdate, updateInfo
+// category es mas para mandar informacion al hijo
+// getDataUpdate se mas para mandar informacion al padre
+// updateInfo es mas cuando solo queremos el aviso sin datos para actualizar o renderizar
+
+const ButtonUpdate = ({ModalCategoriesUpdate,category,getDataUpdate, size, styleColor, title, value, updateInfo}) => {
 
     //hook de estado para abrir y cerrar modales
     const [ModalUpdate, setModalUpdate] = useState(false);
@@ -15,10 +20,13 @@ const ButtonUpdate = ({ModalCategoriesUpdate,category,getDataUpdate, size, title
         setModalUpdate(false);
     }
 
+     // 👇 Si styleColor está vacío, null o undefined, usar 'Danger'
+    const buttonColor = styleColor && styleColor.trim() !== '' ? styleColor : 'warning';
+
     return ( 
         <>
            <div className="btn_update">
-            <Button className='btn_update btn btn-warning'  size={size} title={title} onClick={showModal_Update}>{value}</Button>
+            <Button className={`btn_update btn btn-${buttonColor}`}  size={size} title={title} onClick={showModal_Update}>{value}</Button>
             </div>
             {/* Aqui va el modal para actualizar */}
             {ModalCategoriesUpdate && (
