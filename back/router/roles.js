@@ -161,10 +161,6 @@ Router.get("/:id", async(req,res) =>{
             data:null
         })
     }
-    console.log(id);
-    
-    return res.status(200).json(id);
-
 });
 
 Router.put("/", async(req,res) => {

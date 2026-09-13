@@ -13,6 +13,7 @@ import NewService from './modules/subModules/newService';
 import MyServices from './modules/subModules/myservices';
 import AdminServices from './modules/adminservices';
 import UsuariosInternos from './modules/subModules/usuarios_internos';
+import RolesTipoPermisos from './modules/subModules/rollTiposPermisos';
 import Roles from './modules/subModules/roles';
 import RolesPermisos from './modules/subModules/rolesPermisos';
 
@@ -316,20 +317,6 @@ const Main = () => {
                             }
                         >
 
-
-                            {/* 
-                            ========================================================
-                            ICONO
-                            ========================================================
-                            */}
-
-                            <span className="module-icon">
-
-                                <i className={`fa ${modulo.icon}`}></i>
-
-                            </span>
-
-
                             {/* 
                             ========================================================
                             NOMBRE
@@ -343,6 +330,17 @@ const Main = () => {
                                     className="module-link"
                                     onClick={(e) => e.stopPropagation()}
                                 >
+                                    {/* 
+                                    ========================================================
+                                    ICONO
+                                    ========================================================
+                                    */}
+
+                                    <span className="module-icon">
+
+                                        <i className={`fa ${modulo.icon}`}></i>
+
+                                    </span>
 
                                     <span className="module-name">
                                         {modulo.nombre_modulo}
@@ -352,9 +350,26 @@ const Main = () => {
 
                             ) : (
 
-                                <span className="module-name">
-                                    {modulo.nombre_modulo}
-                                </span>
+                                <>
+
+                                    {/* ICONO */}
+
+                                    <span className="module-icon">
+
+                                        <i className={`fa ${modulo.icon}`}></i>
+
+                                    </span>
+
+
+                                    {/* NOMBRE */}
+
+                                    <span className="module-name">
+
+                                        {modulo.nombre_modulo}
+
+                                    </span>
+
+                                </>
 
                             )}
 
@@ -823,6 +838,15 @@ const Main = () => {
                             }
                         />
 
+                        {/* Permisos */}
+                        <Route 
+                            path='/roll_permissions'
+                            element = {
+                                <RolesTipoPermisos
+                                    titleModule={"Tipo de permisos"}
+                                />
+                            }
+                        />
 
                         {/* Roles */}
 
