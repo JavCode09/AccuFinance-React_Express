@@ -35,6 +35,8 @@ app.use("/myServices",verifyToken , require("./router/myServices"));
 
 app.use("/myServicesPanle", verifyToken, require("./router/myServicesPanle"));
 
+app.use("/UsuariosInternos", require("./router/usuariosInternos"));
+
 app.use("/roles",require("./router/roles"));
 
 app.use("/permisos",require("./router/permisos"));

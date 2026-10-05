@@ -6,7 +6,7 @@ import { Button, Modal } from 'react-bootstrap';
 import { createPermiso } from '../../../api/permisos';
 
 
-const AddPermisos = ({showModal,closeModal,onRefreshOtro}) => {
+const AddPermisos = ({showModal,closeModal,onRefreshOtro, getData}) => {
     // hook de estado
     const [data, setData] = useState({
         nombrePermiso: '',
@@ -34,25 +34,27 @@ const AddPermisos = ({showModal,closeModal,onRefreshOtro}) => {
             const peticion = await createPermiso(data?.nombrePermiso);
             console.log(peticion);
 
-            if(peticion.succes){
+            if(peticion.success){
                 alert(peticion.message);
+                setData({
+                    nombrePermiso: ""
+                });
+    
+                getData(peticion.data);
+                closeModal();
+            }else{
+                alert(peticion.message || "No se pudo crear el permiso.");
             }
             
-            setData({
-                nombrePermiso: ""
-            });
-
-            onRefreshOtro();
-            closeModal();
 
         } catch (error) {
-            // console.log(error);
-            if (error.response.status === 409) {
+            console.log(error);
+            if (error.response?.status === 409) {
                 alert(error.response.data.message)
-            }else if(error.response.status === 500){
+            }else if(error.response?.status === 500){
                  alert(error.response.data.message)
             }else{
-                alert(error.response.data.message)
+                alert(error.response?.data.message)
             }
         }
         

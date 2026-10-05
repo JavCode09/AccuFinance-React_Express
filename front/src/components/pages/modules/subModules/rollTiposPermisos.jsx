@@ -5,15 +5,21 @@ import ReactPaginate from 'react-paginate';
 import '../../../styles/views/TipoRoles.css';
 
 // Botones
+import SearchBar from '../../../common/search_engines/search_bar';
 import ButtonAdd from '../../../common/buttons/btn-add';
 import ButtonUpdate from '../../../common/buttons/btn-update';
 import ButtonDelete from '../../../common/buttons/btn-delete';
 
 //Modales
 import AddPermisos from '../../modals/Permisos/modal_add';
+import UpdatePermisos from '../../modals/Permisos/modal_update';
+import DeletePermisos from '../../modals/Permisos/modal_delete';
 
 //API
 import { getPermisos } from '../../../api/permisos';
+
+// search
+import { search_barModule } from '../../../api/search_bar';
 
 const RolesTipoPermisos = ({titleModule}) => {
 
@@ -33,10 +39,12 @@ const RolesTipoPermisos = ({titleModule}) => {
     const reloadTiposPermisos = async() => {
         try {
             const result = await getPermisos();
-            console.log(result);
+            // console.log(result);
             
             if (result.success) {
                 setDataTipos(result.data);
+                setFilteredData(result.data);
+                setCurrentPage(0);
             }
 
         } catch (error) {
@@ -50,6 +58,28 @@ const RolesTipoPermisos = ({titleModule}) => {
         }
     }
 
+    // Búsqueda
+    const handleSearch = async (query) => {
+        try {
+           if (query.trim() === "") {
+                setFilteredData(DataTipos);
+    
+            } else {
+                // Llamamos el router del mpdulo si no existe crealo
+                const routeName = 'Permisos';
+                const response = await search_barModule(
+                    { searchQuery: query },
+                    routeName
+                );
+                setFilteredData(response);
+            }
+                setCurrentPage(0);
+        } catch (error) {
+            console.error("Error al buscar servicios:", error);
+            setFilteredData([]);
+    
+        }
+    };
 
     //----------------- Paginacion -----------
     const dataToDisplay = filteredData;
@@ -57,7 +87,7 @@ const RolesTipoPermisos = ({titleModule}) => {
     
     const currentData = useMemo(() => {
         return dataToDisplay.slice(
-                offset,
+            offset,
             offset + itemsPerPage
         );
     }, [dataToDisplay, offset]);
@@ -67,7 +97,59 @@ const RolesTipoPermisos = ({titleModule}) => {
     const handlePageClick = ({ selected }) => {
         setCurrentPage(selected);
     };
+    
+    // -------------------- Actualizaciones --------------------
+
+
+    // Renderizamos el registro agregado
+    const handleChangeAdd = (permisoAgregado) =>{
+        setDataTipos(prev => [
+            permisoAgregado,
+            ...prev
+        ]);
+
+        setFilteredData(prev => [
+            permisoAgregado,
+            ...prev
+        ]);
+    }
+
+    // Renderizamos el registro actualizado 
+    const handleChangeUpdate = (permisoActualizado) => {
         
+        setDataTipos(prev =>
+            prev.map(permiso =>
+                permiso.id === permisoActualizado.id
+                    ? permisoActualizado 
+                    : permiso
+            )
+        );
+
+        setFilteredData(prev =>
+            prev.map(permiso =>
+                permiso.id === permisoActualizado.id
+                    ? permisoActualizado 
+                    : permiso
+            )
+        );
+    }
+
+    // Renderizamos el registro eliminado
+    const handleChangeDelete = (permisoEliminado) => {
+        // console.log("entro a la elimincacion");
+        
+        setDataTipos(prev =>
+            prev.filter(permiso => 
+                permiso.id !== permisoEliminado.id
+            )
+        );
+
+        setFilteredData(prev =>
+            prev.filter(permiso =>
+                permiso.id !== permisoEliminado.id
+            )
+        );
+    }   
     //-------------------- Fin Paginacion --------------------
 
      return (
@@ -137,6 +219,11 @@ const RolesTipoPermisos = ({titleModule}) => {
 
                     </div>
 
+                    <SearchBar
+                        plaholderName="Permisos"
+                        onSearch={handleSearch}
+                    />
+
                 </div>
 
 
@@ -146,7 +233,7 @@ const RolesTipoPermisos = ({titleModule}) => {
                         title={"Nuevo permiso"}
                         value={"Nuevo Permiso"}
                         ModalComponent={AddPermisos}
-                        onRefreshOtro={reloadTiposPermisos}
+                        getData={handleChangeAdd}
                     />
                 </div>
 
@@ -159,7 +246,7 @@ const RolesTipoPermisos = ({titleModule}) => {
 
             <div className="TiposPermisos-content">
 
-                {DataTipos.length > 0 ? (
+                {currentData.length > 0 ? (
                     
                     <div className="TiposPermisos-table-wrapper">
 
@@ -178,7 +265,7 @@ const RolesTipoPermisos = ({titleModule}) => {
 
                             <tbody>
 
-                                {DataTipos.map((dataPer) => (
+                                {currentData.map((dataPer) => (
 
                                     <tr key={dataPer.id}>
 
@@ -213,15 +300,21 @@ const RolesTipoPermisos = ({titleModule}) => {
 
                                             <div className="btns_option_TiposPermisos">
                                                 <ButtonUpdate 
+                                                    ModalCategoriesUpdate= {UpdatePermisos}
+                                                    category= {dataPer.id}
                                                     size={"sm"}
                                                     title={"Actualizar permiso"}
                                                     value={"Actualizar"}
+                                                    updateInfo={handleChangeUpdate}
                                                     
                                                 />
                                                 <ButtonDelete 
+                                                    ModalCategoriesDelete = {DeletePermisos}
+                                                    category={dataPer}
                                                     size={"sm"}
                                                     title={"Eliminar permiso"}
                                                     value={"Eliminar"}
+                                                    getDataDelete={handleChangeDelete}
                                                 />
                                             </div>
 
@@ -275,7 +368,7 @@ const RolesTipoPermisos = ({titleModule}) => {
 
                 {filteredData.length > itemsPerPage && (
 
-                    <div className="topospers-pagination">
+                    <div className="TiposPermisos-pagination">
 
                         <ReactPaginate
 
