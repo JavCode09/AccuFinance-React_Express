@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import ReactPaginate from 'react-paginate';
 
 import styles from "../../../styles/views/Roles.module.css"
 
 // BTNS
+import SearchBar from '../../../common/search_engines/search_bar';
 import ButtonAdd from '../../../common/buttons/btn-add';
 import ButtonDelete from '../../../common/buttons/btn-delete';
 import ButtonAddPage from '../../../common/buttons/btn-add-page';
@@ -14,10 +16,18 @@ import DeleteRoles from '../../modals/Roles/modal_delete';
 //APIfront
 import { getDataAll } from '../../../api/roles';
 
+//Search
+import { search_barModule } from '../../../api/search_bar';
+
 const Roles = ({titleModule}) => {
 
     // Hook de estado de cambio de datos de tabla
     const [dataTable, setDataTable] = useState([]);
+    const [filteredData, setFilteredData] = useState([]); // Estado para datos filtrados (buscador)
+    
+    // Hoks de paginacion
+    const [currentPage, setCurrentPage] = useState(0); // Página actual
+    const itemsPerPage = 8; // Elementos por página
 
     useEffect(() => {
         // Informacion 
@@ -31,6 +41,8 @@ const Roles = ({titleModule}) => {
             // console.log(resultData.data);
             if (resultData.success) {
                 setDataTable(resultData.data);
+                setFilteredData(resultData.data);
+                setCurrentPage(0);
             }
             
 
@@ -43,6 +55,47 @@ const Roles = ({titleModule}) => {
             }
         }
     }
+
+    // Búsqueda
+    const handleSearch = async (query) => {
+        try {
+           if (query.trim() === "") {
+                setFilteredData(dataTable);
+    
+            } else {
+                // Llamamos el router del mpdulo si no existe crealo
+                const routeName = 'Roles';
+                const response = await search_barModule(
+                    { searchQuery: query },
+                    routeName
+                );
+                setFilteredData(response);
+            }
+                setCurrentPage(0);
+        } catch (error) {
+            console.error("Error al buscar servicios:", error);
+            setFilteredData([]);
+    
+        }
+    };
+
+    //----------------- Paginacion -----------
+    const dataToDisplay = filteredData;
+    const offset = currentPage * itemsPerPage;
+    
+    const currentData = useMemo(() => {
+        return dataToDisplay.slice(
+            offset,
+            offset + itemsPerPage
+        );
+    }, [dataToDisplay, offset]);
+        
+    // -------------------- Actualizaciones --------------------
+    
+    // Manejador de cambio de página
+    const handlePageClick = ({ selected }) => {
+        setCurrentPage(selected);
+    };
 
     // Renderizado
     const getData = async() => {
@@ -111,6 +164,17 @@ const Roles = ({titleModule}) => {
             <div className={styles["Roles-toolbar"]}>
 
                 <div className={styles["Roles-search"]}>
+                    
+                    <div className={styles["Roles-search-icon"]}>
+
+                        <i className="fa fa-search"></i>
+
+                    </div>
+
+                    <SearchBar
+                        plaholderName="Roles "
+                        onSearch={handleSearch}
+                    />
                 </div>
 
 
@@ -146,7 +210,7 @@ const Roles = ({titleModule}) => {
 
             <div className={styles["Roles-content"]}>
 
-                {dataTable.length > 0 ? (
+                {currentData.length > 0 ? (
 
                     <div className={styles["Roles-table-wrapper"]}>
 
@@ -156,7 +220,7 @@ const Roles = ({titleModule}) => {
 
                                 <tr>
 
-                                    <th className={styles["rol-id"]}>
+                                    <th className={styles["Roles-id"]}>
                                         ID
                                     </th>
 
@@ -164,7 +228,7 @@ const Roles = ({titleModule}) => {
                                         Rol
                                     </th>
 
-                                    <th className={styles["rol-actions"]}>
+                                    <th className={styles["Roles-actions"]}>
                                         Acciones
                                     </th>
 
@@ -175,16 +239,16 @@ const Roles = ({titleModule}) => {
 
                             <tbody>
 
-                                {dataTable.map((dTable) => (
+                                {currentData.map((dTable) => (
 
                                     <tr key={dTable.id}>
 
 
                                         {/* ID */}
 
-                                        <td className={styles["rol-id-cell"]}>
+                                        <td className={styles["Roles-id-cell"]}>
 
-                                            <span className={styles["rol-id-badge"]}>
+                                            <span className={styles["Roles-id-badge"]}>
 
                                                 {dTable.id}
 
@@ -197,9 +261,9 @@ const Roles = ({titleModule}) => {
 
                                         <td>
 
-                                            <div className={styles["rol-name"]}>
+                                            <div className={styles["Roles-name"]}>
 
-                                                <div className={styles["rol-name-icon"]}>
+                                                <div className={styles["Roles-name-icon"]}>
 
                                                     <i className="fa fa-user"></i>
 
@@ -290,12 +354,69 @@ const Roles = ({titleModule}) => {
                         </div>
 
                         <h4>
-                            No se encontraron roles
+                            No se encontraron Roles
                         </h4>
 
                         <p>
-                            Agrega un rol para comenzar.
+                            {filteredData.length === 0 &&
+                            dataTable.length > 0
+                                ? 'Intenta realizar otra búsqueda.'
+                                : 'Agrega un tipo de permiso para comenzar.'
+                            }
                         </p>
+
+                    </div>
+
+                )}
+
+                 {/* =================================================
+                    PAGINACIÓN
+                ================================================== */}
+
+                {filteredData.length > itemsPerPage && (
+
+                    <div className={styles["Roles-pagination"]}>
+
+                        <ReactPaginate
+
+                            previousLabel="Anterior"
+
+                            nextLabel="Siguiente"
+
+                            breakLabel="..."
+
+                            pageCount={
+                                Math.ceil(
+                                    filteredData.length /
+                                    itemsPerPage
+                                )
+                            }
+
+                            marginPagesDisplayed={2}
+
+                            pageRangeDisplayed={3}
+
+                            onPageChange={handlePageClick}
+
+                            containerClassName={styles["pagination"]}
+
+                            activeClassName={styles["active"]}
+
+                            previousClassName={styles["page-item"]}
+
+                            nextClassName={styles["page-item"]}
+
+                            pageClassName={styles["page-item"]}
+
+                            pageLinkClassName={styles["page-link"]}
+
+                            previousLinkClassName={styles["page-link"]}
+
+                            nextLinkClassName={styles["page-link"]}
+
+                            disabledClassName={styles["disabled"]}
+
+                        />
 
                     </div>
 

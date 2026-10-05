@@ -64,7 +64,7 @@ const NuevoServicio = ({ titleModule }) => {
                 setFilteredData(DataServicios);
 
             } else {
-
+                // Llamamos el router del mpdulo si no existe crealo
                 const routeName = 'NewService';
 
                 const response = await search_barModule(
@@ -89,11 +89,9 @@ const NuevoServicio = ({ titleModule }) => {
     };
 
     // -------------------- Paginación --------------------
-
     const dataToDisplay = filteredData;
-
     const offset = currentPage * itemsPerPage;
-
+    
     const currentData = useMemo(() => {
 
         return dataToDisplay.slice(

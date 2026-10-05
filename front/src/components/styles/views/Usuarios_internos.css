@@ -2,7 +2,7 @@
    CATEGORÍAS
    ========================================================= */
 
-.Roles-container {
+.usuarios_internos-container {
 
     width: 100%;
 
@@ -20,7 +20,7 @@
    HEADER
    ========================================================= */
 
-.Roles-header {
+.usuarios_internos-header {
 
     display: flex;
 
@@ -36,7 +36,7 @@
 }
 
 
-.Roles-header-title {
+.usuarios_internos-header-title {
 
     display: flex;
 
@@ -46,7 +46,7 @@
 }
 
 
-.Roles-icon {
+.usuarios_internos-icon {
 
     width: 42px;
 
@@ -68,7 +68,7 @@
 }
 
 
-.Roles-header-title h3 {
+.usuarios_internos-header-title h3 {
 
     margin: 0;
 
@@ -80,7 +80,7 @@
 }
 
 
-.Roles-header-title span {
+.usuarios_internos-header-title span {
 
     display: block;
 
@@ -96,7 +96,7 @@
    CONTADOR
    ========================================================= */
 
-.Roles-count {
+.usuarios_internos-count {
 
     display: flex;
 
@@ -108,7 +108,7 @@
 }
 
 
-.Roles-count strong {
+.usuarios_internos-count strong {
 
     font-size: 22px;
 
@@ -116,7 +116,7 @@
 }
 
 
-.Roles-count span {
+.usuarios_internos-count span {
 
     font-size: 12px;
 
@@ -128,7 +128,7 @@
    TOOLBAR
    ========================================================= */
 
-.Roles-toolbar {
+.usuarios_internos-toolbar {
 
     display: flex;
 
@@ -150,7 +150,7 @@
    BUSCADOR
    ========================================================= */
 
-.Roles-search {
+.usuarios_internos-search {
 
     flex: 1;
 
@@ -158,7 +158,7 @@
 }
 
 
-.Roles-search-icon {
+.usuarios_internos-search-icon {
 
     display: none;
 }
@@ -168,7 +168,7 @@
    BOTÓN AGREGAR
    ========================================================= */
 
-.Roles-btns {
+.usuarios_internos-btns {
 
     display: flex;
 
@@ -176,7 +176,7 @@
 }
 
 
-.Roles-btns button {
+.usuarios_internos-btns button {
 
     display: flex;
 
@@ -194,7 +194,7 @@
    CONTENIDO
    ========================================================= */
 
-.Roles-content {
+.usuarios_internos-content {
 
     padding: 20px;
 
@@ -202,7 +202,7 @@
 }
 
 
-.Roles-table-wrapper {
+.usuarios_internos-table-wrapper {
 
     width: 100%;
 
@@ -214,7 +214,7 @@
    TABLA
    ========================================================= */
 
-.Roles-tabla {
+.usuarios_internos-tabla {
 
     width: 100%;
 
@@ -228,7 +228,7 @@
 }
 
 
-.Roles-tabla thead th {
+.usuarios_internos-tabla thead th {
 
     padding: 12px 14px;
 
@@ -250,7 +250,7 @@
 }
 
 
-.Roles-tabla thead th:first-child {
+.usuarios_internos-tabla thead th:first-child {
 
     border-left: 1px solid #e5e7eb;
 
@@ -258,7 +258,7 @@
 }
 
 
-.Roles-tabla thead th:last-child {
+.usuarios_internos-tabla thead th:last-child {
 
     border-right: 1px solid #e5e7eb;
 
@@ -270,20 +270,20 @@
    FILAS
    ========================================================= */
 
-.Roles-tabla tbody tr {
+.usuarios_internos-tabla tbody tr {
 
     transition:
         background-color 0.2s ease;
 }
 
 
-.Roles-tabla tbody tr:hover {
+.usuarios_internos-tabla tbody tr:hover {
 
     background: #f8fbfe;
 }
 
 
-.Roles-tabla tbody td {
+.usuarios_internos-tabla tbody td {
 
     padding: 13px 14px;
 
@@ -299,7 +299,7 @@
    ID
    ========================================================= */
 
-.Roles-id {
+.toposper-id {
 
     width: 70px;
 
@@ -307,13 +307,13 @@
 }
 
 
-.Roles-id-cell {
+.toposper-id-cell {
 
     text-align: center;
 }
 
 
-.Roles-id-badge {
+.toposper-id-badge {
 
     display: inline-flex;
 
@@ -343,7 +343,7 @@
    NOMBRE
    ========================================================= */
 
-.Roles-name {
+.toposper-name {
 
     display: flex;
 
@@ -353,7 +353,7 @@
 }
 
 
-.Roles-name-icon {
+.toposper-name-icon {
 
     width: 32px;
 
@@ -375,7 +375,7 @@
 }
 
 
-.Roles-name strong {
+.toposper-name strong {
 
     color: #172033;
 
@@ -389,7 +389,7 @@
    DESCRIPCIÓN
    ========================================================= */
 
-.Roles-description {
+.toposper-description {
 
     color: #667085;
 
@@ -401,7 +401,7 @@
    ACCIONES
    ========================================================= */
 
-.Roles-actions {
+.toposper-actions {
 
     width: 180px;
 
@@ -409,7 +409,7 @@
 }
 
 
-.btns_option_Roles {
+.btns_option_usuarios_internos {
 
     display: flex;
 
@@ -423,7 +423,7 @@
 }
 
 
-.btns_option_Roles button {
+.btns_option_usuarios_internos button {
 
     display: inline-flex;
 
@@ -445,7 +445,7 @@
    ESTADO VACÍO
    ========================================================= */
 
-.Roles-empty {
+.usuarios_internos-empty {
 
     display: flex;
 
@@ -463,7 +463,7 @@
 }
 
 
-.Roles-empty-icon {
+.usuarios_internos-empty-icon {
 
     width: 55px;
 
@@ -487,7 +487,7 @@
 }
 
 
-.Roles-empty h4 {
+.usuarios_internos-empty h4 {
 
     margin: 0 0 5px;
 
@@ -497,7 +497,7 @@
 }
 
 
-.Roles-empty p {
+.usuarios_internos-empty p {
 
     margin: 0;
 
@@ -511,7 +511,7 @@
    PAGINACIÓN
    ========================================================= */
 
-.Roles-pagination {
+.usuarios_internos-pagination {
 
     display: flex;
 
@@ -521,7 +521,7 @@
 }
 
 
-.Roles-pagination .pagination {
+.usuarios_internos-pagination .pagination {
 
     display: flex;
 
@@ -533,13 +533,13 @@
 }
 
 
-.Roles-pagination .page-item {
+.usuarios_internos-pagination .page-item {
 
     list-style: none;
 }
 
 
-.Roles-pagination .page-link {
+.usuarios_internos-pagination .page-link {
 
     display: flex;
 
@@ -574,7 +574,7 @@
 }
 
 
-.Roles-pagination .page-link:hover {
+.usuarios_internos-pagination .page-link:hover {
 
     background: #f1f7fc;
 
@@ -584,7 +584,7 @@
 }
 
 
-.Roles-pagination .active .page-link {
+.usuarios_internos-pagination .active .page-link {
 
     background: #0A4578;
 
@@ -594,7 +594,7 @@
 }
 
 
-.Roles-pagination .disabled .page-link {
+.usuarios_internos-pagination .disabled .page-link {
 
     opacity: 0.45;
 
@@ -608,7 +608,7 @@
 
 @media (max-width: 700px) {
 
-    .Roles-header {
+    .usuarios_internos-header {
 
         align-items: flex-start;
 
@@ -617,7 +617,7 @@
     }
 
 
-    .Roles-toolbar {
+    .usuarios_internos-toolbar {
 
         flex-direction: column;
 
@@ -626,7 +626,7 @@
     }
 
 
-    .Roles-search {
+    .usuarios_internos-search {
 
         max-width: none;
 
@@ -635,21 +635,21 @@
     }
 
 
-    .Roles-btns {
+    .usuarios_internos-btns {
 
         justify-content: flex-end;
 
     }
 
 
-    .Roles-content {
+    .usuarios_internos-content {
 
         padding: 12px;
 
     }
 
 
-    .Roles-description {
+    .toposper-description {
 
         min-width: 180px;
 
@@ -660,49 +660,49 @@
 
 @media (max-width: 480px) {
 
-    .Roles-header {
+    .usuarios_internos-header {
 
         padding: 13px 14px;
 
     }
 
 
-    .Roles-header-title h3 {
+    .usuarios_internos-header-title h3 {
 
         font-size: 14px;
 
     }
 
 
-    .Roles-header-title span {
+    .usuarios_internos-header-title span {
 
         font-size: 11px;
 
     }
 
 
-    .Roles-count strong {
+    .usuarios_internos-count strong {
 
         font-size: 18px;
 
     }
 
 
-    .Roles-toolbar {
+    .usuarios_internos-toolbar {
 
         padding: 12px 14px;
 
     }
 
 
-    .Roles-btns {
+    .usuarios_internos-btns {
 
         justify-content: stretch;
 
     }
 
 
-    .Roles-btns button {
+    .usuarios_internos-btns button {
 
         width: 100%;
 
