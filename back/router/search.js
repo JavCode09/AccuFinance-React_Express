@@ -108,4 +108,64 @@ Router.post("/MyServices", async(req,res)=> {
     }
 })
 
+
+Router.post("/Permisos", async(req,res)=>{
+    const {searchQuery} = req.body;
+    try {
+        // Validar que 'searchQuery' esté presente
+        if (!searchQuery || searchQuery.trim() === "") {
+            return res.status(400).json({ message: "El parámetro 'searchQuery' es requerido." });
+        }
+        // console.log(searchQuery);
+        
+        // Consulta SQL: Buscar en la tabla 'categories' por nombre o descripción
+        const consulta = `SELECT * FROM permisos WHERE nombre LIKE ? `;
+
+        // Ejecutar la consulta con los valores de búsqueda seguros
+        connection.query(consulta, [`%${searchQuery}%`], (err, success) => {
+            if (err) {
+                // Si hay un error, lo mostramos
+                console.error("Error en la consulta: ", err);
+                return res.status(500).json({ message: "Error al realizar la búsqueda" });
+            }
+
+            // Si la consulta es exitosa, respondemos con los resultados
+            return res.status(200).json(success);
+        });
+    } catch (error) {
+        console.error("Error al procesar la búsqueda:", error);
+        return res.status(500).json({ message: "Error en mostrar los datos buscados, categories" });
+    }
+})
+
+
+Router.post("/Roles", async(req,res)=>{
+    const {searchQuery} = req.body;
+    try {
+        // Validar que 'searchQuery' esté presente
+        if (!searchQuery || searchQuery.trim() === "") {
+            return res.status(400).json({ message: "El parámetro 'searchQuery' es requerido." });
+        }
+        // console.log(searchQuery);
+        
+        // Consulta SQL: Buscar en la tabla 'categories' por nombre o descripción
+        const consulta = `SELECT * FROM roles WHERE nombre LIKE ? `;
+
+        // Ejecutar la consulta con los valores de búsqueda seguros
+        connection.query(consulta, [`%${searchQuery}%`], (err, success) => {
+            if (err) {
+                // Si hay un error, lo mostramos
+                console.error("Error en la consulta: ", err);
+                return res.status(500).json({ message: "Error al realizar la búsqueda" });
+            }
+
+            // Si la consulta es exitosa, respondemos con los resultados
+            return res.status(200).json(success);
+        });
+    } catch (error) {
+        console.error("Error al procesar la búsqueda:", error);
+        return res.status(500).json({ message: "Error en mostrar los datos buscados, roles" });
+    }
+})
+
 module.exports = Router;

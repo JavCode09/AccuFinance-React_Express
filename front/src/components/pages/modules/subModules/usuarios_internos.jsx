@@ -1,74 +1,461 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import ReactPaginate from 'react-paginate';
 
 // css 
-import styles from "../../../styles/views/Usuarios_internos.module.css";
+import "../../../styles/views/Usuarios_internos.css";
 
-// btns
+// Botones
+import SearchBar from '../../../common/search_engines/search_bar';
 import ButtonAdd from '../../../common/buttons/btn-add';
+import ButtonUpdate from '../../../common/buttons/btn-update';
+import ButtonDelete from '../../../common/buttons/btn-delete';
+
+//Modales
+import AddUsuariosInternos from '../../modals/usuariosInternos/add_UsuariosInternos';
+
+// Este modulo es el de usuarios internos 
+
+//API
+import { getUsuariosInternos } from '../../../api/usuariosInternos';
+
+// search
+import { search_barModule } from '../../../api/search_bar';
 
 const UsuariosInternos = ({titleModule}) => {
-    return ( 
-        <div className={styles["UsariosInternos-container"]}>
-    
-            <div className={styles["UsariosInternos-title"]}>
-                <h2>{titleModule}</h2>
-            </div>
 
-            <div className={styles["UsariosInternos-option"]}>
-                
-                <div className={styles["UsariosInternos-search"]}>
-                    {/* <SearchBar plaholderName="Mis Servicios" onSearch={handleSearch} />  */}
+    // Hook de estado para obtener datos
+    const [DataTipos,setDataTipos] = useState([]);
+    const [filteredData, setFilteredData] = useState([]); // Estado para datos filtrados (buscador)
+
+    // Hoks de paginacion
+    const [currentPage, setCurrentPage] = useState(0); // Página actual
+    const itemsPerPage = 8; // Elementos por página
+
+    useEffect(() => {
+        reloadTiposPermisos();
+    },[]);
+    
+    // Funcion para obtener permisos
+    const reloadTiposPermisos = async() => {
+        try {
+            const result = await getUsuariosInternos();
+            // console.log(result);
+            
+            if (result.success) {
+                setDataTipos(result.data);
+                setFilteredData(result.data);
+                setCurrentPage(0);
+            }
+
+        } catch (error) {
+            // console.error(error);
+            if (error.response?.status === 404) {
+                alert(error.response.data.message);
+            }else if(error.response?.status === 500){
+                alert(error.response.data.message);
+            }
+           
+        }
+    }
+
+    // Búsqueda
+    const handleSearch = async (query) => {
+        try {
+           if (query.trim() === "") {
+                setFilteredData(DataTipos);
+    
+            } else {
+                // Llamamos el router del mpdulo si no existe crealo
+                const routeName = 'Permisos';
+                const response = await search_barModule(
+                    { searchQuery: query },
+                    routeName
+                );
+                setFilteredData(response);
+            }
+                setCurrentPage(0);
+        } catch (error) {
+            console.error("Error al buscar servicios:", error);
+            setFilteredData([]);
+    
+        }
+    };
+
+    //----------------- Paginacion -----------
+    const dataToDisplay = filteredData;
+    const offset = currentPage * itemsPerPage;
+    
+    const currentData = useMemo(() => {
+        return dataToDisplay.slice(
+            offset,
+            offset + itemsPerPage
+        );
+    }, [dataToDisplay, offset]);
+        
+     
+    // Manejador de cambio de página
+    const handlePageClick = ({ selected }) => {
+        setCurrentPage(selected);
+    };
+    
+    // -------------------- Actualizaciones --------------------
+
+
+    // Renderizamos el registro agregado
+    const handleChangeAdd = (permisoAgregado) =>{
+        setDataTipos(prev => [
+            permisoAgregado,
+            ...prev
+        ]);
+
+        setFilteredData(prev => [
+            permisoAgregado,
+            ...prev
+        ]);
+    }
+
+    // Renderizamos el registro actualizado 
+    const handleChangeUpdate = (permisoActualizado) => {
+        
+        setDataTipos(prev =>
+            prev.map(permiso =>
+                permiso.id === permisoActualizado.id
+                    ? permisoActualizado 
+                    : permiso
+            )
+        );
+
+        setFilteredData(prev =>
+            prev.map(permiso =>
+                permiso.id === permisoActualizado.id
+                    ? permisoActualizado 
+                    : permiso
+            )
+        );
+    }
+
+    // Renderizamos el registro eliminado
+    const handleChangeDelete = (permisoEliminado) => {
+        // console.log("entro a la elimincacion");
+        
+        setDataTipos(prev =>
+            prev.filter(permiso => 
+                permiso.id !== permisoEliminado.id
+            )
+        );
+
+        setFilteredData(prev =>
+            prev.filter(permiso =>
+                permiso.id !== permisoEliminado.id
+            )
+        );
+    }   
+    //-------------------- Fin Paginacion --------------------
+
+     return (
+
+        <div className="TiposPermisos-container">
+
+            {/* =====================================================
+                HEADER DE LA SECCIÓN
+            ====================================================== */}
+
+            <div className="TiposPermisos-header">
+
+                <div className="TiposPermisos-header-title">
+
+                    <div className="TiposPermisos-icon">
+
+                        <i className="fa fa-folder-open"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            {titleModule}
+                        </h3>
+
+                        <span>
+                            Clasificación de servicios y operaciones
+                        </span>
+
+                    </div>
+
                 </div>
 
-                <div className={styles["UsariosInternos-btns"]}>
-                    <ButtonAdd 
-                            size={"sm"}  
-                            value={"Nuevo Usuario"} 
-                            title={"Agregar"}
+
+                {/* Contador */}
+
+                <div className="TiposPermisos-count">
+
+                    <strong>
+                        {filteredData.length}
+                    </strong>
+
+                    <span>
+                        {filteredData.length === 1
+                            ? ' Usuario Interno'
+                            : ' Usuarios Internos'
+                        }
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            {/* =====================================================
+                BARRA DE HERRAMIENTAS
+            ====================================================== */}
+
+            <div className="TiposPermisos-toolbar">
+
+                <div className="TiposPermisos-search">
+
+                    <div className="TiposPermisos-search-icon">
+
+                        <i className="fa fa-search"></i>
+
+                    </div>
+
+                    <SearchBar
+                        plaholderName="Permisos"
+                        onSearch={handleSearch}
+                    />
+
+                </div>
+
+
+                <div className="TiposPermisos-btns">
+                    < ButtonAdd
+                        size={"sm"}
+                        title={"Nuevo Usuario Interno"}
+                        value={"Nuevo Usuario Interno"}
+                        ModalComponent={AddUsuariosInternos}
+                        getData={handleChangeAdd}
                     />
                 </div>
 
             </div>
 
-            <div className={styles["UsariosInternos-content"]}>
-        
-                <table className={styles["UsariosInternos-tabla"]}>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Usuario</th>
-                            <th>Descripcion</th>
-                            <th>Rol</th>
-                            <th>Opciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+
+            {/* =====================================================
+                CONTENIDO
+            ====================================================== */}
+
+            <div className="TiposPermisos-content">
+
+                {currentData.length > 0 ? (
+                    
+                    <div className="TiposPermisos-table-wrapper">
+
+                        <table className="TiposPermisos-tabla">
+
+                            <thead>
+
+                                <tr>
+                                    <th className="toposper-id">ID</th>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
+                                    <th>Rol</th>
+                                    <th>Estatus</th>
+                                    <th className="toposper-actions">Acciones</th>
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {currentData.map((dataPer) => (
+
+                                    <tr key={dataPer.id}>
+
+                                        <td className="toposper-id-cell">
+
+                                            <span className="toposper-id-badge">
+                                                {dataPer.id}
+                                            </span>
+
+                                        </td>
+
+
+                                        <td>
+
+                                            <div className="toposper-name">
+
+                                                <div className="toposper-name-icon">
+
+                                                    <i className="fa fa-user" aria-hidden="true"></i>
+
+                                                </div>
+
+                                                <strong>
+                                                    {dataPer.nombre}
+                                                </strong>
+
+                                            </div>
+
+                                        </td>
+
+                                        <td>
+
+                                            <div className="toposper-name">
+                                                <strong>
+                                                    {dataPer.email}
+                                                </strong>
+
+                                            </div>
+
+                                        </td>
+
+                                        <td>
+
+                                            <div className="toposper-name">
+                                                <strong>
+                                                    {dataPer.rol_nombre}
+                                                </strong>
+
+                                            </div>
+
+                                        </td>
+
+                                        <td>
+
+                                            <div className="toposper-name">
+                                                <strong>
+                                                    {dataPer.status === 1 ? "Activo" : "Inactivo"}
+                                                </strong>
+
+                                            </div>
+
+                                        </td>
+                                        
+                                        <td>
+
+                                            <div className="btns_option_TiposPermisos">
+                                                <ButtonUpdate 
+                                                    
+                                                    category= {dataPer.id}
+                                                    size={"sm"}
+                                                    title={"Actualizar permiso"}
+                                                    value={"Actualizar"}
+                                                    updateInfo={handleChangeUpdate}
+                                                    
+                                                />
+                                                <ButtonDelete 
+                                                   
+                                                    category={dataPer}
+                                                    size={"sm"}
+                                                    title={"Eliminar permiso"}
+                                                    value={"Eliminar"}
+                                                    getDataDelete={handleChangeDelete}
+                                                />
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                ))}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                ) : (
+
+                    /* =================================================
+                    ESTADO VACÍO
+                    ================================================== */
+
+                    <div className="topospers-empty">
+
+                        <div className="topospers-empty-icon">
+
+                            <i className="fa fa-folder-open"></i>
+
+                        </div>
+
+                        <h4>
+                            No se encontraron permisos
+                        </h4>
+
+                        <p>
+                            {filteredData.length === 0 &&
+                            DataTipos.length > 0
+                                ? 'Intenta realizar otra búsqueda.'
+                                : 'Agrega un tipo de permiso para comenzar.'
+                            }
+                        </p>
                         
-                
-                    </tbody>
-                </table>
-                {/* <ReactPaginate
-                   previousLabel={"Anterior"}
-                   nextLabel={"Siguiente"}
-                   breakLabel={"..."}
-                   pageCount={Math.ceil(DataUsariosInternos.length / itemsPerPage)}
-                   marginPagesDisplayed={2}
-                   pageRangeDisplayed={3}
-                   onPageChange={handlePageClick}
-                //    forcePage={currentPage} // <-- Agregar esto para que se actualice correctamente
-                   containerClassName={"pagination justify-content-center"} // Clase para el contenedor
-                   activeClassName={"active"} // Clase para la página activa
-                   previousClassName={"page-item previous"} // Clase para el contenedor de "Anterior"
-                   nextClassName={"page-item next"} // Clase para el contenedor de "Siguiente"
-                   pageClassName={"page-item"} // Clase para los contenedores de páginas numeradas
-                   pageLinkClassName={"page-link"} // Clase para los enlaces de las páginas numeradas
-                   previousLinkClassName={"page-link"} // Clase para el enlace de "Anterior"
-                   nextLinkClassName={"page-link"} // Clase para el enlace de "Siguiente"
-                   disabledClassName={"disabled"} // Clase para los botones deshabilitados
-                /> */}
+
+                    </div>
+
+                )}
+
+
+                {/* =================================================
+                    PAGINACIÓN
+                ================================================== */}
+
+                {filteredData.length > itemsPerPage && (
+
+                    <div className="TiposPermisos-pagination">
+
+                        <ReactPaginate
+
+                            previousLabel="Anterior"
+
+                            nextLabel="Siguiente"
+
+                            breakLabel="..."
+
+                            pageCount={
+                                Math.ceil(
+                                    filteredData.length /
+                                    itemsPerPage
+                                )
+                            }
+
+                            marginPagesDisplayed={2}
+
+                            pageRangeDisplayed={3}
+
+                            onPageChange={handlePageClick}
+
+                            containerClassName="pagination"
+
+                            activeClassName="active"
+
+                            previousClassName="page-item"
+
+                            nextClassName="page-item"
+
+                            pageClassName="page-item"
+
+                            pageLinkClassName="page-link"
+
+                            previousLinkClassName="page-link"
+
+                            nextLinkClassName="page-link"
+
+                            disabledClassName="disabled"
+
+                        />
+
+                    </div>
+
+                )}
+
             </div>
+
         </div>
-     );
+
+    );
 }
  
 export default UsuariosInternos;
