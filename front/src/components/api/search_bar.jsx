@@ -1,9 +1,8 @@
 import config from "./config";
 
-const token = localStorage.getItem("token");
-
 export const search_barModule = async (formData, routeName) => {
     try {
+        const token = localStorage.getItem("token");
         const response = await fetch(`${config.API_URL}search/${routeName}`, {
             method: "POST",
             headers: {
@@ -22,4 +21,3 @@ export const search_barModule = async (formData, routeName) => {
         throw error;
     }
 };
-

@@ -12,6 +12,8 @@ import ButtonDelete from '../../../common/buttons/btn-delete';
 
 //Modales
 import AddUsuariosInternos from '../../modals/usuariosInternos/add_UsuariosInternos';
+import UpdateUsuariosInternos from '../../modals/usuariosInternos/update_UsuariosInternos';
+import DeleteUsuariosInternos from '../../modals/usuariosInternos/delete_UsuariosInternos';
 
 // Este modulo es el de usuarios internos 
 
@@ -66,7 +68,7 @@ const UsuariosInternos = ({titleModule}) => {
     
             } else {
                 // Llamamos el router del mpdulo si no existe crealo
-                const routeName = 'Permisos';
+                const routeName = 'UsuariosInternos';
                 const response = await search_barModule(
                     { searchQuery: query },
                     routeName
@@ -335,21 +337,20 @@ const UsuariosInternos = ({titleModule}) => {
                                         <td>
 
                                             <div className="btns_option_TiposPermisos">
-                                                <ButtonUpdate 
-                                                    
-                                                    category= {dataPer.id}
-                                                    size={"sm"}
-                                                    title={"Actualizar permiso"}
-                                                    value={"Actualizar"}
-                                                    updateInfo={handleChangeUpdate}
-                                                    
-                                                />
-                                                <ButtonDelete 
-                                                   
+                                                <ButtonUpdate
+                                                    ModalCategoriesUpdate={UpdateUsuariosInternos}
                                                     category={dataPer}
                                                     size={"sm"}
-                                                    title={"Eliminar permiso"}
-                                                    value={"Eliminar"}
+                                                    title={"Actualizar usuario interno"}
+                                                    value={"Actualizar"}
+                                                    updateInfo={handleChangeUpdate}
+                                                />
+                                                <ButtonDelete
+                                                    ModalCategoriesDelete={DeleteUsuariosInternos}
+                                                    category={dataPer}
+                                                    size={"sm"}
+                                                    title={"Desactivar usuario interno"}
+                                                    value={"Desactivar"}
                                                     getDataDelete={handleChangeDelete}
                                                 />
                                             </div>
