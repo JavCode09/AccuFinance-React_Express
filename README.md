@@ -1,70 +1,67 @@
-# Getting Started with Create React App
+# AccuFinance
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+AccuFinance es una aplicación web para administrar categorías y servicios, registrar servicios personales y organizar planes de pago. Incluye inicio de sesión, registro y pantallas de administración de roles, permisos y usuarios internos.
 
-## Available Scripts
+## Arquitectura
 
-In the project directory, you can run:
+El repositorio contiene dos aplicaciones:
 
-### `npm start`
+- `front/`: cliente React 18 creado con Create React App y React Router.
+- `back/`: API Node.js 20 y Express 4, conectada a MySQL.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+La documentación técnica y los hallazgos pendientes están en [`docs_auditoria/`](./docs_auditoria/):
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- [Arquitectura](./docs_auditoria/ARCHITECTURE.md)
+- [Deuda técnica](./docs_auditoria/TECHNICAL_DEBT.md)
+- [Auditoría de seguridad](./docs_auditoria/SECURITY_AUDIT.md)
 
-### `npm test`
+## Requisitos
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Node.js 20.19.0, indicado por los archivos `.nvmrc` de `front/` y `back/`.
+- MySQL con un esquema compatible con las consultas de `back/DB_querys/querys.sql`.
+- Variables de entorno del backend para el puerto, la conexión a MySQL y la clave JWT. No se incluyen valores de ejemplo porque el repositorio no contiene una plantilla de entorno segura.
 
-### `npm run build`
+## Instalación
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Instala las dependencias por separado en cada aplicación:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```sh
+cd back
+npm install
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```sh
+cd front
+npm install
+```
 
-### `npm run eject`
+Configura las variables requeridas para el backend en el entorno local antes de iniciarlo. El código espera `PORT`, `HOST`, `USER`, `PASS`, `DB` y `SECRET_KEY`. No uses credenciales de producción en desarrollo.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Ejecución en desarrollo
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Inicia el backend desde `back/`:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```sh
+npm start
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+También está disponible `npm run server`, que ejecuta Nodemon.
 
-## Learn More
+En otra terminal, inicia el frontend desde `front/`:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```sh
+npm start
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+El frontend usa Create React App y su servidor de desarrollo predeterminado. La URL de API está configurada actualmente en `front/src/components/api/config.jsx`; revisa esa configuración junto con el origen CORS del backend si el entorno local difiere.
 
-### Code Splitting
+## Pruebas y compilación
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Desde `front/`, están configurados:
 
-### Analyzing the Bundle Size
+```sh
+npm test
+npm run build
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+El backend no cuenta actualmente con una suite de pruebas: su script `npm test` termina indicando que no hay pruebas configuradas.

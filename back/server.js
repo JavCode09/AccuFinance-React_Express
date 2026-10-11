@@ -35,11 +35,12 @@ app.use("/myServices",verifyToken , require("./router/myServices"));
 
 app.use("/myServicesPanle", verifyToken, require("./router/myServicesPanle"));
 
-app.use("/UsuariosInternos", require("./router/usuariosInternos"));
+app.use("/UsuariosInternos", verifyToken, require("./router/usuariosInternos"));
+
+app.use("/permisos",verifyToken,require("./router/permisos"));
 
 app.use("/roles",require("./router/roles"));
 
-app.use("/permisos",require("./router/permisos"));
 
 
 //Buscador de modulos simple

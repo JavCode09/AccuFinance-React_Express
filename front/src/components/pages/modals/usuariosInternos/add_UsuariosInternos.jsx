@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Modal } from 'react-bootstrap';
-
-//Jquery y select2 para selectores
-import $, { initSelect2, destroySelect2 } from '../../../../utils/jqueryYselect2';
+import { Alert, Button, Modal } from 'react-bootstrap';
 
 
 // apis
-import { getRoles } from '../../../api/usuariosInternos';
+import { addUsuarioInterno, getRoles } from '../../../api/usuariosInternos';
 
 
 
-const AddUsuariosInternos = ({showModal, closeModal}) => {
+const AddUsuariosInternos = ({showModal, closeModal, getData}) => {
 
     const [data, setData] = useState({
         nombre:"",
@@ -24,6 +21,8 @@ const AddUsuariosInternos = ({showModal, closeModal}) => {
 
     // Hook de estado para roles
     const [dataRoles, setDataRoles] = useState([])
+    const [errorMessage, setErrorMessage] = useState("");
+    const [saving, setSaving] = useState(false);
 
     useEffect(()=>{
 
@@ -36,18 +35,13 @@ const AddUsuariosInternos = ({showModal, closeModal}) => {
     const queryRoles = async() => {
         try {
             const getqueryRoles = await getRoles();
-            console.log(getqueryRoles);
             if (getqueryRoles.success) {
-                setDataRoles(getqueryRoles.data);
+                setDataRoles(getqueryRoles.data.filter(
+                    (rol) => Number(rol.id) !== 1 && Number(rol.id) !== 2
+                ));
             }
         } catch (error) {
-            if (error.response?.status === 400) {
-                 alert(error.response.data.message);
-            }else if(error.response?.status === 500){
-                alert(error.response.data.message);
-            }else{
-                alert(error.response.data.message);
-            }
+            setErrorMessage(error.response?.data?.message || error.message);
         }
     }
 
@@ -63,9 +57,29 @@ const AddUsuariosInternos = ({showModal, closeModal}) => {
 
 
 
-    const queryAddUI = (e) => {
+    const queryAddUI = async (e) => {
         e.preventDefault();
+        setErrorMessage("");
+        setSaving(true);
 
+        try {
+            const result = await addUsuarioInterno(data);
+            getData(result.data);
+            setData({
+                nombre: "",
+                apellido_paterno: "",
+                apellido_materno: "",
+                email: "",
+                rol: "",
+                password: "",
+                passwordVe: ""
+            });
+            closeModal();
+        } catch (error) {
+            setErrorMessage(error.response?.data?.message || error.message);
+        } finally {
+            setSaving(false);
+        }
     }
 
     return ( 
@@ -75,6 +89,7 @@ const AddUsuariosInternos = ({showModal, closeModal}) => {
             </Modal.Header>
             <form onSubmit={queryAddUI}>
                 <Modal.Body>
+                    {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
                     <div className="mb-3">
                         <label htmlFor="nombre" className='form-label label'>Nombre</label>
                         <input type="text" className='form-control input' placeholder="Nombres" 
@@ -82,6 +97,8 @@ const AddUsuariosInternos = ({showModal, closeModal}) => {
                             name='nombre'
                             value={data.nombre || ''}
                             onChange={handleChange}
+                            required
+                            maxLength={100}
                         />
                     </div>
                     <div className="mb-3 d-flex">
@@ -92,6 +109,8 @@ const AddUsuariosInternos = ({showModal, closeModal}) => {
                                 name='apellido_paterno'
                                 value={data.apellido_paterno || ''}
                                 onChange={handleChange}
+                                required
+                                maxLength={100}
                             />
                         </div>
                         <div className="col me-3">
@@ -101,6 +120,8 @@ const AddUsuariosInternos = ({showModal, closeModal}) => {
                                 name='apellido_materno'
                                 value={data.apellido_materno || ''}
                                 onChange={handleChange}
+                                required
+                                maxLength={100}
                             />
                         </div>
                     </div>
@@ -111,6 +132,8 @@ const AddUsuariosInternos = ({showModal, closeModal}) => {
                             name='email'
                             value={data.email || ''}
                             onChange={handleChange}
+                            required
+                            maxLength={100}
                         />
                     </div>
                     <div className="mb-3">
@@ -120,6 +143,7 @@ const AddUsuariosInternos = ({showModal, closeModal}) => {
                                     id="rol"
                                     value={data.rol || ''}
                                     onChange={handleChange}
+                                    required
                             >
                                 <option value="">Selecciona un rol</option>
                                 {   dataRoles.map((rol) => (
@@ -136,6 +160,7 @@ const AddUsuariosInternos = ({showModal, closeModal}) => {
                                 name='password'
                                 value={data.password || ''}
                                 onChange={handleChange}
+                                required
                             />
                         </div>
 
@@ -146,13 +171,16 @@ const AddUsuariosInternos = ({showModal, closeModal}) => {
                                 name='passwordVe'
                                 value={data.passwordVe || ''}
                                 onChange={handleChange}
+                                required
                             />
                         </div>
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={closeModal}>Cancelar</Button>
-                    <Button variant="primary" type="submit">Agregar</Button>
+                    <Button variant="secondary" onClick={closeModal} disabled={saving}>Cancelar</Button>
+                    <Button variant="primary" type="submit" disabled={saving}>
+                        {saving ? "Guardando..." : "Agregar"}
+                    </Button>
                 </Modal.Footer>
             </form>
         </Modal>
