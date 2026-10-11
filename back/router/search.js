@@ -138,6 +138,51 @@ Router.post("/Permisos", async(req,res)=>{
     }
 })
 
+Router.post("/UsuariosInternos", async(req,res)=>{
+    const {searchQuery} = req.body;
+    try {
+        if (!searchQuery || searchQuery.trim() === "") {
+            return res.status(400).json({ message: "El parámetro 'searchQuery' es requerido." });
+        }
+
+        const consulta = `
+            SELECT
+                ui.id,
+                ui.nombre,
+                ui.apellido_paterno,
+                ui.apellido_materno,
+                ui.email,
+                ui.rol,
+                ui.status,
+                ui.registro,
+                roles.nombre AS rol_nombre
+            FROM user_access_log ui
+            LEFT JOIN roles ON ui.rol = roles.id
+            WHERE ui.nombre LIKE ?
+                OR ui.apellido_paterno LIKE ?
+                OR ui.apellido_materno LIKE ?
+            ORDER BY ui.id DESC
+        `;
+        const termino = `%${searchQuery.trim()}%`;
+
+        connection.query(
+            consulta,
+            [termino, termino, termino],
+            (err, success) => {
+                if (err) {
+                    console.error("Error en la consulta: ", err);
+                    return res.status(500).json({ message: "Error al realizar la búsqueda" });
+                }
+
+                return res.status(200).json(success);
+            }
+        );
+    } catch (error) {
+        console.error("Error al procesar la búsqueda:", error);
+        return res.status(500).json({ message: "Error en mostrar los datos buscados, usuarios internos" });
+    }
+})
+
 
 Router.post("/Roles", async(req,res)=>{
     const {searchQuery} = req.body;
