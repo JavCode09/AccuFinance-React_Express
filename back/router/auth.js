@@ -9,6 +9,7 @@ const {query, beginTransaction, commit, rollback } = require("../conexion");
 
 const tabla = 'users';
 const tabla_personal = 'user_access_log';
+const mensajeRegistro = "Solicitud recibida. Si el correo es elegible, podrás iniciar sesión.";
 const tabla_roles_permisos = 'rol_permisos';
 const tabla_permisos = 'permisos';
 const tabla_modulos = 'modulos';
@@ -21,98 +22,131 @@ const SECRET_KEY = process.env.SECRET_KEY; // Cambiar por una clave segura
 
 // Define la ruta POST para registro
 Router.post("/registro", async (req, res) => {
-    let { nombre, apellido_paterno, apellido_materno, email, password, verificar_password } = req.body;
+    const {
+        nombre: nombreInput,
+        apellido_paterno: apellidoPaternoInput,
+        apellido_materno: apellidoMaternoInput,
+        email: emailInput,
+        password,
+        verificar_password: verificarPassword
+    } = req.body || {};
     const saltRounds = 10;
-
-    nombre = nombre?.trim();
-    apellido_paterno = apellido_paterno?.trim();
-    apellido_materno = apellido_materno?.trim();
-    email = email?.trim();
-
-    // Iniciamos transaccion 
-    await beginTransaction();
+    let transactionStarted = false;
 
     try {
-        const password_hash = await bcrypt.hash(password, saltRounds);
-
-        // Validar que no exista el correo electronico
-        const consulta1 = `SELECT email FROM ${tabla} WHERE email = ?`;
-        const result1 = await query(consulta1, [email]);
-        
-        if (!result1 && result1.length > 0) {
-            throw new HttpError("El correo electronico ya existe en el sistema," , 409);
+        if (![nombreInput, apellidoPaternoInput, apellidoMaternoInput, emailInput, password, verificarPassword]
+            .every(value => typeof value === "string")) {
+            throw new HttpError("Completa todos los campos con valores válidos.", 400);
         }
+
+        const nombre = nombreInput.trim();
+        const apellido_paterno = apellidoPaternoInput.trim();
+        const apellido_materno = apellidoMaternoInput.trim();
+        const email = emailInput.trim();
 
         if (!nombre) {
-            throw HttpError("El campo nombre está vacío." , 400);
+            throw new HttpError("El campo nombre está vacío.", 400);
         }
 
-        if(!regexNombre.test(nombre)){
-            throw HttpError("El nombre contiene caracteres inválidos.", 400);
+        if (!regexNombre.test(nombre)) {
+            throw new HttpError("El nombre contiene caracteres inválidos.", 400);
         }
 
         if (!apellido_paterno) {
-            throw HttpError("El campo apellido paterno está vacío." , 400);
+            throw new HttpError("El campo apellido paterno está vacío.", 400);
         }
 
-        if(!regexNombre.test(apellido_paterno)){
-            throw HttpError("El apellido paterno contiene caracteres inválidos.", 400);
+        if (!regexNombre.test(apellido_paterno)) {
+            throw new HttpError("El apellido paterno contiene caracteres inválidos.", 400);
         }
 
-       if (!apellido_materno) {
-        throw HttpError("El campo apellido materno está vacío." , 400);
-       }
-
-        if(!regexNombre.test(apellido_materno)){
-            throw HttpError("El apellido materno contiene caracteres inválidos.", 400);
+        if (!apellido_materno) {
+            throw new HttpError("El campo apellido materno está vacío.", 400);
         }
 
-        if(!password){
-            throw HttpError("El campo password está vacío.", 400);
+        if (!regexNombre.test(apellido_materno)) {
+            throw new HttpError("El apellido materno contiene caracteres inválidos.", 400);
+        }
+
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            throw new HttpError("Introduce un correo electrónico válido.", 400);
+        }
+
+        if (!password) {
+            throw new HttpError("El campo password está vacío.", 400);
         }
 
         if (!/^[A-Z]/.test(password)) {
-            throw HttpError("La password debe iniciar con una letra mayúscula.", 400);
+            throw new HttpError("La password debe iniciar con una letra mayúscula.", 400);
         }
 
         if (!/^[A-Za-z0-9]+$/.test(password)) {
-            throw HttpError("En la password solo se permiten letras y números.", 400);
+            throw new HttpError("En la password solo se permiten letras y números.", 400);
         }
 
         if (password.length < 8) {
-            throw HttpError("El password debe de tener 8 caracteres como minimo.", 400);
-        }
-            
-        if (password !== verificar_password) {
-            throw HttpError("Las contraseñas no coinciden.", 400);  
+            throw new HttpError("El password debe de tener 8 caracteres como mínimo.", 400);
         }
 
-        // throw new HttpError("Error simulado", 500);
+        if (Buffer.byteLength(password, "utf8") > 72) {
+            throw new HttpError("El password no puede exceder 72 caracteres.", 400);
+        }
 
-        //Consulta
-        const consulta2 = `INSERT INTO ${tabla} (nombre,apellido_paterno,apellido_materno,email,password) VALUES (?,?,?,?,?)`;
+        if (password !== verificarPassword) {
+            throw new HttpError("Las contraseñas no coinciden.", 400);
+        }
+
+        await beginTransaction();
+        transactionStarted = true;
+
+        const registeredUsers = await query(`SELECT email FROM ${tabla} WHERE email = ?`, [email]);
+        const internalUsers = await query(`SELECT email FROM ${tabla_personal} WHERE email = ?`, [email]);
+
+        if (registeredUsers.length > 0 || internalUsers.length > 0) {
+            await rollback();
+            transactionStarted = false;
+            return res.status(200).json({ message: mensajeRegistro });
+        }
+
+        const password_hash = await bcrypt.hash(password, saltRounds);
+
+        const consulta2 = `INSERT INTO ${tabla} (nombre,apellido_paterno,apellido_materno,email,password,rol) VALUES (?,?,?,?,?,?)`;
         const result2 = await query(consulta2, [nombre,
                                               apellido_paterno,
                                               apellido_materno,
                                               email,
-                                              password_hash
+                                              password_hash,
+                                              2
                                             ]);
-        
+
         if (!result2 || result2.affectedRows === 0) {
             throw new HttpError(`Error al insertar en la BD, tabla ${tabla}: Formulario de registros`, 500);
         }
 
         await commit();
+        transactionStarted = false;
 
-        res.status(201).json({ 
-            message: `Registro creado correctamente` 
+        res.status(200).json({
+            message: mensajeRegistro
         });
 
     } catch (error) {
-        await rollback();
+        if (transactionStarted) {
+            try {
+                await rollback();
+            } catch (rollbackError) {
+                console.error("Error al revertir la transacción de registro.", rollbackError);
+            }
+        }
 
         console.error(`Error en la operación, Tabla: ${tabla}`, error);
-    
+
+        if (error.code === "ER_DUP_ENTRY") {
+            return res.status(200).json({
+                message: mensajeRegistro
+            });
+        }
+
         const status = error.status || 500;
 
         return res.status(status).json({
@@ -126,30 +160,34 @@ Router.post("/registro", async (req, res) => {
 
 //Login 
 Router.post("/login", async (req, res) => {
-    const { usuario, contrasena } = req.body;
+    const { usuario, contrasena } = req.body || {};
 
     try {
-        if (!usuario) {
-            throw new HttpError("El campo usuario esta vacio.", 400);
+        if (typeof usuario !== "string" || !usuario.trim()) {
+            throw new HttpError("El campo usuario está vacío.", 400);
         }
 
-        if (!contrasena) {
-            throw new HttpError("El campo Password esta vacio.",400);
+        if (typeof contrasena !== "string" || !contrasena) {
+            throw new HttpError("El campo password está vacío.", 400);
         }
 
         // Consultamos el usuario por email
         let usuarioEncontrado = null;
-        
+        const email = usuario.trim();
+
         const consulta1 = `SELECT * FROM ${tabla} WHERE email = ?`;
-        const result1 = await query(consulta1, [usuario]);
+        const result1 = await query(consulta1, [email]);
 
         if (result1.length !== 0) {
            usuarioEncontrado = result1[0];
         }else{
             const consulta2 = `SELECT * FROM ${tabla_personal} WHERE email = ?`;
-            const result2 = await query(consulta2,[usuario])
+            const result2 = await query(consulta2,[email])
 
-            if (result2.length === 0) { throw new HttpError("No se encontro ningun usuario con esas credenciales.", 400); }
+            if (result2.length === 0) {
+                await bcrypt.hash(contrasena.slice(0, 18), 10);
+                throw new HttpError("Correo o contraseña incorrectos.", 401);
+            }
 
             usuarioEncontrado = result2[0];
         }
@@ -160,12 +198,12 @@ Router.post("/login", async (req, res) => {
         const password_verify = await bcrypt.compare(contrasena, password_hash);
 
         if (!password_verify) {
-            throw new HttpError("Contraseña Incorrecta.", 400);
+            throw new HttpError("Correo o contraseña incorrectos.", 401);
         }
 
         // Verificamos status (1:Activo , 2: Inactivo)
         if (usuarioEncontrado.status !== 1) {
-            throw new HttpError("Tu cuenta ha sido desactivada. Ponte en contacto con el servicio al cliente.", 403);
+            throw new HttpError("Correo o contraseña incorrectos.", 401);
         }
 
         // Obtenemos permisos del rol y los modulos ocn sus caracteristicas
@@ -282,7 +320,7 @@ Router.post("/login", async (req, res) => {
 
         return res.status(status).json({
             message: status === 500
-                ? `Ocurrió un error al realizar la operación. Tabla: ${tabla} O  Tabla: ${tabla_personal}  O enpoint login`
+                ? "Ocurrió un error inesperado, por favor inténtalo más tarde."
                 : error.message
         });
 

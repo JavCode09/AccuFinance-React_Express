@@ -5,6 +5,17 @@ const Router = express.Router();
 // Conexion a bd junto cin transaccion comit y rollback
 const {query, beginTransaction, commit, rollback } = require("../conexion");
 
+Router.use((req, res, next) => {
+    if (req.user.rol !== 1) {
+        return res.status(403).json({
+            success: false,
+            message: "No autorizado para administrar permisos."
+        });
+    }
+
+    next();
+});
+
 // Obtenemos lo informacion
 Router.get("/", async (req,res) => {
     try {

@@ -1,248 +1,413 @@
-.Container{
+.Container {
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* empieza arriba */
-    align-items: center; 
     min-height: 100vh;
     width: 100%;
-    background-color: #1862E2;
+    overflow: hidden;
+    background: #f4f7fc;
+    color: #17243b;
+}
+
+.brandPanel {
     position: relative;
-    overflow: hidden; /* opcional si quieres que no sobresalga */
+    display: flex;
+    flex: 0 0 42%;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+    padding: 56px clamp(32px, 7vw, 104px);
+    background: linear-gradient(145deg, #124eb7 0%, #1862e2 58%, #2876ed 100%);
+    color: #ffffff;
 }
 
-.title{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-  margin-top: 40px;
-
-}
-    .titlePage{
-        font-size: 50px; /* Tamaño del texto, ajusta según sea necesario */
-        font-weight: bold;
-        color: #ffffff;
-    }
-
-    .SubTitle{
-        font-size: 15px;
-        font-weight: bold;
-        color: #ffffff;
-    }
-
-.formularioLoginRe{
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 columnas */
-    gap: 20px;
+.brandContent {
+    position: relative;
+    z-index: 2;
     width: 100%;
-    max-width: 500px; /* 🔥 clave */
-    margin-top: 120px;
-    margin-bottom: auto;
-    background-color: rgba(0, 94, 255, 0.1);
-    border-radius: 17px;
-    box-shadow: -1px -1px 15px rgba(247, 184, 1,1.5);
-    padding: 10px;
-    position: relative;
-    z-index: 10;
-}
-    /* campos normales */
-    .groupF{
-        display: flex;
-        flex-direction: column;
-    }
-
-    /* campo que ocupa las 2 columnas */
-    .full{
-        grid-column: span 2;
-    }
-
-    /* si algún día quieres 3 columnas */
-    .three{
-        grid-column: span 3;
-    }
-
-    /* Estilos label e inputas para todo el modulo */
-    .label{
-        color: #ffffff;
-        font-weight: bold;
-    }
-    
-    .input{
-        color: #000000;
-        padding: 5px;
-        border-radius: 10px;
-        border: 2px solid transparent;
-        outline: none;
-        padding-left: 10px;
-        padding-right: 10px;
-        transition: border 0.3s ease;
-        cursor: pointer;
-    }
-
-    .input:hover{
-        border: 2px solid #F7B801;
-    }
-    .input:focus{
-        border: 2px solid #F7B801;
-    }
-
-    /* Estilos de los compoentes del formulario */
-    .titleLogin{
-        text-align: center;
-        font-size: 20px;
-        font-weight: bold;
-        color: #ffffff;
-        margin-bottom: 20px;
-    }
-
-
-    /* El estilo de los bootnes son react-bootstrap  */
-    .btnLogin{
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-    }
-    
-/* -------- Animacion */
-
-    section .wave{
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 100px;
-        background: url(styles-animation/imagenes/wave.png);
-        background-size: 1000px 100px;
-        z-index: 1; /* importante */
-        pointer-events: none; /* evita que bloquee clicks */
-    }
-
-    section .wave.wave1{
-        animation: animate 25s linear infinite;
-        z-index: 1;
-        opacity: 1;
-        animation-delay: 0s;
-        bottom: 0;
-    }
-    section .wave.wave2{
-        animation: animate2 5s linear infinite;
-        z-index: 1;
-        opacity: 0.5;
-        animation-delay: -5s;
-        bottom: 10px;
-    }
-    section .wave.wave3{
-        animation: animate 25s linear infinite;
-        z-index: 1;
-        opacity: 0.2;
-        animation-delay: -2s;
-        bottom: 15px;
-    }
-    section .wave.wave4{
-        animation: animate2 5s linear infinite;
-        z-index: 1;
-        opacity: 0.7;
-        animation-delay: -5s;
-        bottom: 20px;
-    }
-    @keyframes animate {
-        0%
-        {
-            background-position-x: 0;
-        }
-        100%
-        {
-            background-position-x: 1000px;
-        }
-    }
-
-    /* Responsivo */
-    /* =========================
-   TABLET (<= 1024px)
-========================= */
-@media (max-width: 1024px){
-
-    .titlePage{
-        font-size: 40px;
-    }
-
-    .formularioLoginRe{
-        grid-template-columns: 1fr; /* 1 columna */
-        width: 80%;
-        margin-top: 80px;
-        padding: 20px;
-    }
-
-    .full{
-        grid-column: span 1;
-    }
+    max-width: 430px;
 }
 
-/* =========================
-   CELULAR (<= 768px)
-========================= */
-@media (max-width: 768px){
+.brandMark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+}
 
-    .Container{
-        padding: 20px;
-        height: auto; /* evita problemas en móviles */
+.brandName {
+    margin: 0 0 22px;
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.titlePage {
+    max-width: 460px;
+    margin: 0;
+    color: #ffffff;
+    font-size: clamp(36px, 4.2vw, 58px);
+    font-weight: 750;
+    letter-spacing: -0.04em;
+    line-height: 1.08;
+}
+
+.SubTitle {
+    max-width: 380px;
+    margin: 22px 0 0;
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 17px;
+    line-height: 1.6;
+}
+
+.brandRule {
+    width: 58px;
+    height: 4px;
+    margin: 34px 0 20px;
+    border-radius: 4px;
+    background: #f7b801;
+}
+
+.brandNote {
+    max-width: 340px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.76);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.formPanel {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    padding: 48px clamp(24px, 6vw, 88px);
+}
+
+.formularioLoginRe {
+    width: 100%;
+    max-width: 560px;
+    padding: clamp(28px, 4vw, 48px);
+    border: 1px solid #e3eaf4;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 24px 70px rgba(22, 53, 100, 0.12);
+}
+
+.formEyebrow {
+    margin: 0 0 12px;
+    color: #1862e2;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+}
+
+.titleLogin {
+    margin: 0;
+    color: #17243b;
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 750;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+}
+
+.formIntro {
+    margin: 10px 0 26px;
+    color: #65738a;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.formFields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 16px;
+}
+
+.groupF {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.full {
+    grid-column: 1 / -1;
+}
+
+.label {
+    color: #27364e;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.input {
+    width: 100%;
+    min-height: 46px;
+    padding: 10px 13px;
+    border: 1px solid #cbd5e3;
+    border-radius: 9px;
+    outline: none;
+    background: #ffffff;
+    color: #17243b;
+    font: inherit;
+    font-size: 14px;
+    transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.input::placeholder {
+    color: #8995a7;
+}
+
+.input:hover {
+    border-color: #8daee5;
+}
+
+.input:focus-visible {
+    border-color: #1862e2;
+    box-shadow: 0 0 0 3px rgba(24, 98, 226, 0.16);
+}
+
+.passwordGuidance {
+    color: #65738a;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.passwordValid,
+.passwordError {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.45;
+}
+
+.passwordValid {
+    color: #176b3a;
+}
+
+.passwordError {
+    color: #a5342a;
+}
+
+.formMessage {
+    margin: 0 0 20px;
+    padding: 12px 14px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.errorMessage {
+    border-color: #efc2bd;
+    background: #fff3f1;
+    color: #8d2d24;
+}
+
+.successMessage {
+    border-color: #b9dfc7;
+    background: #effaf3;
+    color: #185c32;
+}
+
+.btnLogin {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    grid-column: 1 / -1;
+    margin-top: 5px;
+}
+
+.primaryButton {
+    width: 100%;
+    min-height: 48px;
+    border: 1px solid #1862e2 !important;
+    border-radius: 9px !important;
+    background: #1862e2 !important;
+    color: #ffffff !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    transition: background-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.primaryButton:hover:not(:disabled) {
+    border-color: #124eb7 !important;
+    background: #124eb7 !important;
+    box-shadow: 0 7px 18px rgba(24, 98, 226, 0.2);
+    transform: translateY(-1px);
+}
+
+.primaryButton:focus-visible,
+.secondaryButton:focus-visible {
+    outline: 3px solid #f7b801;
+    outline-offset: 3px;
+}
+
+.primaryButton:disabled {
+    cursor: wait;
+    opacity: 0.72;
+}
+
+.secondaryButton {
+    min-height: 42px;
+    color: #1857b7 !important;
+    font-size: 14px !important;
+    font-weight: 650 !important;
+    text-decoration: none !important;
+}
+
+.secondaryButton:hover:not(:disabled) {
+    color: #103e84 !important;
+    text-decoration: underline !important;
+}
+
+section .wave {
+    position: absolute;
+    z-index: 1;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 90px;
+    background: url(styles-animation/imagenes/wave.png);
+    background-size: 900px 90px;
+    pointer-events: none;
+}
+
+section .wave.wave1,
+section .wave.wave3,
+section .wave.wave4 {
+    opacity: 0.18;
+    animation: animate 25s linear infinite;
+}
+
+section .wave.wave3 {
+    bottom: 12px;
+    opacity: 0.1;
+    animation-delay: -2s;
+}
+
+section .wave.wave4 {
+    bottom: 20px;
+    opacity: 0.12;
+    animation-delay: -5s;
+}
+
+@keyframes animate {
+    from {
+        background-position-x: 0;
     }
 
-    .title{
-        margin-top: 20px;
+    to {
+        background-position-x: 900px;
+    }
+}
+
+@media (max-width: 900px) {
+    .brandPanel {
+        flex-basis: 36%;
+        padding: 40px 28px;
     }
 
-    .titlePage{
+    .formPanel {
+        padding: 36px 24px;
+    }
+
+    .titlePage {
+        font-size: clamp(32px, 5vw, 44px);
+    }
+}
+
+@media (max-width: 700px) {
+    .Container {
+        min-height: 100vh;
+        flex-direction: column;
+        overflow: auto;
+    }
+
+    .brandPanel {
+        flex: none;
+        min-height: auto;
+        padding: 28px 24px;
+    }
+
+    .brandContent {
+        max-width: 560px;
+    }
+
+    .brandMark {
+        width: 40px;
+        height: 40px;
+        margin-bottom: 14px;
+    }
+
+    .brandName {
+        display: inline-block;
+        margin: 0 0 8px 12px;
+        vertical-align: middle;
+    }
+
+    .titlePage {
         font-size: 30px;
     }
 
-    .SubTitle{
-        font-size: 13px;
-    }
-
-    .formularioLoginRe{
-        width: 100%;
-        margin-top: 40px;
-        gap: 15px;
-        padding: 15px;
-        border-radius: 12px;
-    }
-
-    .input{
-        padding: 10px;
+    .SubTitle {
+        margin-top: 10px;
         font-size: 14px;
     }
 
-    .titleLogin{
-        font-size: 18px;
+    .brandRule,
+    .brandNote {
+        display: none;
     }
 
-    section .wave{
-        height: 60px;
-        background-size: 600px 60px;
+    .formPanel {
+        flex: 1;
+        padding: 24px 16px 32px;
+    }
+
+    .formularioLoginRe {
+        max-width: 560px;
+        padding: 26px 22px;
+        border-radius: 16px;
     }
 }
 
-/* =========================
-   CELULAR PEQUEÑO (<= 480px)
-========================= */
-@media (max-width: 480px){
-
-    .titlePage{
-        font-size: 24px;
+@media (max-width: 480px) {
+    .formFields {
+        grid-template-columns: 1fr;
+        gap: 15px;
     }
 
-    .SubTitle{
-        font-size: 12px;
+    .full {
+        grid-column: auto;
     }
 
-    .formularioLoginRe{
-        padding: 12px;
-        gap: 10px;
+    .titlePage {
+        font-size: 26px;
     }
 
-    .input{
-        font-size: 13px;
-        padding: 8px;
+    .formularioLoginRe {
+        padding: 22px 18px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 }

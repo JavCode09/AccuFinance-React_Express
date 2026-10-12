@@ -1,6 +1,5 @@
 //llamamos la ruta 
 import config from "./config";
-const tabla = "users"
 
 //comensamos con las expotaciones de la api al servidro 
 
@@ -13,17 +12,16 @@ export const add_registro = async(formData) => {
             },
             body: JSON.stringify(formData)
         });
-            const data = await response.json();
+        const data = await response.json();
+
         if (!response.ok) {
             const error = new Error(data.message || "Error al crear el registro");
-            error.status = response.status; // 🔥 AQUÍ LA CLAVE SI SALE MAL AGREGAMOS STATUS
+            error.status = response.status;
             throw error;
         }
         return data;
     } catch (error) {
-        // console.error("Error en API (registros):", error.message);
         throw error;
-        
     }
 }
 
@@ -36,19 +34,17 @@ export const SelectLogin = async(formData) => {
             },
             body: JSON.stringify(formData)
         });
-        if (!response.ok) {
-            throw new Error(`Error en la peticion al serevidor, ${tabla}`)
-        }
-        
+
         const data = await response.json();
-        
-        if (data.success) {
-            // Guardar token en localStorage
-            localStorage.setItem('token', data.token);
+
+        if (!response.ok) {
+            const error = new Error(data.message || "No fue posible iniciar sesión.");
+            error.status = response.status;
+            throw error;
         }
+
         return data;
     } catch (error) {
-        console.error(`Error en la funcion API, ${tabla}`);
         throw error;
     }
     
