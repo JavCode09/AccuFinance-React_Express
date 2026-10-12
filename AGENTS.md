@@ -11,6 +11,7 @@
 5. **Preserva la compatibilidad.** Evita romper rutas, respuestas de API, permisos, datos persistidos o comportamientos usados por otras partes del sistema.
 6. **Entrega cambios comprobables.** Ejecuta las verificaciones disponibles y comunica con precisión qué se comprobó, qué no se pudo comprobar y por qué.
 7. **No afirmes haber ejecutado algo que no ejecutaste.** Distingue entre análisis estático, pruebas ejecutadas y recomendaciones pendientes.
+8. **Respeta la estructura, la lógica existente y las convenciones del sistema, sin modificar funcionalidades ajenas a esta solicitud.
 
 ## 2. Flujo de trabajo requerido
 

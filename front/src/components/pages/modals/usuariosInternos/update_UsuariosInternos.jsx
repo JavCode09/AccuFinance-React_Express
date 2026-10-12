@@ -22,8 +22,7 @@ const UpdateUsuariosInternos = ({
             apellido_paterno: category.apellido_paterno,
             apellido_materno: category.apellido_materno,
             email: category.email,
-            rol: String(category.rol),
-            status: String(category.status)
+            rol: String(category.rol)
         });
         setErrorMessage("");
 
@@ -149,21 +148,6 @@ const UpdateUsuariosInternos = ({
                                 {dataRoles.map((rol) => (
                                     <option key={rol.id} value={rol.id}>{rol.nombre}</option>
                                 ))}
-                            </select>
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="status" className="form-label label">Estado</label>
-                            <select
-                                className="form-select mb-3"
-                                id="status"
-                                name="status"
-                                value={data.status}
-                                onChange={handleChange}
-                                disabled={protectedRole}
-                                required
-                            >
-                                <option value="1">Activo</option>
-                                <option value="2">Inactivo</option>
                             </select>
                         </div>
                     </Modal.Body>

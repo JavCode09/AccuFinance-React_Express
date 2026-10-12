@@ -9,6 +9,16 @@ const {query, beginTransaction, commit, rollback } = require("../conexion");
 const tabla = "roles";
 const tabla2 = "rol_permisos";
 
+Router.use((req, res, next) => {
+    if (req.user.rol !== 1) {
+        return res.status(403).json({
+            success: false,
+            message: "No autorizado para administrar roles."
+        });
+    }
+
+    next();
+});
 
 // Inserta roles
 Router.post("/", async (req,res) => {

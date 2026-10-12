@@ -141,14 +141,18 @@ const UsuariosInternos = ({titleModule}) => {
         // console.log("entro a la elimincacion");
         
         setDataTipos(prev =>
-            prev.filter(permiso => 
-                permiso.id !== permisoEliminado.id
+            prev.map(permiso =>
+                permiso.id === permisoEliminado.id
+                    ? permisoEliminado 
+                    : permiso
             )
         );
 
         setFilteredData(prev =>
-            prev.filter(permiso =>
-                permiso.id !== permisoEliminado.id
+            prev.map(permiso =>
+                permiso.id === permisoEliminado.id
+                    ? permisoEliminado 
+                    : permiso
             )
         );
     }   

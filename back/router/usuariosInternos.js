@@ -1,6 +1,7 @@
 const express = require('express');
 const HttpError = require("../utils/HttpError")
 const Router = express.Router();
+const bcrypt = require("bcrypt")
 
 // Conexion a bd junto cin transaccion comit y rollback
 const {query, beginTransaction, commit, rollback } = require("../conexion");
@@ -256,16 +257,15 @@ Router.put("/:id", async(req,res) => {
             throw new HttpError("El usuario interno no existe.", 404);
         }
 
-        const user = validateUser(req.body);
+        const user = validateUser({
+            ...req.body,
+            status: existingUser.status
+        });
         const currentRole = Number(existingUser.rol);
         const protectedRole = currentRole === 1 || currentRole === 2;
 
         if (protectedRole && user.rol !== currentRole) {
             throw new HttpError("No se puede cambiar el rol de un usuario protegido.", 403);
-        }
-
-        if (protectedRole && user.status !== Number(existingUser.status)) {
-            throw new HttpError("No se puede cambiar el estado de un usuario protegido.", 403);
         }
 
         if (!protectedRole && (user.rol === 1 || user.rol === 2)) {
@@ -300,7 +300,7 @@ Router.put("/:id", async(req,res) => {
         await query(
             `UPDATE user_access_log
              SET nombre = ?, apellido_paterno = ?, apellido_materno = ?,
-                 email = ?, rol = ?, status = ?
+                 email = ?, rol = ?
              WHERE id = ?`,
             [
                 user.nombre,
@@ -308,7 +308,6 @@ Router.put("/:id", async(req,res) => {
                 user.apellido_materno,
                 user.email,
                 user.rol,
-                user.status,
                 id
             ]
         );

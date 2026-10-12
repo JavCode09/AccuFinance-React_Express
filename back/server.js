@@ -39,7 +39,7 @@ app.use("/UsuariosInternos", verifyToken, require("./router/usuariosInternos"));
 
 app.use("/permisos",verifyToken,require("./router/permisos"));
 
-app.use("/roles",require("./router/roles"));
+app.use("/roles", verifyToken, require("./router/roles"));
 
 
 
