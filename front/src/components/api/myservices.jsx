@@ -1,17 +1,15 @@
 import config from "./config";
+import apiFetch from "./apiFetch";
 const tabla = "my_services";
 
-//Importamos token
-const token = localStorage.getItem("token");
 
 //Select 
 export const selectMyServices = async() => {
     try {
-        const response = await fetch(`${config.API_URL}myServices/all`, {
+        const response = await apiFetch(`${config.API_URL}myServices/all`, {
             method:"GET",
             headers:{
                 "Content-Type":"application/json",
-                "Authorization": `Bearer ${token}`
             }
         })
         if (!response.ok) {
@@ -28,11 +26,10 @@ export const selectMyServices = async() => {
 //Servicios para el selectr
 export const selectServices = async() => {
     try {
-        const response = await fetch(`${config.API_URL}myServices/AllServices`, {
+        const response = await apiFetch(`${config.API_URL}myServices/AllServices`, {
             method: 'GET',
             headers:{ 
                 'Content-Type':'application/json',
-                "Authorization": `Bearer ${token}` // Agregar el token JWT
             }
         })
         if (!response.ok) {
@@ -48,11 +45,10 @@ export const selectServices = async() => {
 
 export const AddMyServices = async(formData) => {
     try {
-        const response = await fetch(`${config.API_URL}myServices/AddMyService` , {
+        const response = await apiFetch(`${config.API_URL}myServices/AddMyService` , {
             method: 'POST',
             headers: {
                 'Content-Type':'application/json',
-                'Authorization': `Bearer ${token}`
             },
             body:JSON.stringify(formData)
         })
@@ -72,11 +68,10 @@ export const AddMyServices = async(formData) => {
 // Select : Informacion del modal actualizar
 export const getMyServices = async(id_Myservice) => {
     try {
-        const response = await fetch(`${config.API_URL}myServices/GetMyService?id_Myservice=${id_Myservice}`, {
+        const response = await apiFetch(`${config.API_URL}myServices/GetMyService?id_Myservice=${id_Myservice}`, {
             method: 'GET',
             headers: {
                 "Content-Type":"application/json",
-                "Authorization":`Bearer ${token}`
             },
         })
         if (!response.ok) {
@@ -95,11 +90,10 @@ export const getMyServices = async(id_Myservice) => {
 
 export const UpdateMyServices = async(formData) => {
     try {
-        const response = await fetch(`${config.API_URL}myServices/updateMyServices`, {
+        const response = await apiFetch(`${config.API_URL}myServices/updateMyServices`, {
             method:"PUT",
             headers: {
                 "Content-Type":"application/json",
-                "authorization":`Bearer ${token}`
             },
             body:JSON.stringify(formData)
         })
@@ -118,11 +112,10 @@ export const UpdateMyServices = async(formData) => {
 
 export const DeleteMyServices = async(idDelete) => {
     try {
-        const response = await fetch(`${config.API_URL}myServices/deleteMyService`, {
+        const response = await apiFetch(`${config.API_URL}myServices/deleteMyService`, {
             method:"DELETE",
             headers: {
                 "Content-Type":"application/json",
-                "authorization":`Bearer ${token}`,
             },
             body: JSON.stringify({idDelete})
         })

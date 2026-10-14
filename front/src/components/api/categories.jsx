@@ -1,18 +1,14 @@
 
 import config from "./config";
+import apiFetch from "./apiFetch";
 const tabla = 'categories';
-//Importante el token para porteger rutas, si no se pasa el token se toman las 
-// consultas invalidas y no mostrara nada nidejara hacer add y update (esto es solo si la ruta esta protegida)
-const token = localStorage.getItem("token"); // Asumiendo que guardas el token en localStorage
-
 //Funcion para agregar categoria
 export const add_categories = async(formData) => {
     try {
-        const response = await fetch(`${config.API_URL}categories/add` , {
+        const response = await apiFetch(`${config.API_URL}categories/add` , {
             method: 'POST',
             headers: {
                 'Content-Type' : 'application/json',
-                "Authorization": `Bearer ${token}` // Agregar el token JWT
             },
             body: JSON.stringify(formData)
         })
@@ -32,11 +28,10 @@ export const add_categories = async(formData) => {
 //Funcion select categories
 export const selectCategories = async() => {
     try {
-        const response = await fetch(`${config.API_URL}categories`, {
+        const response = await apiFetch(`${config.API_URL}categories`, {
             method: 'GET',
             headers: {
                 "Content-Type" : "application/json",
-                "Authorization": `Bearer ${token}` // Agregar el token JWT
             },
         })
 
@@ -53,11 +48,10 @@ export const selectCategories = async() => {
 //Funcion Para Actualizar registro 
 export const updateCategories = async(formData) => {
     try {
-        const response = await fetch(`${config.API_URL}categories/update`, {
+        const response = await apiFetch(`${config.API_URL}categories/update`, {
             method: 'PUT',
             headers: {
                 "Content-Type" : "application/json",
-                "Authorization": `Bearer ${token}` // Agregar el token JWT
             },
             body: JSON.stringify(formData)
         });
@@ -74,11 +68,10 @@ export const updateCategories = async(formData) => {
 // Funcion para eliminar categoria
 export const deleteCategories = async(formData) => {
     try {
-        const response = await fetch(`${config.API_URL}categories/delete`, {
+        const response = await apiFetch(`${config.API_URL}categories/delete`, {
             method: 'DELETE',
             headers: {
                 "Content-Type" : "application/json",
-                "Authorization" : `Bearer ${token}`
             },
             body:JSON.stringify(formData)
         });

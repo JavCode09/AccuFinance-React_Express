@@ -1,18 +1,16 @@
 
 import { Form } from "react-bootstrap";
 import config from "./config"; //URL del BACK END
+import apiFetch from "./apiFetch";
 
 
-//Token de verificacion del localstorage del JWT
-const token = localStorage.getItem("token");
 
 //Optenemos toda la informacion de los servicios
 export const selectMyServicesPanel = async(id) => {
     try {
-        const response = await fetch(`${config.API_URL}myServicesPanle/all?id=${id}`, {
+        const response = await apiFetch(`${config.API_URL}myServicesPanle/all?id=${id}`, {
             method:'GET',
             headers:{ 'Content-Type':'application/json',
-                        'Authorization':`Bearer ${token}`
             }
         })
         if (!response) {
@@ -33,10 +31,9 @@ export const selectMyServicesPanel = async(id) => {
 //Insert plan de pagos
 export const inseertNewSystemPanel = async(formData) => {
     try {
-        const response = await fetch(`${config.API_URL}myServicesPanle/add` , {
+        const response = await apiFetch(`${config.API_URL}myServicesPanle/add` , {
             method:"POST",
             headers:{ 'Content-Type':'application/json',
-                        'Authorization':`Bearer ${token}`
             },
             body:JSON.stringify(formData)
         })
@@ -57,11 +54,10 @@ export const inseertNewSystemPanel = async(formData) => {
 //Select planes
 export const API_selectPlanes = async(idUser) => {
     try {
-        const response = await fetch(`${config.API_URL}myServicesPanle/allPlan?idUser=${idUser}`, {
+        const response = await apiFetch(`${config.API_URL}myServicesPanle/allPlan?idUser=${idUser}`, {
             method:'GET',
             headers:{
                 'Content-Type':'application/json',
-                'Authorization': `Bearer ${token}`
             },
         })
         if (!response.ok) {
@@ -80,11 +76,10 @@ export const API_selectPlanes = async(idUser) => {
 
 export const API_planes_de_pago = async(idPlan, id_user, mes) => {
     try {
-        const response = await fetch(`${config.API_URL}myServicesPanle/planesdp`, {
+        const response = await apiFetch(`${config.API_URL}myServicesPanle/planesdp`, {
             method:"POST",
             headers: {
                 "Content-Type":"application/json",
-                "Authorization":`Bearer ${token}`,
             },
             body:JSON.stringify({
                 idPlan,
@@ -108,11 +103,10 @@ export const API_planes_de_pago = async(idPlan, id_user, mes) => {
 //UPDATE meses 
 export const API_selectmeses = async(id_plan,id_user) => {
     try {
-        const response = await fetch(`${config.API_URL}myServicesPanle/monthSelect?id_plan=${id_plan}&id_user=${id_user} `,{
+        const response = await apiFetch(`${config.API_URL}myServicesPanle/monthSelect?id_plan=${id_plan}&id_user=${id_user} `,{
             method:"GET",
             headers:{
                 "Content-Type":"application/json",
-                "Authorization":`Bearer ${token}`,
             },
         })
         if(!response.ok){
@@ -131,11 +125,10 @@ export const API_selectmeses = async(id_plan,id_user) => {
 
 export const API_updatePlanAnual = async(formData) => {
     try {
-        const response = await fetch(`${config.API_URL}myServicesPanle/udt`, {
+        const response = await apiFetch(`${config.API_URL}myServicesPanle/udt`, {
             method:"PUT",
             headers:{
                 'Content-Type':"application/json",
-                "Authorization":`Bearer ${token}`
             },
             body:JSON.stringify(formData)
         })
@@ -156,11 +149,10 @@ export const API_updatePlanAnual = async(formData) => {
 
 export const API_insertNewServices = async(formData) => {
     try {
-        const response = await fetch(`${config.API_URL}myServicesPanle/insertNewS`, {
+        const response = await apiFetch(`${config.API_URL}myServicesPanle/insertNewS`, {
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
-                "Authorization":`Bearer ${token}`
             },
             body:JSON.stringify(formData)
         })
@@ -179,11 +171,10 @@ export const API_insertNewServices = async(formData) => {
 
 export const DeletePlanDePagos = async(formData) => {
     try {
-        const response = await fetch(`${config.API_URL}myServicesPanle/deleteplan`, {
+        const response = await apiFetch(`${config.API_URL}myServicesPanle/deleteplan`, {
             method:'DELETE',
             headers:{
                 'Content-Type':'application/json',
-                'Authorization':`Bearer ${token}`,
                 },
             body: JSON.stringify(formData)
             })
@@ -204,11 +195,10 @@ export const DeletePlanDePagos = async(formData) => {
 export const APIupdateServicePlan = async(formData) => {
 
     try {
-        const response = await fetch(`${config.API_URL}myServicesPanle/updateplan`,{
+        const response = await apiFetch(`${config.API_URL}myServicesPanle/updateplan`,{
             method: 'PUT',
             headers: {
                 "Content-Type":"application/json",
-                'Authorization':`Bearer ${token}`,
             },
             body: JSON.stringify(formData)
         })
@@ -228,11 +218,10 @@ export const APIupdateServicePlan = async(formData) => {
 export const APIvalidarServicos = async(formData) => {
 
     try {
-        const response = await fetch(`${config.API_URL}myServicesPanle/valida`, {
+        const response = await apiFetch(`${config.API_URL}myServicesPanle/valida`, {
             method:"PUT",
             headers:{
                 'Content-Type':'application/json',
-                'Authorization':`Bearer ${token}`
             },
             body: JSON.stringify(formData)
         })
@@ -253,11 +242,10 @@ export const APIvalidarServicos = async(formData) => {
 //Elimina el servicio dentro del mes de form apermanente
 export const APIdeleteServicePxM = async (formData) => {
     try {
-        const response = await fetch(`${config.API_URL}myServicesPanle/deleteService`, {
+        const response = await apiFetch(`${config.API_URL}myServicesPanle/deleteService`, {
             method: "DELETE",
             headers: {
                 'Content-Type':'application/json',
-                'Authorization':`Bearer ${token}`,
             },
             body:JSON.stringify(formData),
         })
@@ -277,11 +265,10 @@ export const APIdeleteServicePxM = async (formData) => {
 
 export const ApiDeleteMesPanel = async(formData) => {
     try {
-        const response = await fetch(`${config.API_URL}myServicesPanle/deleteMespanel`, {
+        const response = await apiFetch(`${config.API_URL}myServicesPanle/deleteMespanel`, {
             method:"DELETE",
             headers:{
                 'Content-Type':'application/json',
-                'Authorization':`Bearer ${token}`,
             },
             body:JSON.stringify(formData)
         })
@@ -301,11 +288,10 @@ export const ApiDeleteMesPanel = async(formData) => {
 // Meses de estado relacionados
 export const APIestadosMeses = async(id_plan) => {
     try {
-        const response = await fetch(`${config.API_URL}myServicesPanle/allStatusMes?idp=${id_plan}`, {
+        const response = await apiFetch(`${config.API_URL}myServicesPanle/allStatusMes?idp=${id_plan}`, {
             method:"GET",
             headers:{
                 'Content-Type':'application/json',
-                'Authorization':`Bearer ${token}`,
             },
         })
         if (!response.ok) {
@@ -323,11 +309,10 @@ export const APIestadosMeses = async(id_plan) => {
 
 export const APIdataUpdateMes = async(id_plan, mes) => {
     try {
-        const response = await fetch(`${config.API_URL}myServicesPanle/selectMes`, {
+        const response = await apiFetch(`${config.API_URL}myServicesPanle/selectMes`, {
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
-                "Authorization":`Bearer ${token}`
             },
             body: JSON.stringify({
                 id_plan,
@@ -352,11 +337,10 @@ export const APIdataUpdateMes = async(id_plan, mes) => {
 
 export const ApiUpdateDataMes = async(payload) => {
     try {
-        const response = await fetch(`${config.API_URL}myServicesPanle/updateMes`, {
+        const response = await apiFetch(`${config.API_URL}myServicesPanle/updateMes`, {
             method:"PUT",
             headers: {
                 "Content-Type":"application/json",
-                "Authorization":`Bearer ${token}`
             },
             body: JSON.stringify(payload)
         })

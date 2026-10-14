@@ -1,19 +1,13 @@
 import config from "./config";
-
-//Importante el token para porteger rutas, si no se pasa el token se toman las 
-// consultas invalidas y no mostrara nada nidejara hacer add y update (esto es solo si la ruta esta protegida)
-const token = localStorage.getItem("token"); // Asumiendo que guardas el token en localStorage
-
-
+import apiFetch from "./apiFetch";
 
 export const getPermisos = async() => {
     try {
         // Mandamos a pedir la informacion
-        const response = await fetch(`${config.API_URL}permisos`, {
+        const response = await apiFetch(`${config.API_URL}permisos`, {
             method:"GET",
             headers:{
                 "Content-Type":"application/json",
-                "Authorization":`Bearer ${token}`
             },
         });
 
@@ -34,11 +28,10 @@ export const getPermisos = async() => {
 
 export const createPermiso = async(namePermiso) => {
     try {
-        const response = await fetch(`${config.API_URL}permisos`,{
+        const response = await apiFetch(`${config.API_URL}permisos`,{
             method: "POST",
             headers:{
                 "Content-Type":"application/json",
-                "Authorization":`Bearer ${token}`
             },
             body: JSON.stringify({
                 namePermiso,
@@ -63,11 +56,10 @@ export const createPermiso = async(namePermiso) => {
 
 export const getPermisosUpdate = async(permiso_id) => {
     try {
-        const response = await fetch(`${config.API_URL}permisos/${permiso_id}`,{
+        const response = await apiFetch(`${config.API_URL}permisos/${permiso_id}`,{
             method: "GET",
             headers:{
                 "Content-Type":"application/json",
-                "Authorization":`Bearer ${token}`
             }
         })
     
@@ -88,11 +80,10 @@ export const getPermisosUpdate = async(permiso_id) => {
 
 export const updatePermiso = async(permiso_id,nombre) => {
     try {
-        const response = await fetch(`${config.API_URL}permisos/${permiso_id}`, {
+        const response = await apiFetch(`${config.API_URL}permisos/${permiso_id}`, {
             method:"PUT",
             headers:{
                 "Content-Type":"application/json",
-                "Authorization":`Bearer ${token}`
             },
             body:JSON.stringify({
                 nombre,
@@ -117,11 +108,10 @@ export const updatePermiso = async(permiso_id,nombre) => {
 
 export const deletePermiso = async(permiso_id) => {
     try {
-        const response = await fetch(`${config.API_URL}permisos/${permiso_id}`, {
+        const response = await apiFetch(`${config.API_URL}permisos/${permiso_id}`, {
             method: "DELETE",
             headers:{
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
             }
         });
 

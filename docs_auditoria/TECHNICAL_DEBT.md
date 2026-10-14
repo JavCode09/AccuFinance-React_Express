@@ -41,13 +41,13 @@ Este documento recoge errores funcionales, confiabilidad, operación, datos, pru
 
 - **Gravedad:** Media para el flujo de alta interna.
 - **Tipo/estado:** defecto encontrado en la revisión inicial; corrección implementada en el árbol actual, pendiente de verificación integrada.
-- **Evidencia:** `getRoles` usa ahora el helper de solicitudes JSON que agrega `Authorization`; `/UsuariosInternos` se monta con `verifyToken`.
+- **Evidencia:** `getRoles` usa el adaptador JSON `apiFetch`, que envía credenciales cookie; `/UsuariosInternos` se monta con `verifyToken`.
 - **Archivos afectados:** `front/src/components/api/usuariosInternos.jsx`, `front/src/components/pages/modals/usuariosInternos/add_UsuariosInternos.jsx`.
 - **Impacto si la corrección no funciona:** no se cargarán roles y los formularios no podrán asignarlos.
-- **Recomendación/estado:** la protección JWT está añadida en el montaje y el cliente envía token; validar con servidor activo antes de cerrar.
-- **Riesgo de corrección:** tokens expirados o ausentes deben dar un error claro sin habilitar el envío del formulario.
+- **Recomendación/estado:** la protección JWT está añadida en el montaje y la cookie se adjunta automáticamente; validar con servidor activo antes de cerrar.
+- **Riesgo de corrección:** sesiones expiradas o cookies ausentes deben dar un error claro sin habilitar el envío del formulario.
 - **Momento:** antes de desplegar el CRUD.
-- **Verificación pendiente:** probar sin token, con token inválido y con token válido; confirmar rechazo/éxito y roles visibles.
+- **Verificación pendiente:** probar sin cookie, con cookie inválida y con cookie válida; confirmar rechazo/éxito y roles visibles.
 
 ### TD-04 — Manejador de logging no definido en router interno
 
@@ -112,11 +112,11 @@ Este documento recoge errores funcionales, confiabilidad, operación, datos, pru
 ### TD-09 — Configuración local fija de API y CORS
 
 - **Gravedad:** Media para despliegue.
-- **Tipo/estado:** configuración fija confirmada; entornos de despliegue no inspeccionados.
-- **Evidencia:** `front/src/components/api/config.jsx` configura URL local de API y `back/server.js` permite un origen de desarrollo local fijo.
+- **Tipo/estado:** URL de API local fija confirmada; el origen CORS se configura con `FRONTEND_ORIGIN` y usa el valor local como predeterminado; entornos de despliegue no inspeccionados.
+- **Evidencia:** `front/src/components/api/config.jsx` configura URL local de API y `back/middlewares/verifyOrigin.js` define `FRONTEND_ORIGIN` con fallback local, utilizado por CORS y por la comprobación de origen para métodos mutables.
 - **Archivos afectados:** `front/src/components/api/config.jsx`, `back/server.js`.
 - **Impacto:** fuera de la configuración local esperada, el frontend puede llamar al servidor incorrecto o el navegador puede bloquear la API.
-- **Recomendación:** configurar explícitamente URL y orígenes permitidos por entorno sin abrir CORS de forma indiscriminada.
+- **Recomendación:** configurar explícitamente la URL del API y `FRONTEND_ORIGIN` por entorno; comprobar además `SameSite`, `Secure` y CSRF conforme a la topología, sin abrir CORS de forma indiscriminada.
 - **Riesgo de corrección:** valores incorrectos pueden apuntar a otro entorno o permitir orígenes no deseados.
 - **Momento:** antes de desplegar o probar frontend desde un origen distinto al local.
 - **Verificación de regresión:** probar todos los entornos/orígenes autorizados y confirmar rechazo CORS desde un origen no permitido.

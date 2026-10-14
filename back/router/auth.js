@@ -3,6 +3,8 @@ const express = require("express");
 const bcrypt = require("bcrypt")
 const Router = express.Router();
 const HttpError = require("../utils/HttpError");
+const { SESSION_COOKIE, sessionCookieOptions } = require("../utils/sessionCookie");
+const getRoleAccess = require("../utils/getRoleAccess");
 
 const {query, beginTransaction, commit, rollback } = require("../conexion");
 
@@ -10,9 +12,6 @@ const {query, beginTransaction, commit, rollback } = require("../conexion");
 const tabla = 'users';
 const tabla_personal = 'user_access_log';
 const mensajeRegistro = "Solicitud recibida. Si el correo es elegible, podrás iniciar sesión.";
-const tabla_roles_permisos = 'rol_permisos';
-const tabla_permisos = 'permisos';
-const tabla_modulos = 'modulos';
 
 // Contenidos extraños
 const regexNombre = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s-]+$/;
@@ -158,6 +157,14 @@ Router.post("/registro", async (req, res) => {
     }
 });
 
+Router.post("/logout", (req, res) => {
+    res.clearCookie(SESSION_COOKIE, sessionCookieOptions);
+    return res.status(200).json({
+        success: true,
+        message: "Sesión cerrada."
+    });
+});
+
 //Login 
 Router.post("/login", async (req, res) => {
     const { usuario, contrasena } = req.body || {};
@@ -173,6 +180,7 @@ Router.post("/login", async (req, res) => {
 
         // Consultamos el usuario por email
         let usuarioEncontrado = null;
+        let fuenteUsuario = null;
         const email = usuario.trim();
 
         const consulta1 = `SELECT * FROM ${tabla} WHERE email = ?`;
@@ -180,6 +188,7 @@ Router.post("/login", async (req, res) => {
 
         if (result1.length !== 0) {
            usuarioEncontrado = result1[0];
+           fuenteUsuario = tabla;
         }else{
             const consulta2 = `SELECT * FROM ${tabla_personal} WHERE email = ?`;
             const result2 = await query(consulta2,[email])
@@ -190,6 +199,7 @@ Router.post("/login", async (req, res) => {
             }
 
             usuarioEncontrado = result2[0];
+            fuenteUsuario = tabla_personal;
         }
 
         let password_hash = usuarioEncontrado.password;
@@ -206,100 +216,26 @@ Router.post("/login", async (req, res) => {
             throw new HttpError("Correo o contraseña incorrectos.", 401);
         }
 
-        // Obtenemos permisos del rol y los modulos ocn sus caracteristicas
-        const consulta3 = `
-            SELECT 
-                m.id AS modulo_id,
-                m.nombre AS nombre_modulo,
-                m.ruta,
-                m.icon,
-                m.parent_id,
-                m.tipo,
-                m.orden,
-                
-                rp.rol_id,
-                rp.permiso_id,
-
-                p.nombre AS nombre_permiso
-                
-
-            FROM ${tabla_modulos} m
-
-            LEFT JOIN ${tabla_roles_permisos} rp 
-                ON rp.modulo_id = m.id AND rp.rol_id = ?
-
-            LEFT JOIN ${tabla_permisos} p 
-                ON rp.permiso_id = p.id
-
-            ORDER BY m.orden ASC;
-        `;
-        
-        const result3 = await query(consulta3,[usuarioEncontrado.rol]);
-        if (result3.length === 0) {
+        const arbol = await getRoleAccess(usuarioEncontrado.rol);
+        if (arbol.length === 0) {
             throw new HttpError("Lo sentimos, pero no cuentas con permisos aun, Comunicate a atencion al cliente.", 403);
         }
-
-        const permisos_roles = result3;
-
-        // Agrupacion por modulo, Agrupamos cada modulo con sus roles y permisos
-        const modulosAgrupados = {};
-
-        // Recorremos todos los registros y agrupamos
-        permisos_roles.forEach(data => {
-            const id = data.modulo_id;
-
-            // Validamos si el modulo ya existe en la lista de objetos
-            if (!modulosAgrupados[id]) {
-                modulosAgrupados[id] = {
-                    modulo_id: data.modulo_id,
-                    nombre_modulo: data.nombre_modulo,
-                    ruta: data.ruta,
-                    icon: data.icon,
-                    parent_id:data.parent_id,
-                    tipo:data.tipo,
-                    orden:data.orden,
-                    permisos: {},
-                    hijos:[]
-                }
-            
-            }
-
-            // Una ves validado el modulo se agregan permisos
-            if (data.permiso_id) {
-                modulosAgrupados[id].permisos[data.nombre_permiso] = true;
-            }
-        });
-
-        // Vamos ahora a poner en los padres los hijos, el padre puede ser modulo sin ruta o bloque
-        const arbol = [];
-
-        // Procesamos la lista de objetos
-        Object.values(modulosAgrupados).forEach(modulo => {
-
-            // Validamos si el modulo tiene parent_id (es la relacion de un padre (bloque o modulo)
-            if(modulo.parent_id === null){
-                // Es padre
-                arbol.push(modulo);
-            }else{
-                // Es hijo de modulo o bloque, ojo aqui no se hace push por que la referencia del objeto es la misma que la del arbol
-                if(modulosAgrupados[modulo.parent_id]){
-                    modulosAgrupados[modulo.parent_id].hijos.push(modulo)    
-                }
-            }
-        });
-
-        // console.log(usuarioEncontrado.id);
-        // return
 
         // Generamos JWT
         const token = jwt.sign(
             {
                 id: usuarioEncontrado.id,
                 rol: usuarioEncontrado.rol,
+                source: fuenteUsuario,
             },
             SECRET_KEY,
             { expiresIn: "2h" }
         );
+
+        res.cookie(SESSION_COOKIE, token, {
+            ...sessionCookieOptions,
+            maxAge: 2 * 60 * 60 * 1000
+        });
 
         res.status(200).json({
             success: true,
@@ -310,8 +246,7 @@ Router.post("/login", async (req, res) => {
                         email: usuarioEncontrado.email,
                         status: usuarioEncontrado.status,
                     },
-            accesos: arbol,
-            token,
+                    accesos: arbol,
         });
     } catch (error) {
         console.error(`Error en la operación, Tabla: ${tabla} o ${tabla_personal}, Login:`, error);

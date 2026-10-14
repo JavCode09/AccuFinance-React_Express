@@ -21,7 +21,7 @@ No hay un manifiesto de dependencias en la raíz. Cada aplicación tiene su prop
 |---|---|
 | `src/index.js` | Punto de entrada React; importa Bootstrap, Font Awesome y estilos globales. |
 | `src/App.js` | Configura `BrowserRouter`, `UserProvider` y las rutas `/` y `/main/*`. |
-| `src/contexts/UserContext.jsx` | Conserva datos de usuario, accesos y estado de carga; verifica el token al montar y expone logout. |
+| `src/contexts/UserContext.jsx` | Conserva usuario y accesos en memoria; recupera la sesión al montar y expone logout al servidor. |
 | `src/components/pages/login.jsx` | Pantalla combinada de inicio de sesión y registro. |
 | `src/components/pages/main.jsx` | Layout autenticado, menú lateral recursivo y rutas internas de módulos. |
 | `src/components/pages/dashboard.jsx` | Componente sencillo de encabezado de módulo. |
@@ -43,9 +43,12 @@ Las pantallas se encuentran principalmente en `src/components/pages/modules/subM
 |---|---|
 | `server.js` | Configura Express, CORS y parser JSON; monta los routers y arranca el servidor. |
 | `conexion.js` | Crea la conexión MySQL y expone consultas y operaciones de transacción promisificadas. |
-| `middlewares/verifyToken.js` | Verifica el JWT del encabezado `Authorization` y asigna los datos decodificados a `req.user`. |
-| `router/auth.js` | Registro, login, selección de usuario, armado de permisos y emisión de JWT. |
-| `router/main.js` | Endpoint protegido que devuelve información decodificada del token. |
+| `middlewares/verifyToken.js` | Verifica el JWT recibido en la cookie `HttpOnly` y asigna los datos decodificados a `req.user`. |
+| `middlewares/verifyOrigin.js` | Restringe métodos mutables al origen configurado para la aplicación web. |
+| `utils/sessionCookie.js` | Define nombre y atributos comunes de la cookie de sesión. |
+| `utils/getRoleAccess.js` | Consulta y arma el árbol de módulos/permisos para el rol. |
+| `router/auth.js` | Registro, login, selección de usuario, emisión de cookie JWT y cierre de sesión. |
+| `router/main.js` | Endpoint protegido que revalida la cuenta y recupera usuario/permisos para restaurar la sesión. |
 | `router/categories.js` | Consultas y operaciones CRUD de categorías. |
 | `router/services.js` | Consultas y operaciones CRUD del catálogo de servicios. |
 | `router/myServices.js` | Operaciones sobre servicios asociados a usuarios. |
@@ -82,21 +85,22 @@ La protección observada confirma autenticación JWT para las bases marcadas, pe
 ## Flujo de comunicación
 
 1. El usuario inicia sesión o se registra desde `login.jsx`; el adaptador de `components/api/registro_login.jsx` llama a `/auth/login` o `/auth/registro`.
-2. El login responde con token, usuario y accesos. El cliente guarda esos datos en `localStorage` y navega a `/main`.
-3. `UserProvider` llama al endpoint `/api` para verificar el token. `Main` obtiene los accesos almacenados, filtra los elementos del menú y renderiza las rutas declaradas.
-4. Las páginas llaman a los adaptadores de `components/api/`, que construyen las solicitudes `fetch` hacia el backend y, en rutas protegidas, envían el token en `Authorization`.
+2. El login establece una cookie JWT `HttpOnly` y responde con usuario y accesos; el cliente no recibe el token en JSON y navega a `/main`.
+3. `UserProvider` llama al endpoint `/api` con credenciales incluidas; el backend identifica la tabla de origen incluida en el JWT, vuelve a consultar el estado de la cuenta y recupera sus accesos. `Main` usa el contexto en memoria para renderizar el menú y sus rutas.
+4. Las páginas llaman a los adaptadores de `components/api/`, que usan `apiFetch` con `credentials: "include"`; el navegador adjunta la cookie automáticamente.
 5. Express ejecuta el middleware configurado para la ruta; el router realiza consultas parametrizadas a MySQL mediante `conexion.js` y responde JSON.
-6. Durante el login, el backend consulta la cuenta y los permisos relacionados con el rol, agrupa los permisos por módulo y arma una jerarquía padre/hijo que el cliente usa para el menú.
+6. Durante el login y la restauración de sesión, el backend consulta permisos relacionados con el rol, agrupa módulos y arma la jerarquía padre/hijo que el cliente usa para el menú.
+7. `/auth/logout` limpia la cookie de sesión. Los métodos mutables deben incluir un `Origin` exactamente igual al configurado y CORS permite credenciales únicamente para ese origen.
 
 ### Usuarios internos
 
-El adaptador `front/src/components/api/usuariosInternos.jsx` envía el JWT en `Authorization` y centraliza las solicitudes JSON del módulo. La pantalla `front/src/components/pages/modules/subModules/usuarios_internos.jsx` presenta el listado y conecta los modales de alta, edición y desactivación.
+El adaptador `front/src/components/api/usuariosInternos.jsx` usa `apiFetch` para adjuntar las credenciales cookie y centraliza las solicitudes JSON del módulo. La pantalla `front/src/components/pages/modules/subModules/usuarios_internos.jsx` presenta el listado y conecta los modales de alta, edición y desactivación.
 
 El router expone `GET /UsuariosInternos`, `GET /UsuariosInternos/rolesAll`, `POST /UsuariosInternos`, `PUT /UsuariosInternos/:id` y `DELETE /UsuariosInternos/:id`. El listado devuelve campos explícitos sin la columna de contraseña; el alta genera el hash con bcrypt; la edición actualiza datos, rol y estado sin cambiar contraseña. La operación DELETE es lógica: actualiza `status` a `2` y no borra físicamente la fila. Los roles 1 y 2 no se ofrecen para nuevas asignaciones y el servidor impide cambiar el rol o estado de sus cuentas.
 
 El buscador de esta pantalla conserva su integración heredada con `search/Permisos`; no forma parte del CRUD actualizado.
 
-La verificación del JWT entrega los claims contenidos en el token; no vuelve a consultar la base para comprobar en cada petición que el usuario sigue activo o que sus permisos no han cambiado.
+El middleware verifica firma y expiración del JWT en cada petición protegida. El endpoint `/api` vuelve a consultar estado y permisos al hidratar la sesión, pero no se comprueba en cada petición que la cuenta siga activa ni que sus permisos hayan cambiado.
 
 ## Persistencia y esquema
 
@@ -110,8 +114,9 @@ No se consultó el esquema real de ninguna base y no se ejecutó el SQL; por tan
 
 - Las contraseñas se procesan con `bcrypt`.
 - El backend emite JWT con una expiración configurada de dos horas.
-- El token se transporta en el encabezado `Authorization`.
-- El cliente guarda token, datos del usuario y accesos en `localStorage`.
+- El JWT se transporta en una cookie `HttpOnly`; el token no se expone en la respuesta de login ni al JavaScript del cliente.
+- Usuario y accesos viven en memoria en `UserContext` y se reconstruyen desde `/api` al cargar la aplicación; no se guardan en `localStorage`.
+- `SameSite=Lax` es provisional; `Secure` se activa cuando `NODE_ENV=production`. Antes del despliegue se deben verificar topología same-site, HTTPS, `FRONTEND_ORIGIN`, credenciales CORS y compatibilidad de `Origin`/CSRF. Consultar SEC-07 en `SECURITY_AUDIT.md`.
 - Los permisos se cargan durante login y `main.jsx` los usa para decidir qué elementos del menú renderizar.
 - El middleware `verifyToken` verifica el JWT, pero no se identificó un middleware común de autorización por permiso, acción o pertenencia del recurso.
 
@@ -132,9 +137,9 @@ Los archivos `.nvmrc` de `front/` y `back/` indican Node.js 20.19.0.
 - Scripts: `npm start` y `npm run server` (Nodemon).
 - El script `npm test` está definido como salida de “no test specified” y falla intencionalmente.
 - Dependencias relevantes: Express 4, `mysql`, `bcrypt`, `jsonwebtoken`, `cors` y `dotenv`.
-- Variables leídas por el código: `PORT`, `HOST`, `USER`, `PASS`, `DB` y `SECRET_KEY`. No se inspeccionó ni se reproduce el contenido del archivo `.env`.
+- Variables leídas por el código: `PORT`, `HOST`, `USER`, `PASS`, `DB`, `SECRET_KEY` y `FRONTEND_ORIGIN`. No se inspeccionó ni se reproduce el contenido del archivo `.env`.
 
-El servidor configura CORS para un origen local fijo; la URL del API del cliente también apunta a un host local fijo. Sus consecuencias operativas y recomendaciones constan en `TECHNICAL_DEBT.md`.
+El servidor permite credenciales CORS para `FRONTEND_ORIGIN`, que por omisión es el origen local `http://localhost:3000`; la URL del API del cliente también apunta a un host local fijo. Los valores productivos aún deben configurarse y probarse. Sus consecuencias operativas constan en `TECHNICAL_DEBT.md`.
 
 ## Convenciones observadas y extensión de módulos
 

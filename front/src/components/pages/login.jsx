@@ -232,9 +232,6 @@ const Login = () => {
             });
 
             if (loginStart.success) {
-                localStorage.setItem("token", loginStart.token);
-                localStorage.setItem("accesos", JSON.stringify(loginStart.accesos));
-                localStorage.setItem("user", JSON.stringify(loginStart.usuario));
                 window.location.href = '/main';
             } else {
                 setFormMessage(loginStart.message || "No fue posible iniciar sesión.");

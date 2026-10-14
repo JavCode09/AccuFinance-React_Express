@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Link, Routes, Route, useLocation } from 'react-router-dom';
+import { Link, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 
 // Contexto del usuario
 import { UserContext } from '../../contexts/UserContext';
@@ -32,7 +32,7 @@ const Main = () => {
     |--------------------------------------------------------------------------
     */
 
-    const { logout } = useContext(UserContext);
+    const { logout, userData: user, accesos: modulos, loading } = useContext(UserContext);
 
 
     /*
@@ -71,16 +71,6 @@ const Main = () => {
     */
 
     const [openModule, setOpenModule] = useState({});
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | OBTENER INFORMACIÓN DEL LOCALSTORAGE
-    |--------------------------------------------------------------------------
-    */
-
-    const modulos = JSON.parse(localStorage.getItem('accesos'));
-    const user = JSON.parse(localStorage.getItem('user'));
 
 
     /*
@@ -156,7 +146,7 @@ const Main = () => {
             ...nuevosAbiertos
         }));
 
-    }, [location.pathname]);
+    }, [location.pathname, modulos]);
 
 
     /*
@@ -449,6 +439,14 @@ const Main = () => {
     | RENDER
     |--------------------------------------------------------------------------
     */
+
+    if (loading) {
+        return <div role="status">Validando sesión...</div>;
+    }
+
+    if (!user) {
+        return <Navigate to="/" replace />;
+    }
 
     return (
 

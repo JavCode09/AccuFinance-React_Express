@@ -1,11 +1,12 @@
 //llamamos la ruta 
 import config from "./config";
+import apiFetch from "./apiFetch";
 
 //comensamos con las expotaciones de la api al servidro 
 
 export const add_registro = async(formData) => {
     try {
-        const response = await fetch(`${config.API_URL}auth/registro` ,  {
+        const response = await apiFetch(`${config.API_URL}auth/registro` ,  {
             method: "POST",
             headers: {
                 "Content-Type" : "application/json"
@@ -27,7 +28,7 @@ export const add_registro = async(formData) => {
 
 export const SelectLogin = async(formData) => {
     try {
-        const response = await fetch(`${config.API_URL}auth/login` , {
+        const response = await apiFetch(`${config.API_URL}auth/login` , {
             method: 'POST',
             headers: {
                 'Content-Type': "application/json"
@@ -51,28 +52,32 @@ export const SelectLogin = async(formData) => {
 }
 
 
-// api/registro_login.js
-export const ApiMain = async (token) => {
+export const ApiMain = async () => {
     try {
-        // Llamada a la API del backend para verificar el token
-        const response = await fetch(`${config.API_URL}api`, {
+        const response = await apiFetch(`${config.API_URL}api`, {
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}` // Se pasa el token en el header Authorization
-            }
         });
 
-        // Verificar si la respuesta es correcta
         if (!response.ok) {
-            throw new Error('Token inválido o expirado.');
+            const data = await response.json();
+            const error = new Error(data.message || "Sesión inválida o expirada.");
+            error.status = response.status;
+            throw error;
         }
 
-        // Si la respuesta es válida, retornar los datos
-        const data = await response.json();
-        return data;
+        return await response.json();
     } catch (error) {
-        console.error('Error en la API:', error);
         throw error;
+    }
+};
+
+export const logoutSession = async () => {
+    const response = await apiFetch(`${config.API_URL}auth/logout`, {
+        method: "POST"
+    });
+
+    if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || "No fue posible cerrar la sesión en el servidor.");
     }
 };

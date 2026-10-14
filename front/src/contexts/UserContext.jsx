@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ApiMain } from '../components/api/registro_login';
+import { ApiMain, logoutSession } from '../components/api/registro_login';
 
 // Crea el contexto
 export const UserContext = createContext();
@@ -13,52 +13,47 @@ export const UserProvider = ({ children }) => {
 
   const navigate = useNavigate();
 
-  // Mueve verifyToken fuera de useEffect
-  const verifyToken = async () => {
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-      logout();
-      return;
-    }
-
+  const verifySession = async () => {
     try {
-      const data = await ApiMain(token);
-      // console.log(data);
-      
+      const data = await ApiMain();
       setUserData(data.user || null);
-      // console.log(data);
-
-      // Accesos desde local storage
-      const accesos = localStorage.getItem("accesos");
-      setAccesos(accesos ? JSON.parse(accesos) : []);
-
-      setLoading(false);
-      
+      setAccesos(Array.isArray(data.accesos) ? data.accesos : []);
     } catch (error) {
-
-      // console.error('Token inválido:', error);
-      logout();
+      setUserData(null);
+      setAccesos([]);
+      if (error.status !== 401) {
+        console.error("No fue posible recuperar la sesión.", error);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
+  const logout = async () => {
+    try {
+      await logoutSession();
+    } catch (error) {
+      console.error("No fue posible cerrar la sesión en el servidor.", error);
+    } finally {
+      setUserData(null);
+      setAccesos([]);
+      setLoading(false);
+      navigate("/");
+    }
+  };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("accesos");
-    localStorage.removeItem("user");
-
-    setUserData(null);
-    setAccesos([]);
-
-    navigate("/");
-  }
-  
   useEffect(() => {
-    verifyToken();
+    try {
+      localStorage.removeItem("token");
+      localStorage.removeItem("accesos");
+      localStorage.removeItem("user");
+    } catch (error) {
+      console.error("No fue posible limpiar los datos de sesión antiguos.", error);
+    }
+    verifySession();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Dejar el array vacío si estás seguro de que no hay dependencias que cambian
-  
+  }, []);
+
   return (
     <UserContext.Provider
       value={{

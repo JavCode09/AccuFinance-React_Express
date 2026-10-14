@@ -16,7 +16,7 @@ import { UpdatePermisosModulos } from '../../../api/roles';
 import { UpdatePermisosAll } from '../../../api/roles';
 
 const RolesPermisos = ({titleModule}) => {
-    // Data del login tokenisado JWT (desifrado)
+    // Datos de la sesión recuperados desde el contexto
     const { userData, loading} = useContext(UserContext);
 
     // Hook de estado para los permisos
@@ -34,7 +34,7 @@ const RolesPermisos = ({titleModule}) => {
 
     }, [id, userData]);
 
-    //  Esperamos a que carguen y se desifre el token y poderlo usar
+    //  Esperamos a que carguen los datos de sesión
     if (loading) {
         return <div>Cargando...</div>;
     }

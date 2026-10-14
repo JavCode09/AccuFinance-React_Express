@@ -1,13 +1,12 @@
 import config from "./config";
+import apiFetch from "./apiFetch";
 
 export const search_barModule = async (formData, routeName) => {
     try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(`${config.API_URL}search/${routeName}`, {
+        const response = await apiFetch(`${config.API_URL}search/${routeName}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
             },
             body: JSON.stringify(formData),
         });

@@ -35,7 +35,7 @@ cd front
 npm install
 ```
 
-Configura las variables requeridas para el backend en el entorno local antes de iniciarlo. El código espera `PORT`, `HOST`, `USER`, `PASS`, `DB` y `SECRET_KEY`. No uses credenciales de producción en desarrollo.
+Configura las variables requeridas para el backend en el entorno local antes de iniciarlo. El código espera `PORT`, `HOST`, `USER`, `PASS`, `DB` y `SECRET_KEY`. `FRONTEND_ORIGIN` permite configurar el origen exacto del frontend para CORS y la validación de solicitudes mutables; por omisión usa `http://localhost:3000`. No uses credenciales de producción en desarrollo.
 
 ## Ejecución en desarrollo
 

@@ -2,9 +2,12 @@ require("dotenv").config();
 const express = require("express");
 const cors = require('cors');
 const app = express();
+const { allowedOrigin, verifyOrigin } = require("./middlewares/verifyOrigin");
 
 const corsOption = {
-    origin: "http://localhost:3000",
+    origin: allowedOrigin,
+    credentials: true,
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"],
     optionsSuccessStatus: 200
 }
 
@@ -15,6 +18,7 @@ app.use(cors(corsOption));
 
 //middleware para parsear json
 app.use(express.json());
+app.use(verifyOrigin);
 
 //asignamos puerto
 const port = process.env.PORT;

@@ -1,12 +1,11 @@
 import config from "./config";
+import apiFetch from "./apiFetch";
 
 const request = async (path, method = "GET", body) => {
-    const token = localStorage.getItem("token");
-    const response = await fetch(`${config.API_URL}UsuariosInternos${path}`, {
+    const response = await apiFetch(`${config.API_URL}UsuariosInternos${path}`, {
         method,
         headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + token
+            "Content-Type": "application/json"
         },
         ...(body ? { body: JSON.stringify(body) } : {})
     });

@@ -14,7 +14,7 @@
 | SEC-04 | Alta | Hallazgo inicial; consulta actual usa lista explícita sin hash, falta comprobar respuesta integrada | El listado interno podía incluir columnas sensibles. |
 | SEC-05 | Alta, condicionada | Seed confirmado; vigencia de credencial no verificada | Credencial de administrador sembrada en SQL. |
 | SEC-06 | Alta | Brecha de diseño confirmada en middleware/rutas revisados | Permisos comprobados en menú, sin control común de autorización por acción en API. |
-| SEC-07 | Recomendación | Riesgo condicionado; no se confirmó XSS | JWT y datos de sesión almacenados en `localStorage`. |
+| SEC-07 | Mitigación implementada; validación de despliegue pendiente | El JWT ya no se guarda en `localStorage`; atributos finales de cookie y orígenes productivos aún requieren confirmación. |
 
 ## SEC-01 — Routers administrativos sin autenticación
 
@@ -88,24 +88,28 @@
 - **Momento recomendado:** antes de añadir nuevos módulos con permisos diferenciados.
 - **Verificación:** probar endpoints directamente con usuarios de distintos roles para operaciones de ver, crear, editar y eliminar; comprobar denegación en servidor aunque se invoque manualmente.
 
-## SEC-07 — JWT en `localStorage` (recomendación de diseño)
+## SEC-07 — Protección y transporte de la sesión JWT
 
-- **Severidad:** Recomendación; riesgo condicionado a ejecución de código no confiable en el origen.
-- **Estado:** uso confirmado; XSS no confirmado en este análisis.
-- **Descripción/evidencia:** `front/src/components/pages/login.jsx` guarda token y datos de usuario/accesos en `localStorage`; adaptadores de `front/src/components/api/` utilizan el token en solicitudes.
-- **Archivos afectados:** `front/src/components/pages/login.jsx`, `front/src/contexts/UserContext.jsx`, adaptadores de `front/src/components/api/`.
-- **Impacto:** si un atacante logra ejecutar JavaScript en el origen, podría leer el token almacenado y reutilizarlo mientras sea válido.
-- **Corrección recomendada:** primero evitar XSS y revisar superficies de renderizado. Evaluar estrategia de sesión; si se adopta cookie `HttpOnly`, definir `Secure`, `SameSite` y defensa CSRF según el flujo. No cambiar el mecanismo sin decisión de arquitectura.
-- **Riesgo de corrección:** cambios de login/logout, expiración, CORS, credenciales y protección CSRF.
-- **Momento recomendado:** decisión antes de despliegue; no bloquear una corrección de autorización backend por sí sola.
-- **Verificación:** pruebas de sesión/expiración/logout, revisión de almacenamiento accesible desde JS y, si se usa cookie, pruebas de atributos, CORS y CSRF.
+- **Severidad:** Mitigación defensiva; el riesgo de robo del token dependía de ejecución de JavaScript no confiable en el origen. No se confirmó XSS.
+- **Estado:** cambio implementado en el árbol de trabajo; build y pruebas de integración aún pendientes.
+- **Descripción/evidencia:** el JWT se establece como cookie `HttpOnly`, `SameSite=Lax`, `Path=/` y `Secure` cuando `NODE_ENV=production`. `verifyToken` lo lee exclusivamente de esa cookie. El frontend incluye credenciales mediante `apiFetch`, conserva usuario/accesos solo en `UserContext` y deja de leer o escribir el JWT en `localStorage`. `/api` vuelve a consultar cuenta y permisos al restaurar sesión; `/auth/logout` limpia la cookie. Las peticiones mutables requieren que `Origin` coincida exactamente con el origen configurado, mientras CORS permite credenciales solo para ese origen.
+- **Archivos afectados:** `back/router/auth.js`, `back/router/main.js`, `back/server.js`, `back/middlewares/verifyToken.js`, `back/middlewares/verifyOrigin.js`, `back/utils/sessionCookie.js`, `back/utils/getRoleAccess.js`, `front/src/components/api/apiFetch.js`, `front/src/components/api/registro_login.jsx`, adaptadores de `front/src/components/api/`, `front/src/contexts/UserContext.jsx`, `front/src/components/pages/login.jsx` y `front/src/components/pages/main.jsx`.
+- **Impacto de no completar la configuración:** el JWT dejaría de estar expuesto a lectura directa por JavaScript, pero una política incorrecta de cookie/origen puede impedir iniciar sesión o dejar controles CSRF incompatibles con la topología productiva.
+- **Riesgo de corrección:** las sesiones antiguas sin el claim `source` ya no son válidas y requieren iniciar sesión nuevamente. Los clientes que no envíen cookies o no presenten un `Origin` permitido recibirán rechazo. El cierre local sigue limpiando el estado incluso si no se alcanza el servidor; en ese caso no se pudo confirmar que la cookie fue invalidada en el navegador.
+- **Momento recomendado:** antes del despliegue y validación integral de la nueva sesión.
+- **Configuración pendiente de validar antes de desplegar:**
+  - **`SameSite`:** verificar si frontend y API son same-site en sus dominios/esquemas reales. `Lax` es el valor provisional para el esquema local actual; un despliegue cross-site puede requerir `None`, que exige HTTPS y `Secure`, además de controles CSRF probados.
+  - **`Secure`:** confirmar que producción establece `NODE_ENV=production`, que el sitio se sirve por HTTPS y que no existe una topología proxy que altere este supuesto.
+  - **CORS:** definir `FRONTEND_ORIGIN` con el origen exacto del frontend productivo; no usar `*` con credenciales. Verificar preflight y cookies desde navegador.
+  - **CSRF:** confirmar que cada cliente legítimo envía `Origin` exactamente igual a `FRONTEND_ORIGIN`, y probar rechazo de origen ajeno y ausente en métodos mutables. CORS por sí solo no es el control CSRF.
+- **Verificación requerida:** confirmar que el JWT no aparece en `localStorage`, que la cookie tiene atributos correctos, que el login/restauración/logout y expiración de dos horas funcionan, que las rutas protegidas rechazan cookies ausentes/incorrectas y que los métodos mutables rechazan origen no permitido.
 
 ## Recomendaciones de seguridad transversales
 
 - Mantener consultas SQL parametrizadas; validar y normalizar entrada del lado servidor.
 - No confiar en IDs de usuario, rol o recurso enviados por React para autorización.
 - Limitar campos devueltos por consultas y evitar incluir hashes, secretos o datos personales innecesarios.
-- Configurar orígenes CORS por entorno; CORS no sustituye autenticación ni autorización.
+- Configurar `FRONTEND_ORIGIN` por entorno; CORS no sustituye autenticación, autorización ni el control de origen/CSRF.
 - Añadir pruebas negativas para usuario no autenticado, sin privilegios, recurso ajeno, recurso inexistente y fallos de transacción.
 - No registrar contraseñas, tokens, hashes ni contenido de `.env`.
 
@@ -114,5 +118,5 @@
 - Esta es una revisión estática, no una prueba de penetración.
 - No se ejecutó el backend, no se enviaron peticiones, no se consultó MySQL ni se inspeccionó `.env`.
 - No está verificado que el SQL de esquema/seed corresponda a una base desplegada ni que la cuenta sembrada siga activa.
-- El frontend compila y `node --check` pasó para el router y servidor. No se ejecutó servidor, petición API ni consulta MySQL; la integración JWT y la forma final de las respuestas siguen pendientes de verificación.
+- La migración del JWT a cookie está implementada pero no se ha validado contra un navegador, servidor activo ni MySQL; la configuración productiva de `SameSite`, `Secure`, CORS y CSRF sigue pendiente.
 - No se marcan hallazgos como resueltos: SEC-01 permanece abierto para `/roles` y `/permisos`; SEC-04 requiere comprobación de respuesta integrada.
