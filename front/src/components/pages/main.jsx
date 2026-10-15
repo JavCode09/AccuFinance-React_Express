@@ -12,6 +12,7 @@ import Categories from './modules/subModules/categories';
 import NewService from './modules/subModules/newService';
 import MyServices from './modules/subModules/myservices';
 import AdminServices from './modules/adminservices';
+import Usuarios from './modules/subModules/usuarios';
 import UsuariosInternos from './modules/subModules/usuarios_internos';
 import RolesTipoPermisos from './modules/subModules/rollTiposPermisos';
 import Roles from './modules/subModules/roles';
@@ -824,6 +825,16 @@ const Main = () => {
                             }
                         />
 
+                        {/* Usuarios */}
+
+                        <Route
+                            path="/users"
+                            element={
+                                <Usuarios
+                                    titleModule="Usuarios"
+                                />
+                            }
+                        />
 
                         {/* Usuarios internos */}
 
@@ -858,16 +869,16 @@ const Main = () => {
                         />
 
 
-                        {/* Permisos de roles */}
+                            {/* Permisos de roles */}
 
-                        <Route
-                            path="/rolls/roles_permisos/:id"
-                            element={
-                                <RolesPermisos
-                                    titleModule="Módulos"
-                                />
-                            }
-                        />
+                            <Route
+                                path="/rolls/roles_permisos/:id"
+                                element={
+                                    <RolesPermisos
+                                        titleModule="Módulos"
+                                    />
+                                }
+                            />
 
                     </Routes>
 

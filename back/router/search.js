@@ -161,13 +161,14 @@ Router.post("/UsuariosInternos", async(req,res)=>{
             WHERE ui.nombre LIKE ?
                 OR ui.apellido_paterno LIKE ?
                 OR ui.apellido_materno LIKE ?
+                OR ui.email LIKE ?
             ORDER BY ui.id DESC
         `;
         const termino = `%${searchQuery.trim()}%`;
 
         connection.query(
             consulta,
-            [termino, termino, termino],
+            [termino, termino, termino, termino],
             (err, success) => {
                 if (err) {
                     console.error("Error en la consulta: ", err);

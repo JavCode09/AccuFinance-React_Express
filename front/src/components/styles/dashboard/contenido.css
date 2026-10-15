@@ -145,8 +145,8 @@ body {
     background:
         linear-gradient(
             180deg,
-            #0b3a5b 0%,
-            #082f4d 100%
+            #124eb7 0%,
+            #124eb7 100%
         );
 
     color: #ffffff;
@@ -1086,6 +1086,20 @@ body {
     border-radius: 50%;
 
     background-color: var(--success);
+
+    box-shadow:
+        0 0 0 3px rgba(22, 131, 91, 0.10);
+
+}
+
+.status-dot-danger {
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background-color: var(--danger);
 
     box-shadow:
         0 0 0 3px rgba(22, 131, 91, 0.10);

@@ -298,7 +298,7 @@ const UsuariosInternos = ({titleModule}) => {
                                                 </div>
 
                                                 <strong>
-                                                    {dataPer.nombre}
+                                                    {dataPer.nombre } {dataPer.apellido_paterno } {dataPer.apellido_materno}
                                                 </strong>
 
                                             </div>
@@ -330,6 +330,11 @@ const UsuariosInternos = ({titleModule}) => {
                                         <td>
 
                                             <div className="toposper-name">
+                                                
+                                                {dataPer.status === 1 
+                                                    ? <span className="status-dot"></span>
+                                                    : <span className="status-dot-danger"></span>
+                                                }
                                                 <strong>
                                                     {dataPer.status === 1 ? "Activo" : "Inactivo"}
                                                 </strong>
